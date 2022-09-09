@@ -1,0 +1,11 @@
+include dash_flume/dash_flume.min.js
+include dash_flume/dash_flume.min.js.map
+include dash_flume/async-*.js
+include dash_flume/async-*.js.map
+include dash_flume/*-shared.js
+include dash_flume/*-shared.js.map
+include dash_flume/metadata.json
+include dash_flume/package-info.json
+include README.md
+include LICENSE
+include package.json

@@ -1,0 +1,173 @@
+{
+  "src/lib/components/DashFlume.react.js": {
+    "description": "DashFlume: A node editor for dash\nThis component gives a flow based programming interface for dash users.\nThe developer can define the nodes using simple python functions and these\nwill be available as nodes which can be connected together to create a logic\nat runtime.",
+    "displayName": "DashFlume",
+    "methods": [
+      {
+        "name": "updateConfig",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "handleChange",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "setNodeStatus",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "id",
+            "type": null
+          },
+          {
+            "name": "status",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "setNodesStatus",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "addEventListners",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
+    "props": {
+      "id": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The ID used to identify this component in Dash callbacks."
+      },
+      "style": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The style of the container div"
+      },
+      "nodes": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The nodes of the node editor"
+      },
+      "nodes_status": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The status of each node on the editor"
+      },
+      "editor_status": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "A property denoting the status of the editor\nFollowing statuses are possible.\n[\"client\", \"server\"]"
+      },
+      "selected_nodes": {
+        "type": {
+          "name": "array"
+        },
+        "required": false,
+        "description": "The nodes of the node editor"
+      },
+      "double_clicked_node": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Node on which a double click event was registered"
+      },
+      "comments": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Comments in the node editor"
+      },
+      "type_safety": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "If any port can connect to any other port"
+      },
+      "default_nodes": {
+        "type": {
+          "name": "array"
+        },
+        "required": false,
+        "description": "Default nodes present in the editor\nA list of nodes from the config"
+      },
+      "context": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Pass extra data to nodes"
+      },
+      "initial_scale": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Initial zoom level of the editor"
+      },
+      "disable_zoom": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Disable zoom option"
+      },
+      "disable_pan": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Disable zoom option"
+      },
+      "space_to_pan": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Disable zoom option"
+      },
+      "config": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "The available port types and node types"
+      },
+      "setProps": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Dash-assigned callback that should be called to report property changes\nto Dash, to make them available for callbacks."
+      }
+    }
+  }
+}

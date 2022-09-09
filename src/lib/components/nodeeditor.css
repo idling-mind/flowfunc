@@ -1,0 +1,27 @@
+.active[data-flume-component="node"] > h2{
+    background-color:indianred;
+}
+.started[data-flume-component="node"] {
+    border-bottom: 5px solid rgb(218, 194, 60);
+}
+.queued[data-flume-component="node"] {
+    border-bottom: 5px solid rgb(84, 131, 202);
+}
+.finished[data-flume-component="node"] {
+    border-bottom: 5px solid rgb(55, 189, 126);
+}
+.failed[data-flume-component="node"] {
+    border-bottom: 5px solid rgb(196, 64, 64);
+}
+.deferred[data-flume-component="node"] {
+    border-bottom: 5px solid rgb(194, 194, 194);
+}
+.stopped[data-flume-component="node"] {
+    border-bottom: 5px solid rgb(145, 73, 73);
+}
+.scheduled[data-flume-component="node"] {
+    border-bottom: 5px solid rgb(73, 116, 145);
+}
+.canceled[data-flume-component="node"] {
+    border-bottom: 5px solid rgb(107, 109, 94);
+}
