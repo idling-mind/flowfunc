@@ -110,6 +110,7 @@ def run_nodes(nclicks: int, output_nodes: Dict[str, OutNode]):
 if __name__ == "__main__":
     app.run() 
 ```
+![Basic example](docs/source/images/basic.png)
 ### Explanation
 
 ```python
