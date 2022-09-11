@@ -46,7 +46,8 @@ from dash_flume.models import OutNode
 
 app = dash.Dash(__name__)
 
-# Functions to be converted to nodes
+# Functions can be converted to nodes
+# Doc strings are parsed and converted to json which gets rendered at the front end
 def add(a, b):
     """Add two numbers
 
@@ -64,6 +65,7 @@ def add(a, b):
     """
     return a + b
 
+# If docstrings are not usable, it falls back to function signature and type annotations.
 def subtract(a: int, b: int) -> int:
     """Find difference between two numbers"""
     return a - b
