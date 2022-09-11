@@ -1,10 +1,14 @@
-# DashFlume
+![DashFlume](./docs/source/images/logo.png)
 
 A node editor for [plotly dash](https://dash.plotly.com/)
 
+DashFlume is a plotly dash component which works as a web based node editor.
+You can create nodes based on python functions and connect them together to define
+the logic during runtime.
+
 animation
 
-The front end is created using the awesome react package [Flume](https://flume.dev). The
+The front end is created using the react package [Flume](https://flume.dev). The
 data model is also heavily influenced by this package.
 ## Installation
 
@@ -33,7 +37,7 @@ at the bottom.
 The nodes are created from regular python functions with docstrings (the `add`
 function in the following example). If docstrings are not found, the parser will
 fall back to function signature (as in the `subtract` function).
-It is also possible to create a node manually.
+It is also possible to create a node manually which offers more control.
 
 ```python
 from typing import Dict
@@ -99,13 +103,31 @@ def run_nodes(nclicks: int, output_nodes: Dict[str, OutNode]):
     for node in result.values():
         # node.value contains the result of the node
         output.append(
-            html.Div([html.H1(f"{node.type}: {node.id}"), html.P(str(node.value))])
+            html.Div([html.H1(f"{node.type}: {node.id}"), html.P(str(node.result))])
         )
     return output
 
 if __name__ == "__main__":
     app.run() 
 ```
+### Explanation
+
+```python
+nodeeditor_config = Config.from_function_list([add, subtract])
+```
+The `DashFlume` component requires a `Config` object which contains the list of all
+nodes as an input. You can create the list of nodes easily from a list of python
+functions using the class method `from_function_list`.
+
+```python
+runner = JobRunner(nodeeditor_config)
+...
+result = runner.run(output_nodes)
+```
+`JobRunner` object helps evaluate the output of the front end node editor by making
+sure the inputs and outputs are routed properly. It returns a dictionary of `OutNode`
+objects which has a `result` attribute which contains the return object of the
+python function associated with the node.
 ## Nodes
 
 `Nodes` are the building blocks which you can connect together using their exposed
@@ -113,8 +135,8 @@ if __name__ == "__main__":
 their docstrings. The parameters of the function becomes the input ports and
 return value of the function becomes the output port. The docstring should document
 the function description, the parameters it accepts and their type and also the
-return name and type. If the parser encounters an error while parsing the docstring, it will fallback
-to the function signature.
+return name and type. If the parser encounters an error while parsing the docstring,
+it will fallback to the function signature.
 
 ## Ports
 `Ports` are the inputs and outputs of a `Node`. So they basically mean the inputs
@@ -124,39 +146,3 @@ come with a default control. They are `int`, `float`, `str`, `bool`, `color`,
 `time`, `date`, `month`, `week`. Some of these are not standard python types and
 hence, you cannot use them in type annotation directly. If you want to use type
 annotation, create a custom type with these names.
-
-
-You can easily convert python functions in to the nodes of the node editor.
-
-From this
-
-```python
-def add_numbers(a, b):
-    """Add two numbers together
-
-    Parameters
-    ----------
-    a: int
-        First number
-    b: int
-        Second number
-    
-    Returns
-    -------
-    sum: int
-        Sum of two numbers
-    """
-    return a + b
-```
-
-To this
-
-image of add node
-![Add node](./docs/source/images/add_node.png)
-
-
-The parser relies on the docstring of the function to create the node.
-If this method fails, it falls back to the function signature. For more control,
-you can create the node manually, by setting each aspect of the node separately. Look into examples to know more.
-
-This package uses the [Flume](https://flume.dev) react library for the front end.
