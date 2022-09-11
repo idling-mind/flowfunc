@@ -39,7 +39,7 @@ class NodeJob(Job):
             dependent_job = NodeJob.fetch(
                 node_connection[0].jobId, connection=self.connection
             )
-            self.kwargs.update({key: dependent_job.result[node_connection[0].portName]})
+            self.kwargs.update({key: dependent_job.result_mapped[node_connection[0].portName]})
 
     @property
     def func(self):
@@ -52,15 +52,14 @@ class NodeJob(Job):
         return super().perform()
 
     @property
-    def result(self):
-        """Over riding parent class's result method"""
-        if self._result is None:
-            rv = self.connection.hget(self.key, "result")
-            if rv is not None:
-                # cache the result
-                self._result = self.serializer.loads(rv)
-        res = self._result
-        if type(res) != tuple:
+    def result_mapped(self):
+        """Mapped result dictionary
+
+        Creating an extra property which is a dictionary with keys equal to the
+        output ports of the node.
+        """
+        res = self.result
+        if not isinstance(res, tuple):
             # If there is only one result item and has to be converted
             # to a tuple to map it onto a dict and later to kwargs
             res = (res,)

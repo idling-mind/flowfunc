@@ -207,11 +207,12 @@ class JobRunner:
         """Evaluate the node and return the result"""
         out_node = mapped_dict[nodeid]
         out_node.status = "started"
-        if hasattr(out_node, "value") and out_node.value:
-            return out_node.value
+        if hasattr(out_node, "result") and out_node.result:
+            return
         config_node = self.flume_config.get_node(out_node.type)
         method = validate_arguments(config_node.method)
-        out_node.value = {}
+        out_node.result = None
+        out_node.result_mapped = {}
         input_args = {}
         for key, values in out_node.inputData.items():
             if not values:
@@ -239,7 +240,7 @@ class JobRunner:
                 out_node.status = "failed"
                 out_node.run_event.set()
                 return
-            input_args[key] = dependent_node.value[connections[0].portName]
+            input_args[key] = dependent_node.result_mapped[connections[0].portName]
         if inspect.iscoroutinefunction(method):
             try:
                 method_output = await method(**input_args)
@@ -257,6 +258,7 @@ class JobRunner:
 
         if hasattr(out_node, "error") and out_node.error:
             return
+        out_node.result = method_output
 
         # Converting the method output to a tuple so that it can be mapped
         # to the outputs dict
@@ -265,7 +267,7 @@ class JobRunner:
         output_args = [
             x.name for x in self.flume_config.get_node(out_node.type).outputs
         ]
-        out_node.value = {x: y for x, y in zip(output_args, method_output)}
+        out_node.result_mapped = {x: y for x, y in zip(output_args, method_output)}
         out_node.status = "finished"
 
     async def run_distributed(
