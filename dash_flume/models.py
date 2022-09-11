@@ -137,7 +137,8 @@ class OutNode(BaseModel):
     status: str = "idle"
 
     # The value of the node once it completes execution.
-    value: Optional[dict]
+    result: Optional[Any]
+    result_mapped: Optional[Dict[str, Any]]
 
     # Error traceback for node
     error: Optional[str]
