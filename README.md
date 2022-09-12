@@ -118,7 +118,8 @@ nodeeditor_config = Config.from_function_list([add, subtract])
 ```
 The `DashFlume` component requires a `Config` object which contains the list of all
 nodes as an input. You can create the list of nodes easily from a list of python
-functions using the class method `from_function_list`.
+functions using the class method `from_function_list`. It will accept async
+functions also.
 
 ```python
 runner = JobRunner(nodeeditor_config)
@@ -129,6 +130,13 @@ result = runner.run(output_nodes)
 sure the inputs and outputs are routed properly. It returns a dictionary of `OutNode`
 objects which has a `result` attribute which contains the return object of the
 python function associated with the node.
+
+```python
+DashFlume(id="nodeeditor", config=nodeeditor_config.config_dict())
+```
+This is the dash component with `id` equal to `nodeeditor`. You need to pass in
+the config object created previously, but converted to a dictionary.
+
 ## Nodes
 
 `Nodes` are the building blocks which you can connect together using their exposed
@@ -139,6 +147,9 @@ the function description, the parameters it accepts and their type and also the
 return name and type. If the parser encounters an error while parsing the docstring,
 it will fallback to the function signature.
 
+Once the parser processes the docstring or the function signature, it creates a
+`Node` object which is a `pydantic` object.
+
 ## Ports
 `Ports` are the inputs and outputs of a `Node`. So they basically mean the inputs
 or outputs of a function. Ports can render controls in the node and let the user
@@ -147,3 +158,22 @@ come with a default control. They are `int`, `float`, `str`, `bool`, `color`,
 `time`, `date`, `month`, `week`. Some of these are not standard python types and
 hence, you cannot use them in type annotation directly. If you want to use type
 annotation, create a custom type with these names.
+
+A default set of ports are automatically created when the nodes are processed
+from python functions. `Port` object is also a pydantic object.
+
+## Config
+`Config` object holds info about all the nodes and ports available in the node
+editor. It's a direct equivalent of [Flume](https://flume.dev)'s config object,
+but modified so that the data can be serialized at the server side and sent to
+the client (ie; no javascript functions). In future, the plan is to make it possible
+to define functions in javascript as well.
+
+`Config.nodes` will contain all the `Node` pydantic objects and `Config.ports`
+will contain all the `Port` pydantic objects. 
+
+## JobRunner
+`JobRunner` object helps process the output of the node editor.
+
+
+.... documentation in progress.
