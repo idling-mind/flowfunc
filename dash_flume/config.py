@@ -1,6 +1,5 @@
 import inspect
 from typing import Callable, List, Optional, Union, get_args, get_origin
-from itertools import chain
 from docstring_parser import parse
 
 from .models import Node, ConfigModel, Color, Port
