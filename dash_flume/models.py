@@ -61,7 +61,7 @@ class Port(BaseModel):
 
     def __eq__(self, other):
         return self.type == other.type
-    
+
     def __hash__(self):
         return hash(self.type)
 
@@ -109,7 +109,7 @@ class OutConnection(BaseModel):
 
     nodeId: str
     portName: str
-    jobId: Optional[str]
+    job_id: Optional[str]
 
 
 class OutConnections(BaseModel):
@@ -149,7 +149,7 @@ class OutNode(BaseModel):
     run_event: Optional[Any]
 
     job: Optional[Any]
-    jobId: Optional[str]
+    job_id: Optional[str]
 
     # rq related settings which will be passed to enqueue function
     settings: Optional[Dict[str, Any]]

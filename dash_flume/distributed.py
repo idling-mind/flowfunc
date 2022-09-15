@@ -37,9 +37,11 @@ class NodeJob(Job):
             # Also assuming that there is only one connection in one port
             # as flume allows only one at this time.
             dependent_job = NodeJob.fetch(
-                node_connection[0].jobId, connection=self.connection
+                node_connection[0].job_id, connection=self.connection
             )
-            self.kwargs.update({key: dependent_job.result_mapped[node_connection[0].portName]})
+            self.kwargs.update(
+                {key: dependent_job.result_mapped[node_connection[0].portName]}
+            )
 
     @property
     def func(self):
@@ -68,4 +70,5 @@ class NodeJob(Job):
 
 class NodeQueue(Queue):
     """Node Queue class is derived from the base Queue class in RQ"""
+
     job_class = NodeJob

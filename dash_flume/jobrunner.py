@@ -346,7 +346,7 @@ class JobRunner:
         if node.connections.outputs:
             for key, conns in node.connections.outputs.items():
                 for conn in conns:
-                    conn.jobId = node.job.id
+                    conn.job_id = node.job.id
         node.run_event.set()
 
     def dict(self, mapped_dict: Dict[str, OutNode], *args, **kwargs) -> dict:
