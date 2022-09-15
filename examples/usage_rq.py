@@ -69,7 +69,7 @@ app.layout = html.Div(
             children=dash_flume.DashFlume(
                 id="input",
                 # config=inconfig,
-                config=fconfig.config_dict(),
+                config=fconfig.dict(),
                 context={"context": "initial"},
             ),
         ),

@@ -154,6 +154,12 @@ class OutNode(BaseModel):
     # rq related settings which will be passed to enqueue function
     settings: Optional[Dict[str, Any]]
 
+    class Config:
+        fields = {
+            "run_event": {"exclude": True},
+            "job": {"exclude": True},
+        }
+
 
 class OutNodes(BaseModel):
     __root__: Dict[str, OutNode]

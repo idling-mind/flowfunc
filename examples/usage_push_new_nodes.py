@@ -71,7 +71,7 @@ app.layout = html.Div(
         html.Div(
             DashFlume(
                 id="someid",
-                config=fconfig.config_dict(),
+                config=fconfig.dict(),
                 disableZoom=True,
                 duck_type=True,
             ),

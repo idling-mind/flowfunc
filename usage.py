@@ -6,7 +6,14 @@ from uuid import uuid4
 import dash
 from dash import Input, Output, State, html
 from dash_flume import DashFlume, config, jobrunner
-from dash_flume.models import ControlType, OutConnections, OutNode, OutNodes, Port, Control
+from dash_flume.models import (
+    ControlType,
+    OutConnections,
+    OutNode,
+    OutNodes,
+    Port,
+    Control,
+)
 from yaml import safe_load
 
 test_port = Port(
@@ -16,7 +23,7 @@ test_port = Port(
     controls=[
         Control(type=ControlType.text, name="test_port_string", label="some string"),
         Control(type=ControlType.number, name="test_port_number", label="some number"),
-    ]
+    ],
 )
 
 city_port = Port(
@@ -24,29 +31,38 @@ city_port = Port(
     name="city",
     label="city",
     controls=[
-        Control(type=ControlType.select, name="city", label="Select a city", options=[
-            {"label": "Gothenburg", "value": "Gothenburg"},
-            {"label": "Stockholm", "value": "Stockholm"},
-            {"label": "Malmo", "value": "Malmo"},
-        ]),
-        Control(type=ControlType.number, name="pin", label="Pin")
-    ]
+        Control(
+            type=ControlType.select,
+            name="city",
+            label="Select a city",
+            options=[
+                {"label": "Gothenburg", "value": "Gothenburg"},
+                {"label": "Stockholm", "value": "Stockholm"},
+                {"label": "Malmo", "value": "Malmo"},
+            ],
+        ),
+        Control(type=ControlType.number, name="pin", label="Pin"),
+    ],
 )
 
 n = NewType("test_port", Any)
 city = NewType("city", dict)
 
+
 def enter_date(d: date) -> str:
     print(type(d))
     return str(d)
+
 
 def enter_city_and_pin(city: city):
     """Enter a city and a PIN"""
     return city
 
+
 def test_port_node(input: n):
     print(type(input))
     return input
+
 
 def enter_string(input_string: str) -> str:
     return input_string
@@ -92,10 +108,19 @@ def subtract(a: Union[int, float], b: Union[int, float]):
     return a - b
 
 
-flist = [add, subtract, safe_load, enter_date, enter_string, get_month_from_date, test_port_node, enter_city_and_pin]
+flist = [
+    add,
+    subtract,
+    safe_load,
+    enter_date,
+    enter_string,
+    get_month_from_date,
+    test_port_node,
+    enter_city_and_pin,
+]
 app = dash.Dash(__name__)
 fconfig = config.Config.from_function_list(flist, extra_ports=[test_port, city_port])
-# pprint(fconfig.config_dict())
+# pprint(fconfig.dict())
 runner = jobrunner.JobRunner(fconfig)
 
 app.layout = html.Div(
@@ -105,7 +130,7 @@ app.layout = html.Div(
         html.Div(
             DashFlume(
                 id="someid",
-                config=fconfig.config_dict(),
+                config=fconfig.dict(),
                 disable_zoom=True,
                 type_safety=False,
             ),
@@ -117,7 +142,7 @@ app.layout = html.Div(
 
 
 @app.callback(
-    [Output("output", "children"),Output("someid", "nodes_status")],
+    [Output("output", "children"), Output("someid", "nodes_status")],
     Input("btn_run", "n_clicks"),
     State("someid", "nodes"),
 )
@@ -134,7 +159,6 @@ def run(nclicks, nodes):
             output_html.append(html.Div(f"{node.error}"))
         nodes_status[node.id] = node.status
     return output_html, nodes_status
-
 
 
 if __name__ == "__main__":

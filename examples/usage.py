@@ -33,7 +33,7 @@ app.layout = html.Div(
                 id="input",
                 style={"height": "800px"},
                 # config=inconfig,
-                config=fconfig.config_dict(),
+                config=fconfig.dict(),
                 context={"context": "initial"},
             ),
         ),
@@ -105,7 +105,7 @@ def func(n_clicks, nodes):
     prevent_initial_call=True,
 )
 def func(n_clicks):
-    config = Config(all_functions[:2]).config_dict()
+    config = Config(all_functions[:2]).dict()
     return config
 
 

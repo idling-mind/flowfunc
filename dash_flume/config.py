@@ -84,6 +84,7 @@ def process_node_docstring(func: Callable) -> Node:
 
     return Node(**node_dict)
 
+
 def arg_or_kwarg(par: inspect.Parameter):
     arg_kwarg_mapper = {
         inspect.Parameter.POSITIONAL_ONLY: "arg",
@@ -93,6 +94,7 @@ def arg_or_kwarg(par: inspect.Parameter):
         inspect.Parameter.VAR_POSITIONAL: "arg",
     }
     return arg_kwarg_mapper.get(par.kind, "kwarg")
+
 
 def process_port_inspect(pname, pobj):
     """Convert input arg of a function and convert it to flume config data
@@ -337,7 +339,7 @@ class Config:
                 return node
         raise ValueError(f"Node type {node_type} not found in config.")
 
-    def config_dict(self) -> dict:
+    def dict(self) -> dict:
         """Function to generate the config dict
 
         This dictionary will be sent to the react backend
