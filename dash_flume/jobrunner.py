@@ -54,7 +54,7 @@ def default_meta_method(
             ],
             **job_runner.meta_data,
         },
-        depends_on=[dependent.job.id for dependent in dependents],
+        depends_on=[dependent.job_id for dependent in dependents],
         **job_kwargs,
     )
 
@@ -297,7 +297,11 @@ class JobRunner:
     async def submit_node_job(self, nodeid: str, mapped_dict: dict):
         """Enqueue the node in the queue"""
         node = mapped_dict[nodeid]
-        if hasattr(node, "job") and node.job:
+        if hasattr(node, "job_id") and node.job_id:
+            try:
+                node.run_event.set()
+            except:
+                pass
             return
         method = self.flume_config.get_node(node.type).method
         input_args = {}
@@ -315,8 +319,7 @@ class JobRunner:
             dependent_nodeid = connections[0].nodeId
             dependent_node = mapped_dict[dependent_nodeid]
             await dependent_node.run_event.wait()
-            print("dependent submitted", node.type, dependent_node.type)
-            connections[0].jobId = dependent_node.job.id
+            connections[0].job_id = dependent_node.job_id
             dependents.append(dependent_node)
 
         if hasattr(node, "settings") and isinstance(node.settings, dict):
@@ -341,8 +344,9 @@ class JobRunner:
             dependents=dependents,
             job_kwargs=job_kwargs,
         )
-        node.jobId = node.job.id
+        node.job_id = node.job.id
         # Setting the current job's output connection job id
+        # This may not be required
         if node.connections.outputs:
             for key, conns in node.connections.outputs.items():
                 for conn in conns:
