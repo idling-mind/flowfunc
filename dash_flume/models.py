@@ -61,7 +61,7 @@ class Port(BaseModel):
 
     def __eq__(self, other):
         return self.type == other.type
-    
+
     def __hash__(self):
         return hash(self.type)
 
@@ -79,6 +79,7 @@ class Node(BaseModel):
     label: str
     method: Callable
     module: Optional[str]
+    category: Optional[str]
     description: Optional[str]
     initialWidth: Optional[Union[int, float]]
     addable: Optional[bool]
@@ -109,7 +110,7 @@ class OutConnection(BaseModel):
 
     nodeId: str
     portName: str
-    jobId: Optional[str]
+    job_id: Optional[str]
 
 
 class OutConnections(BaseModel):
@@ -149,10 +150,16 @@ class OutNode(BaseModel):
     run_event: Optional[Any]
 
     job: Optional[Any]
-    jobId: Optional[str]
+    job_id: Optional[str]
 
     # rq related settings which will be passed to enqueue function
     settings: Optional[Dict[str, Any]]
+
+    class Config:
+        fields = {
+            "run_event": {"exclude": True},
+            "job": {"exclude": True},
+        }
 
 
 class OutNodes(BaseModel):

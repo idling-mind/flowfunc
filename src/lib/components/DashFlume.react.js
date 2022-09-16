@@ -65,7 +65,7 @@ export default class DashFlume extends Component {
       }
     }
     for (const node of config.nodeTypes) {
-      const { inputs, outputs, ...node_obj } = node;
+      const { inputs, outputs, label, category, ...node_obj } = node;
       if (!R.isNil(inputs) && !R.isEmpty(inputs)) {
         node_obj.inputs = (ports) => inputs.map(input => {
           const { type, ...input_data } = input;
@@ -77,6 +77,11 @@ export default class DashFlume extends Component {
           const { type, ...output_data } = output;
           return ports[type](output_data);
         })
+      }
+      if (!R.isNil(category) && !R.isEmpty(category)) {
+        node_obj.label = `${category}: ${label}`;
+      } else {
+        node_obj.label = label;
       }
       this.flconfig.addNodeType(node_obj);
     }

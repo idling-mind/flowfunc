@@ -30,9 +30,7 @@ q_win = NodeQueue("win", connection=rconn)
 
 fconfig = Config.from_function_list(all_functions)
 
-job_runner = JobRunner(
-    fconfig, method="distributed", default_queue=q
-)
+job_runner = JobRunner(fconfig, method="distributed", default_queue=q)
 
 app.layout = html.Div(
     [
@@ -71,7 +69,7 @@ app.layout = html.Div(
             children=dash_flume.DashFlume(
                 id="input",
                 # config=inconfig,
-                config=fconfig.config_dict(),
+                config=fconfig.dict(),
                 context={"context": "initial"},
             ),
         ),
@@ -135,7 +133,7 @@ def get_status(ninterval, data):
     status = {}
     result = []
     for nodeid, node in data.items():
-        job = NodeJob.fetch(OutNode.parse_obj(node).jobId, connection=rconn)
+        job = NodeJob.fetch(OutNode.parse_obj(node).job_id, connection=rconn)
         status[nodeid] = job.get_status()
         if job.result:
             result.append(str(job.result))
@@ -164,6 +162,7 @@ def func(n_clicks, nodes):
 def func(n_clicks, config):
     return config
 
+
 @app.callback(
     Output("input", "selected_nodes"),
     [
@@ -178,6 +177,7 @@ def func(selected, nodes):
     for node in selected:
         print(nodes[node])
     return selected
+
 
 @app.callback(
     [Output("input", "nodes"), Output("input", "editor_status")],

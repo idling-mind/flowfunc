@@ -84,7 +84,7 @@ runner = JobRunner(nodeeditor_config)
 app.layout = html.Div(
     [
         html.Button(id="btn_run", children="Run"),
-        DashFlume(id="nodeeditor", config=nodeeditor_config.config_dict()),
+        DashFlume(id="nodeeditor", config=nodeeditor_config.dict()),
         html.Div(id="output"),
     ], style={"height": "600px"}
 )
