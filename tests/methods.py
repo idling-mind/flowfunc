@@ -32,6 +32,24 @@ def add_alternate_docstring(a, b):
     return a + b
 
 
+def add_int_float_docstring(a, b):
+    """Add two numbers together
+
+    Parameters
+    ----------
+    a: int or float
+        First number
+    b: int or float
+        Second number
+
+    Returns
+    -------
+    sum: int or float
+        Sum of two numbers
+    """
+    return a + b
+
+
 def add_with_type_anno(a: int, b: int) -> int:
     """Add two numbers together"""
     return a + b
