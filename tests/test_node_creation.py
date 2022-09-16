@@ -1,3 +1,4 @@
+import pytest
 from dash_flume.config import process_node_docstring, process_node_inspect
 from dash_flume.models import Node, Port
 from .methods import (
@@ -56,6 +57,11 @@ def test_process_node_alternate_docstring():
     assert len(add_node.outputs) == 1
     assert add_node.outputs[0].type == "int"
     assert add_node.outputs[0].label == "int"
+
+
+def test_raise_exception():
+    with pytest.raises(Exception):
+        add_node = process_node_docstring(add_nothing)
 
 
 def test_process_node_inspect_add():
