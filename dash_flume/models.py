@@ -79,6 +79,7 @@ class Node(BaseModel):
     label: str
     method: Callable
     module: Optional[str]
+    category: Optional[str]
     description: Optional[str]
     initialWidth: Optional[Union[int, float]]
     addable: Optional[bool]

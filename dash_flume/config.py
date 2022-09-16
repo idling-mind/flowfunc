@@ -356,4 +356,4 @@ class Config:
         )
         return ConfigModel(
             portTypes=self.ports + [port_object], nodeTypes=self.nodes
-        ).dict(exclude_unset=True)
+        ).dict(exclude_none=True)
