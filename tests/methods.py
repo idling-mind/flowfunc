@@ -10,7 +10,7 @@ def add_with_docstring(a, b):
         First number
     b: int
         Second number
-    
+
     Returns
     -------
     sum: int
@@ -18,9 +18,28 @@ def add_with_docstring(a, b):
     """
     return a + b
 
-def add_with_inspect(a: int, b: int) -> int:
+
+def add_alternate_docstring(a, b):
+    """Add two numbers
+
+    Args:
+        a (int): First number
+        b (int): Second number
+
+    Returns:
+        int: Sum of numbers
+    """
+    return a + b
+
+
+def add_with_type_anno(a: int, b: int) -> int:
     """Add two numbers together"""
     return a + b
+
+
+def add_nothing(a, b):
+    return a + b
+
 
 def sumnprod_with_docstring(a, b):
     """Sum and product of two numbers
@@ -31,7 +50,7 @@ def sumnprod_with_docstring(a, b):
         First number
     b: int
         Second number
-    
+
     Returns
     -------
     sum: int
@@ -40,6 +59,7 @@ def sumnprod_with_docstring(a, b):
         Product of two numbers
     """
     return a + b, a * b
+
 
 def sumnprod_with_inspect(a: int, b: int) -> Tuple[int, int]:
     """Sum and product of two numbers"""
