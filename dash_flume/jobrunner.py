@@ -52,6 +52,7 @@ def default_meta_method(
             "result_keys": [
                 x.name for x in job_runner.flume_config.get_node(node.type).outputs
             ],
+            "node_id": node.id,
             **job_runner.meta_data,
         },
         depends_on=[dependent.job_id for dependent in dependents],
