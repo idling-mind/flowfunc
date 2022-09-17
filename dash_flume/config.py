@@ -189,10 +189,7 @@ def process_output_inspect(pobj):
                 )
         return return_types
     elif origin:
-        if get_origin(origin):
-            return [process_port_inspect(str(origin).replace("typing.", ""), origin)]
-        else:
-            return [process_port_inspect(origin.__name__, origin)]
+        return [process_port_inspect("result", pobj)]
     else:
         return [
             {

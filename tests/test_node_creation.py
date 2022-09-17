@@ -7,6 +7,8 @@ from .methods import (
     add_nothing,
     add_with_type_anno,
     add_int_float_docstring,
+    add_int_float_inspect,
+    add_diff_int_and_float_inspect,
     sumnprod_with_docstring,
     sumnprod_with_inspect,
 )
@@ -82,6 +84,43 @@ def test_process_node_int_float_docstring():
     assert len(add_node.outputs) == 1
     assert add_node.outputs[0].type == "float|int"
     assert add_node.outputs[0].label == "sum (int or float)"
+
+def test_process_node_int_float_inspect():
+    """Testing add with multiple types"""
+    add_node = process_node_inspect(add_int_float_inspect)
+    assert isinstance(add_node, Node)
+    assert add_node.method == add_int_float_inspect
+    assert "add_int_float_inspect" in add_node.type
+    assert isinstance(add_node.inputs, list)
+    assert len(add_node.inputs) == 2
+    assert isinstance(add_node.inputs[0], Port)
+    assert add_node.inputs[0].type == "float|int"
+    assert add_node.inputs[0].label == "a (float,int)"
+    assert add_node.inputs[0].acceptTypes[0] == "float"
+    assert add_node.inputs[0].acceptTypes[1] == "int"
+    assert isinstance(add_node.inputs[0], Port)
+    assert add_node.inputs[1].type == "float|int"
+    assert add_node.inputs[1].label == "b (float,int)"
+    assert add_node.inputs[1].acceptTypes[0] == "float"
+    assert add_node.inputs[1].acceptTypes[1] == "int"
+    assert isinstance(add_node.outputs, list)
+    assert len(add_node.outputs) == 1
+    assert add_node.outputs[0].type == "float|int"
+    assert add_node.outputs[0].label == "result (float,int)"
+
+def test_process_node_int_and_float_inspect():
+    """Testing add with multiple types"""
+    add_node = process_node_inspect(add_diff_int_and_float_inspect)
+    assert isinstance(add_node, Node)
+    assert add_node.method == add_diff_int_and_float_inspect
+    assert "add_diff_int_and_float_inspect" in add_node.type
+    assert isinstance(add_node.outputs, list)
+    assert len(add_node.outputs) == 2
+    assert add_node.outputs[0].type == "int"
+    assert add_node.outputs[0].label == "int"
+    assert add_node.outputs[1].type == "float"
+    assert add_node.outputs[1].label == "float"
+
 
 
 def test_raise_exception():

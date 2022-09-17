@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Union
 
 
 def add_with_docstring(a, b):
@@ -48,6 +48,12 @@ def add_int_float_docstring(a, b):
         Sum of two numbers
     """
     return a + b
+
+def add_int_float_inspect(a: Union[int, float], b: Union[int, float]) -> Union[int, float]:
+    return a + b
+
+def add_diff_int_and_float_inspect(a: Union[int, float], b: Union[int, float]) -> Tuple[int, float]:
+    return a + b, a-b
 
 
 def add_with_type_anno(a: int, b: int) -> int:
