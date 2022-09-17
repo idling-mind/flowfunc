@@ -7,7 +7,12 @@ const generateControl = (itype) => {
             label: itype,
             render: (data, onChange, context, redraw, portProps, inputData) => {
                 return (
-                    <input type={itype} className="TextInput_input__1QHwS" onChange={e => (onChange(e.target.value))}></input>
+                    <input
+                        type={itype}
+                        className="TextInput_input__1QHwS"
+                        onChange={e => (onChange(e.target.value))}
+                        value={data}>
+                    </input>
                 )
             }
         }

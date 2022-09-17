@@ -121,7 +121,7 @@ export default class DashFlume extends Component {
   }
 
   setNodeStatus = (id, status) => {
-    const nodeDiv = this.container.current.querySelector('[data-node-id="' + id + '"]');
+    const nodeDiv = this.container.current.querySelector('[data-node-id="${id}"]');
     if (status) {
       // Removing any existing classes
       const classes = ["started", "queued", "deferred", "finished", "canceled", "stopped", "scheduled", "failed"];
