@@ -88,3 +88,6 @@ def sumnprod_with_docstring(a, b):
 def sumnprod_with_inspect(a: int, b: int) -> Tuple[int, int]:
     """Sum and product of two numbers"""
     return a + b, a * b
+
+def add_position_only(a:int, b:int, /) -> int:
+    return a+b

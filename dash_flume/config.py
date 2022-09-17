@@ -3,7 +3,7 @@ from typing import Callable, List, Optional, Union, get_args, get_origin
 from docstring_parser import parse
 
 from .models import Node, ConfigModel, Color, Port
-from .utils import logger
+from warnings import warn
 
 
 def process_port_docstring(param, ptype):
@@ -232,7 +232,7 @@ def process_node_inspect(func: Callable) -> Node:
         # input_dict["arg_or_kwarg"] = arg_or_kwarg(pobj)
         if arg_or_kwarg(pobj) == "arg":
             # TODO: Handling args is not supported now
-            logger.warning(
+            warn(
                 "Handling position only parameter is not supported now."
                 f" Node for {node_dict['type']} will not work as expected."
             )

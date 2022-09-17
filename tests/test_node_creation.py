@@ -10,6 +10,7 @@ from .methods import (
     add_int_float_inspect,
     add_diff_int_and_float_inspect,
     sumnprod_with_docstring,
+    add_position_only,
     sumnprod_with_inspect,
 )
 
@@ -182,3 +183,8 @@ def test_process_node_inspect_add_with_type_anno():
     assert len(add_node.outputs) == 1
     assert add_node.outputs[0].type == "int"
     assert add_node.outputs[0].label == "int"
+
+def test_position_only_warning():
+    """This should raise a warning"""
+    with pytest.warns(UserWarning):
+        node = process_node_inspect(add_position_only)
