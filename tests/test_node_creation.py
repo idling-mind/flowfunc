@@ -121,6 +121,16 @@ def test_process_node_int_and_float_inspect():
     assert add_node.outputs[1].type == "float"
     assert add_node.outputs[1].label == "float"
 
+def test_process_node_sum_prod_docstring():
+    """Testing add with multiple types"""
+    add_node = process_node_docstring(sumnprod_with_docstring)
+    assert isinstance(add_node, Node)
+    assert isinstance(add_node.outputs, list)
+    assert len(add_node.outputs) == 2
+    assert add_node.outputs[0].type == "int"
+    assert add_node.outputs[0].label == "sum (int)"
+    assert add_node.outputs[1].type == "int"
+    assert add_node.outputs[1].label == "prod (int)"
 
 
 def test_raise_exception():
