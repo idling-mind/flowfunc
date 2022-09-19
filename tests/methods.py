@@ -106,5 +106,5 @@ def add_wrong_docstring(a: int, b: int) -> int:
 def add_str_type(a: "number", b: "number") -> "number":
     return a + b
 
-def add_tuples_inspect(a: Union[Tuple[int,int], Tuple[float, float]], b: int) -> Tuple[float, float]:
+def add_tuples_inspect(a: Union[Tuple[int,int], Tuple[float, float]], b: int) -> Tuple[Tuple[float, float], float]:
     return a[0] + b, a[1] + b

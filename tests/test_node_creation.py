@@ -209,5 +209,5 @@ def test_add_tuple_inspect():
     assert len(add_node.outputs) == 2
     assert add_node.inputs[0].type == "tuple"
     assert add_node.inputs[1].type == "int"
-    assert add_node.outputs[0].type == "float"
+    assert add_node.outputs[0].type == "tuple"
     assert add_node.outputs[1].type == "float"

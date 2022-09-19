@@ -177,7 +177,7 @@ def process_output_inspect(pobj):
             tt = get_origin(t)
             if tt:
                 return_types.append(
-                    str(tt).replace("typing.", ""), process_port_inspect(t)
+                    process_port_inspect(str(tt).replace("typing.", ""), t)
                 )
             else:
                 return_types.append(
