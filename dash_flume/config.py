@@ -1,9 +1,10 @@
 import inspect
 from typing import Callable, List, Optional, Union, get_args, get_origin
+from warnings import warn
+
 from docstring_parser import parse
 
-from .models import Node, ConfigModel, Color, Port
-from warnings import warn
+from .models import Color, ConfigModel, Node, Port
 
 
 def process_port_docstring(param, ptype):
