@@ -31,11 +31,8 @@ def process_port_docstring(param, ptype):
     d["type"] = "|".join(port_types)
     d["acceptTypes"] = port_types
     if ptype == "input":
-        if param.arg_name:
-            d["name"] = param.arg_name
-            d["label"] = f"{param.arg_name} ({','.join(d['acceptTypes'])})"
-        else:
-            d["name"] = d["label"] = d["type"]
+        d["name"] = param.arg_name
+        d["label"] = f"{param.arg_name} ({','.join(d['acceptTypes'])})"
     if ptype == "output":
         if param.return_name:
             d["name"] = param.return_name
