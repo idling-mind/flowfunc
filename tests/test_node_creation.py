@@ -12,6 +12,8 @@ from .methods import (
     sumnprod_with_docstring,
     add_position_only,
     sumnprod_with_inspect,
+    add_str_type,
+    add_tuples_inspect
 )
 
 
@@ -182,9 +184,30 @@ def test_process_node_inspect_add_with_type_anno():
     assert isinstance(add_node.outputs, list)
     assert len(add_node.outputs) == 1
     assert add_node.outputs[0].type == "int"
-    assert add_node.outputs[0].label == "int"
+    assert add_node.outputs[0].label == "result (int)"
 
 def test_position_only_warning():
     """This should raise a warning"""
     with pytest.warns(UserWarning):
         node = process_node_inspect(add_position_only)
+
+def test_str_type():
+    """Node with str type"""
+    add_node = process_node_inspect(add_str_type)
+    assert isinstance(add_node, Node)
+    assert add_node.method == add_str_type
+    assert add_node.inputs[0].type == "number"
+    assert add_node.inputs[1].type == "number"
+    assert add_node.outputs[0].type == "number"
+
+def test_add_tuple_inspect():
+    """Inspect node with tuples"""
+    add_node = process_node_inspect(add_tuples_inspect)
+    assert isinstance(add_node, Node)
+    assert add_node.method == add_tuples_inspect
+    assert len(add_node.inputs) == 2
+    assert len(add_node.outputs) == 2
+    assert add_node.inputs[0].type == "tuple"
+    assert add_node.inputs[1].type == "int"
+    assert add_node.outputs[0].type == "float"
+    assert add_node.outputs[1].type == "float"

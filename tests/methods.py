@@ -91,3 +91,20 @@ def sumnprod_with_inspect(a: int, b: int) -> Tuple[int, int]:
 
 def add_position_only(a:int, b:int, /) -> int:
     return a+b
+
+def add_wrong_docstring(a: int, b: int) -> int:
+    """Add two numbers
+    
+    Args:
+        a (int): first number
+    
+    Returns:
+        sum: sum of numbers
+    """
+    return a + b
+
+def add_str_type(a: "number", b: "number") -> "number":
+    return a + b
+
+def add_tuples_inspect(a: Union[Tuple[int,int], Tuple[float, float]], b: int) -> Tuple[float, float]:
+    return a[0] + b, a[1] + b

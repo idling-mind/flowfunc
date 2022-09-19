@@ -25,7 +25,7 @@ def process_port_docstring(param, ptype):
     d = {}
     # Find out the different type options
     port_types = param.type_name.replace(" or ", ",").split(",")
-    port_types = sorted([p.strip() for p in port_types])
+    port_types = sorted(set([p.strip() for p in port_types]))
     # The type of the port should be unique depending on the different
     # datatypes it accepts
     d["type"] = "|".join(port_types)
@@ -135,7 +135,7 @@ def process_port_inspect(pname, pobj):
             else:
                 pptypes.append(ptype.__name__)
         # Sorting so that the combination names are always consistent
-        pptypes = sorted(pptypes)
+        pptypes = sorted(set(pptypes))
         d["type"] = "|".join(pptypes)
         d["acceptTypes"] = pptypes
     elif origin:
@@ -188,16 +188,7 @@ def process_output_inspect(pobj):
                     }
                 )
         return return_types
-    elif origin:
-        return [process_port_inspect("result", pobj)]
-    else:
-        return [
-            {
-                "type": pobj.__name__,
-                "name": pobj.__name__,
-                "label": pobj.__name__,
-            }
-        ]
+    return [process_port_inspect("result", pobj)]
 
 
 def process_node_inspect(func: Callable) -> Node:
