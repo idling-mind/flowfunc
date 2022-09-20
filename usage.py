@@ -26,6 +26,14 @@ test_port = Port(
         Control(type=ControlType.number, name="test_port_number", label="some number"),
     ],
 )
+date_port = Port(
+    type="date",
+    name="date",
+    label="date",
+    controls=[
+        Control(type=ControlType.date, name="date", label="some date"),
+    ],
+)
 
 city_port = Port(
     type="city",
@@ -55,7 +63,6 @@ class city(BaseModel):
 
 
 def enter_date(d: date) -> str:
-    print(type(d))
     return str(d)
 
 
@@ -65,7 +72,6 @@ def enter_city_and_pin(city: city):
 
 
 def test_port_node(input: n):
-    print(type(input))
     return input
 
 
@@ -124,7 +130,7 @@ flist = [
     enter_city_and_pin,
 ]
 app = dash.Dash(__name__)
-fconfig = config.Config.from_function_list(flist, extra_ports=[test_port, city_port])
+fconfig = config.Config.from_function_list(flist, extra_ports=[test_port, city_port, date_port])
 # pprint(fconfig.dict())
 runner = jobrunner.JobRunner(fconfig)
 
@@ -155,8 +161,6 @@ app.layout = html.Div(
 def run(nclicks, nodes, comments):
     if not nodes:
         return [], {}
-    pprint(nodes)
-    pprint(comments)
     output = runner.run(nodes)
     output_html = []
     nodes_status = {}

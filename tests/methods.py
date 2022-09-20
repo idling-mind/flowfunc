@@ -1,4 +1,5 @@
 from typing import Tuple, Union
+import asyncio
 
 
 def add_with_docstring(a, b):
@@ -106,5 +107,6 @@ def add_wrong_docstring(a: int, b: int) -> int:
 def add_str_type(a: "number", b: "number") -> "number":
     return a + b
 
-def add_tuples_inspect(a: Union[Tuple[int,int], Tuple[float, float]], b: int) -> Tuple[Tuple[float, float], float]:
+async def add_tuples_inspect(a: Union[Tuple[int,int], Tuple[float, float]], b: int) -> Tuple[Tuple[float, float], float]:
+    await asyncio.sleep(2)
     return a[0] + b, a[1] + b

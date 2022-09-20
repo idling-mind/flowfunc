@@ -1,10 +1,11 @@
+from copy import deepcopy
 import inspect
 from typing import Callable, List, Optional, Union, get_args, get_origin
 from warnings import warn
 
 from docstring_parser import parse
 
-from .models import Color, ConfigModel, Node, Port
+from .models import Color, ConfigModel, ControlType, Node, Port, Control
 
 
 def process_port_docstring(param, ptype) -> Port:
@@ -126,6 +127,10 @@ def process_port_inspect(pname, pobj) -> Port:
     origin = get_origin(pobj)
     if origin == Union:
         ptypes = get_args(pobj)
+        # Checking for Optional
+        # Represented as typing.Union[type, NoneType]
+        if len(ptypes) == 2 and ptypes[1] == type(None):
+            return process_port_inspect(pname, ptypes[0])
         pptypes = []
         for ptype in ptypes:
             if get_origin(ptype):
@@ -141,6 +146,7 @@ def process_port_inspect(pname, pobj) -> Port:
         d["acceptTypes"] = [origin.__name__]
     else:
         d["type"] = pobj.__name__
+        d["py_type"] = pobj
         d["acceptTypes"] = [pobj.__name__]
     d["name"] = pname
     d["label"] = f"{pname} ({','.join(d['acceptTypes'])})"
@@ -233,9 +239,26 @@ def process_node_inspect(func: Callable) -> Node:
 
 def ports_from_nodes(nodes: List[Node]) -> List[Port]:
     """Function to find unique port types that are used in all nodes"""
-    ports = []
+    ports_: List[Port] = []
     for node in nodes:
-        ports += node.inputs + node.outputs
+        ports_ += node.inputs + node.outputs
+    control_types = [x.name for x in ControlType]
+    colors = [x.name for x in Color]
+    ports = []
+    for port_ in ports_:
+        port = deepcopy(port_)
+        ports.append(port)
+        # Copy is made so that the port instance in Node object is unaffected
+        if port.type in control_types:
+            port.controls = [
+                Control(
+                    type=port.type,
+                    name=port.name,
+                    label=port.label
+                )
+            ]
+        # elif isinstance(port.py_type, BaseModel):
+        # Use a pydantic model
     return list(set(ports))
 
 

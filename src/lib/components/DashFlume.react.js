@@ -3,7 +3,7 @@ import * as R from 'ramda'
 import { NodeEditor } from 'flume';
 import { FlumeConfig, Colors, Controls } from 'flume'
 import PropTypes, { string } from 'prop-types';
-import { standardPorts } from './Ports';
+import { standardControls } from './Controls';
 import "./nodeeditor.css"
 
 /**
@@ -30,9 +30,6 @@ export default class DashFlume extends Component {
     // console.log(config);
     this.flconfig = new FlumeConfig();
     // Adding all standard ports first
-    standardPorts.map(port => {
-      this.flconfig.addPortType(port);
-    })
     for (const port of config.portTypes) {
       const { color, controls, ...port_obj } = port;
       if (!R.isNil(color) && !R.isEmpty(color)) {
@@ -41,7 +38,7 @@ export default class DashFlume extends Component {
       if (!R.isNil(controls) && !R.isEmpty(controls)) {
         port_obj.controls = controls.map(control => {
           const { type, ...others } = control;
-          return Controls[type]({
+          return standardControls[type]({
             ...others
           })
         })
