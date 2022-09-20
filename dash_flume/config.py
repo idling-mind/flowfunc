@@ -7,7 +7,7 @@ from docstring_parser import parse
 from .models import Color, ConfigModel, Node, Port
 
 
-def process_port_docstring(param, ptype):
+def process_port_docstring(param, ptype) -> Port:
     """Process an input or an output of a function and convert it to flume
     config data
 
@@ -40,7 +40,7 @@ def process_port_docstring(param, ptype):
             d["label"] = f"{param.return_name} ({param.type_name})"
         else:
             d["name"] = d["label"] = d["type"]
-    return d
+    return Port(**d)
 
 
 def process_node_docstring(func: Callable) -> Node:
@@ -93,7 +93,7 @@ def arg_or_kwarg(par: inspect.Parameter):
     return arg_kwarg_mapper.get(par.kind, "kwarg")
 
 
-def process_port_inspect(pname, pobj):
+def process_port_inspect(pname, pobj) -> Port:
     """Convert input arg of a function and convert it to flume config data
     based on it's signature
 
@@ -110,18 +110,18 @@ def process_port_inspect(pname, pobj):
         Flume config dict
     """
     if pobj == inspect.Signature.empty:
-        return {
-            "type": "object",
-            "name": pname,
-            "label": f"{pname} (object)",
-        }
+        return Port(
+            type="object",
+            name=pname,
+            label=f"{pname} (object)",
+        )
     elif isinstance(pobj, str):
         pname = pobj.split("|")[0].strip()
-        return {
-            "type": pname,
-            "name": pname,
-            "label": pname,
-        }
+        return Port(
+            type=pname,
+            name=pname,
+            label=pname,
+        )
     d = {}
     origin = get_origin(pobj)
     if origin == Union:
@@ -144,7 +144,7 @@ def process_port_inspect(pname, pobj):
         d["acceptTypes"] = [pobj.__name__]
     d["name"] = pname
     d["label"] = f"{pname} ({','.join(d['acceptTypes'])})"
-    return d
+    return Port(**d)
 
 
 def process_output_inspect(pobj):
@@ -162,11 +162,11 @@ def process_output_inspect(pobj):
     """
     if pobj == inspect.Signature.empty:
         return [
-            {
-                "type": "object",
-                "name": "object",
-                "label": "object",
-            }
+            Port(
+                type="object",
+                name="object",
+                label="object",
+            )
         ]
     return_types = []
     origin = get_origin(pobj)
@@ -179,11 +179,11 @@ def process_output_inspect(pobj):
                 )
             else:
                 return_types.append(
-                    {
-                        "type": t.__name__,
-                        "name": t.__name__,
-                        "label": t.__name__,
-                    }
+                    Port(
+                        type=t.__name__,
+                        name=t.__name__,
+                        label=t.__name__,
+                    )
                 )
         return return_types
     return [process_port_inspect("result", pobj)]
