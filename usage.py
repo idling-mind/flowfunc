@@ -154,7 +154,7 @@ def run(nclicks, nodes):
     output_html = []
     nodes_status = {}
     for node in output.values():
-        output_html.append(html.Div(f"{node.type}: {node.value}"))
+        output_html.append(html.Div(f"{node.type}: {node.result}"))
         if node.error:
             output_html.append(html.Div(f"{node.error}"))
         nodes_status[node.id] = node.status
