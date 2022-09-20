@@ -2,6 +2,7 @@ from datetime import date
 from pprint import pprint
 from typing import Any, NewType, Union
 from uuid import uuid4
+from pydantic import BaseModel
 
 import dash
 from dash import Input, Output, State, html
@@ -33,7 +34,7 @@ city_port = Port(
     controls=[
         Control(
             type=ControlType.select,
-            name="city",
+            name="name",
             label="Select a city",
             options=[
                 {"label": "Gothenburg", "value": "Gothenburg"},
@@ -46,7 +47,11 @@ city_port = Port(
 )
 
 n = NewType("test_port", Any)
-city = NewType("city", dict)
+
+
+class city(BaseModel):
+    name: str
+    pin: int
 
 
 def enter_date(d: date) -> str:
@@ -145,11 +150,13 @@ app.layout = html.Div(
     [Output("output", "children"), Output("someid", "nodes_status")],
     Input("btn_run", "n_clicks"),
     State("someid", "nodes"),
+    State("someid", "comments"),
 )
-def run(nclicks, nodes):
+def run(nclicks, nodes, comments):
     if not nodes:
         return [], {}
     pprint(nodes)
+    pprint(comments)
     output = runner.run(nodes)
     output_html = []
     nodes_status = {}

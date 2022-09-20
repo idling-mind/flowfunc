@@ -100,8 +100,10 @@ export default class DashFlume extends Component {
     this.props.setProps({
       editor_status: "client",
       nodes: this.nodeEditor.current.getNodes(),
+      comments: this.nodeEditor.current.getComments(),
     })
-    // console.log(this.nodeEditor.current.getNodes());
+    // console.log(this.props.comments);
+    // console.log(this.props.nodes);
   }
 
   componentDidMount() {
@@ -197,6 +199,7 @@ export default class DashFlume extends Component {
           disablePan={this.props.disable_pan}
           spaceToPan={this.props.space_to_pan}
           onChange={this.handleChange}
+          onCommentsChange={this.handleChange}
           key={this.ukey}
         />
       </div>
