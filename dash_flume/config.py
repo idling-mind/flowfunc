@@ -2,6 +2,7 @@ from copy import deepcopy
 import inspect
 from typing import Callable, List, Optional, Union, get_args, get_origin
 from warnings import warn
+from pydantic import BaseModel
 
 from docstring_parser import parse
 
@@ -257,8 +258,23 @@ def ports_from_nodes(nodes: List[Node]) -> List[Port]:
                     label=port.label
                 )
             ]
-        # elif isinstance(port.py_type, BaseModel):
+        elif inspect.isclass(port.py_type) and issubclass(port.py_type, BaseModel):
         # Use a pydantic model
+            port.controls = []
+            for arg_name, field in port.py_type.__fields__.items():
+                try:
+                    if field.type_.__name__ in control_types:
+                        port.controls.append(
+                            Control(
+                                type=field.type_.__name__,
+                                name=field.name,
+                                label=f"{field.name} ({field.type_.__name__})",
+                            )
+                        )
+                except AttributeError:
+                    # Couldnt process one of the field types. Skip the whole port type
+                    break
+
     return list(set(ports))
 
 

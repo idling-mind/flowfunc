@@ -57,16 +57,17 @@ city_port = Port(
 n = NewType("test_port", Any)
 
 
-class city(BaseModel):
+class town(BaseModel):
     name: str
     pin: int
+    established_date: date
 
 
 def enter_date(d: date) -> str:
     return str(d)
 
 
-def enter_city_and_pin(city: city):
+def enter_city_and_pin(city: town):
     """Enter a city and a PIN"""
     return city
 
