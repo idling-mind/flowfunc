@@ -242,21 +242,32 @@ def process_node_inspect(func: Callable) -> Node:
 
 
 def control_from_field(cname: str, cobj: Any) -> Control:
-    """Create a control from a give type object and it's properties"""
+    """Create a control from a give type object and it's properties
+
+    Paramters:
+        cname: Name of the argument
+        cobj: Type hint used
+
+    Returns:
+        Control: A dash_flume Control object corresponding to the type annotation
+    """
     control_types = [x.name for x in ControlType]
     if get_origin(cobj) == Literal:
+        # Literal
         clabel = f"{cname} (literal)"
         options = [{"label": x, "value": x} for x in get_args(cobj)]
         return Control(
             type=ControlType.select, name=cname, label=clabel, options=options
         )
     if get_origin(cobj) == list and get_origin(get_args(cobj)[0]) == Literal:
+        # List of literals
         clabel = f"{cname} (list)"
         options = [{"label": x, "value": x} for x in get_args(get_args(cobj)[0])]
         return Control(
             type=ControlType.multiselect, name=cname, label=clabel, options=options
         )
     if inspect.isclass(cobj) and issubclass(cobj, Enum):
+        # Enum
         clabel = f"{cname} (enum)"
         options = [{"label": x.name, "value": x.value} for x in cobj]
         print("enum", options)
@@ -268,6 +279,7 @@ def control_from_field(cname: str, cobj: Any) -> Control:
         and inspect.isclass(get_args(cobj)[0])
         and issubclass(get_args(cobj)[0], Enum)
     ):
+        # List of enums
         clabel = f"{cname} (list)"
         options = [{"label": x.name, "value": x.value} for x in get_args(cobj)[0]]
         print("listenum", options)
@@ -275,6 +287,7 @@ def control_from_field(cname: str, cobj: Any) -> Control:
             type=ControlType.multiselect, name=cname, label=clabel, options=options
         )
     if isinstance(cobj, str):
+        # When type annotation is a string or the control is parsed from docstring
         clabel = f"{cname} ({cobj})"
         return Control(
             type=cobj,
