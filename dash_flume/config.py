@@ -242,7 +242,6 @@ def process_node_inspect(func: Callable) -> Node:
 
 def control_from_field(cname: str, cobj: Any) -> Control:
     """Create a control from a give type object and it's properties"""
-    print("control_from_field", cname, cobj)
     control_types = [x.name for x in ControlType]
     if get_origin(cobj) == Literal:
         clabel = f"{cname} (select)"
@@ -250,7 +249,7 @@ def control_from_field(cname: str, cobj: Any) -> Control:
         return Control(
             type=ControlType.select, name=cname, label=clabel, options=options
         )
-    if get_origin(cobj) == list and get_args(cobj)[0] == Literal:
+    if get_origin(cobj) == list and get_origin(get_args(cobj)[0]) == Literal:
         clabel = f"{cname} (multiselect)"
         options = [{"label": x, "value": x} for x in get_args(get_args(cobj)[0])]
         return Control(
@@ -296,12 +295,12 @@ def ports_from_nodes(nodes: List[Node]) -> List[Port]:
                 port.controls.append(
                     control_from_field(
                         field.name,
-                        field.type_,
+                        field.outer_type_,
                     )
                 )
+            print("port controls", port.controls)
         else:
             port.controls = [control_from_field(port.name, port.py_type)]
-            print(port, port.controls)
 
     return list(set(ports))
 
