@@ -1,4 +1,5 @@
 from datetime import date
+from enum import Enum
 from pprint import pprint
 from typing import Any, List, Literal, NewType, Union
 from uuid import uuid4
@@ -74,6 +75,21 @@ def enter_city_and_pin(city: town):
     return city
 
 
+class AggOption(Enum):
+    Min = 1
+    Max = 2
+    Mean = 3
+    SomethingElse = 4
+
+
+def aggregate_option(
+    # agg: List[Literal["min", "max", "mean", "count"]],
+    egg: AggOption,
+    # beg: List[AggOption],
+) -> str:
+    return egg.value
+
+
 def test_port_node(input: n):
     return input
 
@@ -131,6 +147,7 @@ flist = [
     get_month_from_date,
     test_port_node,
     enter_city_and_pin,
+    aggregate_option,
 ]
 app = dash.Dash(__name__)
 fconfig = config.Config.from_function_list(

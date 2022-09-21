@@ -1,4 +1,5 @@
 from copy import deepcopy
+from enum import Enum
 import inspect
 from typing import Any, Callable, List, Literal, Optional, Union, get_args, get_origin
 from warnings import warn
@@ -145,7 +146,7 @@ def process_port_inspect(pname, pobj) -> Port:
         d["acceptTypes"] = pptypes
     elif origin:
         d["type"] = origin.__name__
-        d["py_type"] = origin
+        d["py_type"] = pobj
         d["acceptTypes"] = [origin.__name__]
     else:
         d["type"] = pobj.__name__
@@ -244,14 +245,32 @@ def control_from_field(cname: str, cobj: Any) -> Control:
     """Create a control from a give type object and it's properties"""
     control_types = [x.name for x in ControlType]
     if get_origin(cobj) == Literal:
-        clabel = f"{cname} (select)"
+        clabel = f"{cname} (literal)"
         options = [{"label": x, "value": x} for x in get_args(cobj)]
         return Control(
             type=ControlType.select, name=cname, label=clabel, options=options
         )
     if get_origin(cobj) == list and get_origin(get_args(cobj)[0]) == Literal:
-        clabel = f"{cname} (multiselect)"
+        clabel = f"{cname} (list)"
         options = [{"label": x, "value": x} for x in get_args(get_args(cobj)[0])]
+        return Control(
+            type=ControlType.multiselect, name=cname, label=clabel, options=options
+        )
+    if inspect.isclass(cobj) and issubclass(cobj, Enum):
+        clabel = f"{cname} (enum)"
+        options = [{"label": x.name, "value": x.value} for x in cobj]
+        print("enum", options)
+        return Control(
+            type=ControlType.select, name=cname, label=clabel, options=options
+        )
+    if (
+        get_origin(cobj) == list
+        and inspect.isclass(get_args(cobj)[0])
+        and issubclass(get_args(cobj)[0], Enum)
+    ):
+        clabel = f"{cname} (list)"
+        options = [{"label": x.name, "value": x.value} for x in get_args(cobj)[0]]
+        print("listenum", options)
         return Control(
             type=ControlType.multiselect, name=cname, label=clabel, options=options
         )
@@ -298,7 +317,6 @@ def ports_from_nodes(nodes: List[Node]) -> List[Port]:
                         field.outer_type_,
                     )
                 )
-            print("port controls", port.controls)
         else:
             port.controls = [control_from_field(port.name, port.py_type)]
 
