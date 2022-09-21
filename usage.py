@@ -1,6 +1,6 @@
 from datetime import date
 from pprint import pprint
-from typing import Any, Literal, NewType, Union
+from typing import Any, List, Literal, NewType, Union
 from uuid import uuid4
 from pydantic import BaseModel
 
@@ -62,6 +62,7 @@ class town(BaseModel):
     pin: int
     established_date: date
     zone: Literal["Zone1", "Zone2", "Zone3"]
+    extra_zone: List[Literal["Zone1", "Zone2", "Zone3"]]
 
 
 def enter_date(d: date) -> str:
