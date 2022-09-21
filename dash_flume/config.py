@@ -270,7 +270,6 @@ def control_from_field(cname: str, cobj: Any) -> Control:
         # Enum
         clabel = f"{cname} (enum)"
         options = [{"label": x.name, "value": x.value} for x in cobj]
-        print("enum", options)
         return Control(
             type=ControlType.select, name=cname, label=clabel, options=options
         )
@@ -301,12 +300,6 @@ def control_from_field(cname: str, cobj: Any) -> Control:
             name=cname,
             label=clabel,
         )
-    clabel = f"{cname} (object)"
-    return Control(
-        type="object",
-        name=cname,
-        label=clabel,
-    )
 
 
 def ports_from_nodes(nodes: List[Node]) -> List[Port]:
@@ -331,9 +324,12 @@ def ports_from_nodes(nodes: List[Node]) -> List[Port]:
                     )
                 )
         else:
-            port.controls = [control_from_field(port.name, port.py_type)]
+            control = control_from_field(port.name, port.py_type)
+            # Dont set controls if there are not controls corresponding to type
+            if control:
+                port.controls = [control]
 
-    return list(set(ports))
+    return ports
 
 
 class Config:

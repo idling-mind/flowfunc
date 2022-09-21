@@ -50,7 +50,6 @@ const standardControls = {
     time: generateControl("time"),
     month: generateControl("month"),
     week: generateControl("week"),
-    object: objectControl,
 }
 
 export { standardControls }
