@@ -286,7 +286,7 @@ def control_from_field(cname: str, cobj: Any) -> Control:
         return Control(
             type=ControlType.multiselect, name=cname, label=clabel, options=options
         )
-    if isinstance(cobj, str):
+    if isinstance(cobj, str) and cobj in control_types:
         # When type annotation is a string or the control is parsed from docstring
         clabel = f"{cname} ({cobj})"
         return Control(
