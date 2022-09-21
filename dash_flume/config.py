@@ -1,6 +1,6 @@
 from copy import deepcopy
 import inspect
-from typing import Callable, List, Optional, Union, get_args, get_origin
+from typing import Any, Callable, List, Literal, Optional, Union, get_args, get_origin
 from warnings import warn
 from pydantic import BaseModel
 
@@ -144,6 +144,7 @@ def process_port_inspect(pname, pobj) -> Port:
         d["acceptTypes"] = pptypes
     elif origin:
         d["type"] = origin.__name__
+        d["py_type"] = origin
         d["acceptTypes"] = [origin.__name__]
     else:
         d["type"] = pobj.__name__
@@ -238,42 +239,60 @@ def process_node_inspect(func: Callable) -> Node:
     return Node(**node_dict)
 
 
+def control_from_field(cname: str, cobj: Any) -> Control:
+    """Create a control from a give type object and it's properties"""
+    control_types = [x.name for x in ControlType]
+    if get_origin(cobj) == Literal:
+        clabel = f"{cname} (options)"
+        options = [{"label": x, "value": x} for x in get_args(cobj)]
+        return Control(
+            type=ControlType.select, name=cname, label=clabel, options=options
+        )
+    if isinstance(cobj, str):
+        clabel = f"{cname} ({cobj})"
+        return Control(
+            type=cobj,
+            name=cname,
+            label=clabel,
+        )
+    if hasattr(cobj, "__name__") and cobj.__name__ in control_types:
+        clabel = f"{cname} ({cobj.__name__})"
+        return Control(
+            type=cobj.__name__,
+            name=cname,
+            label=clabel,
+        )
+    clabel = f"{cname} (object)"
+    return Control(
+        type="object",
+        name=cname,
+        label=clabel,
+    )
+
+
 def ports_from_nodes(nodes: List[Node]) -> List[Port]:
     """Function to find unique port types that are used in all nodes"""
     ports_: List[Port] = []
     for node in nodes:
         ports_ += node.inputs + node.outputs
-    control_types = [x.name for x in ControlType]
     colors = [x.name for x in Color]
     ports = []
     for port_ in ports_:
         port = deepcopy(port_)
         ports.append(port)
         # Copy is made so that the port instance in Node object is unaffected
-        if port.type in control_types:
-            port.controls = [
-                Control(
-                    type=port.type,
-                    name=port.name,
-                    label=port.label
-                )
-            ]
-        elif inspect.isclass(port.py_type) and issubclass(port.py_type, BaseModel):
-        # Use a pydantic model
+        if inspect.isclass(port.py_type) and issubclass(port.py_type, BaseModel):
+            # Use a pydantic model
             port.controls = []
             for arg_name, field in port.py_type.__fields__.items():
-                try:
-                    if field.type_.__name__ in control_types:
-                        port.controls.append(
-                            Control(
-                                type=field.type_.__name__,
-                                name=field.name,
-                                label=f"{field.name} ({field.type_.__name__})",
-                            )
-                        )
-                except AttributeError:
-                    # Couldnt process one of the field types. Skip the whole port type
-                    break
+                port.controls.append(
+                    control_from_field(
+                        field.name,
+                        field.type_,
+                    )
+                )
+        else:
+            port.controls = [control_from_field(port.name, port.py_type)]
 
     return list(set(ports))
 

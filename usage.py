@@ -1,6 +1,6 @@
 from datetime import date
 from pprint import pprint
-from typing import Any, NewType, Union
+from typing import Any, Literal, NewType, Union
 from uuid import uuid4
 from pydantic import BaseModel
 
@@ -61,6 +61,7 @@ class town(BaseModel):
     name: str
     pin: int
     established_date: date
+    zone: Literal["Zone1", "Zone2", "Zone3"]
 
 
 def enter_date(d: date) -> str:
@@ -131,7 +132,9 @@ flist = [
     enter_city_and_pin,
 ]
 app = dash.Dash(__name__)
-fconfig = config.Config.from_function_list(flist, extra_ports=[test_port, city_port, date_port])
+fconfig = config.Config.from_function_list(
+    flist, extra_ports=[test_port, city_port, date_port]
+)
 # pprint(fconfig.dict())
 runner = jobrunner.JobRunner(fconfig)
 

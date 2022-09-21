@@ -1,19 +1,38 @@
 import { Colors, Controls } from 'flume'
 
 const generateControl = (itype) => {
-    return (others) => {
+    return (props) => {
         return Controls.custom(
             {
-                name: others.name,
-                label: others.label,
+                name: props.name,
+                label: props.label,
                 render: (data, onChange, context, redraw, portProps, inputData) => {
                     return (
-                        <input type={itype} value={data} className="TextInput_input__1QHwS" onChange={e => (onChange(e.target.value))}></input>
+                        <>
+                            <label data-flume-component="control-label" className="Control_controlLabel__3ga2-">{portProps.label}</label>
+                            <div className="TextInput_wrapper__tefOZ" data-flume-component="text-input">
+                                <input type={itype} data-flume-component={`text-input-$(itype)`} className="TextInput_input__1QHwS" defaultValue={data} onChange={(e) => onChange(e.target.value)} />
+                            </div>
+                        </>
                     )
                 }
             }
         )
     }
+}
+
+const objectControl = (props) => {
+    return Controls.custom(
+        {
+            name: props.name,
+            label: props.label,
+            render: (data, onChange, context, redraw, portProps, inputData) => {
+                return (
+                    <label data-flume-component="control-label" className="Control_controlLabel__3ga2-">{portProps.label}</label>
+                )
+            }
+        }
+    )
 }
 
 const standardControls = {
@@ -30,7 +49,8 @@ const standardControls = {
     date: generateControl("date"),
     time: generateControl("time"),
     month: generateControl("month"),
-    week: generateControl("week")
+    week: generateControl("week"),
+    object: objectControl,
 }
 
 export { standardControls }

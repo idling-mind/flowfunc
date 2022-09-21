@@ -17,11 +17,12 @@ class ControlType(str, Enum):
     bool = "bool"
     select = "select"
     multiselect = "multiselect"
-    color =  "color"
-    date =  "date"
-    time =  "time"
-    month =  "month"
+    color = "color"
+    date = "date"
+    time = "time"
+    month = "month"
     week = "week"
+    object = "object"
     custom = "custom"
 
 
@@ -62,7 +63,7 @@ class Port(BaseModel):
     type: str
     name: str
     label: str
-    py_type: Optional[Any] # Associated python type
+    py_type: Optional[Any]  # Associated python type
     arg_or_kwarg: Optional[str]
     color: Optional[Color]
     acceptTypes: Optional[List[str]]
