@@ -394,7 +394,6 @@ class Config:
             acceptTypes=[port.type for port in ports],
         )
         ports.append(object_port)
-        print(object_port)
         return cls(nodes, ports)
 
     def __init__(self, nodes, ports=None) -> None:
