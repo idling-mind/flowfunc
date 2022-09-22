@@ -1,4 +1,5 @@
 from copy import deepcopy
+from dataclasses import fields, is_dataclass
 from enum import Enum
 import inspect
 from typing import Any, Callable, List, Literal, Optional, Union, get_args, get_origin
@@ -323,6 +324,16 @@ def ports_from_nodes(nodes: List[Node]) -> List[Port]:
                         field.outer_type_,
                     )
                 )
+        elif inspect.isclass(port.py_type) and is_dataclass(port.py_type):
+            port.controls = []
+            for field in fields(port.py_type):
+                port.controls.append(
+                    control_from_field(
+                        field.name,
+                        field.type,
+                    )
+                )
+
         else:
             control = control_from_field(port.name, port.py_type)
             # Dont set controls if there are not controls corresponding to type
@@ -387,13 +398,6 @@ class Config:
             extra_ports = []
         ports = list(set(extra_ports + ports_from_nodes(nodes)))
         nodes = nodes + extra_nodes
-        object_port = Port(
-            type=ControlType.object,
-            name="object",
-            label="object (object)",
-            acceptTypes=[port.type for port in ports],
-        )
-        ports.append(object_port)
         return cls(nodes, ports)
 
     def __init__(self, nodes, ports=None) -> None:

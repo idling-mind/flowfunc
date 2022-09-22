@@ -1,5 +1,8 @@
+from enum import Enum
 from typing import Tuple, Union
 import asyncio
+from pydantic import BaseModel
+from dataclasses import dataclass
 
 
 def add_with_docstring(a, b):
@@ -110,3 +113,42 @@ def add_str_type(a: "number", b: "number") -> "number":
 async def add_tuples_inspect(a: Union[Tuple[int,int], Tuple[float, float]], b: int) -> Tuple[Tuple[float, float], float]:
     await asyncio.sleep(2)
     return a[0] + b, a[1] + b
+
+async def add_str_inspect(a: str, b: str) -> str:
+    return a+b
+
+class Sex(Enum):
+    Female = 0
+    Male = 1
+    Other = 3
+class PydanticUser(BaseModel):
+    firstname: str
+    lastname: str
+    age: int
+    sex: Sex
+
+@dataclass
+class DataclassUser:
+    firstname: str
+    lastname: str
+    age: int
+    sex: Sex
+
+def get_pydantic_user(user: PydanticUser) -> PydanticUser:
+    return user
+
+def get_dataclass_user(user: DataclassUser) -> DataclassUser:
+    return user
+
+all_methods = [
+    add_with_docstring,
+    add_alternate_docstring,
+    add_diff_int_and_float_inspect,
+    add_alternate_docstring,
+    add_int_float_docstring,
+    add_int_float_inspect,
+    add_nothing,
+    add_wrong_docstring,
+    get_pydantic_user,
+    get_dataclass_user,
+]
