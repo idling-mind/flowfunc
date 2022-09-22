@@ -146,9 +146,13 @@ def process_port_inspect(pname, pobj) -> Port:
         d["type"] = "|".join(pptypes)
         d["acceptTypes"] = pptypes
     elif origin:
-        d["type"] = origin.__name__
+        try:
+            d["type"] = origin.__name__
+        except AttributeError:
+            # Special type origins
+            d["type"] = str(origin).replace("typing.", "")
         d["py_type"] = pobj
-        d["acceptTypes"] = [origin.__name__]
+        d["acceptTypes"] = [d["type"]]
     else:
         d["type"] = pobj.__name__
         d["py_type"] = pobj

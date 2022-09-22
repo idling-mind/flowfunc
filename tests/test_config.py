@@ -1,7 +1,7 @@
 import pytest
 from dash_flume.config import Config
 from dash_flume.models import Node
-from .methods import add_str_inspect, all_methods, add_with_type_anno, get_dataclass_user, get_pydantic_user
+from .methods import add_str_inspect, all_methods, add_with_type_anno, get_continent_list, get_dataclass_user, get_matter_state, get_optional_arg, get_pydantic_user
 
 
 def test_creation_from_function_list():
@@ -63,8 +63,31 @@ def test_dataclass_user():
     assert len(config.ports[0].controls) == 4
     assert config.ports[0].controls[0].type == "str"
     assert config.ports[0].controls[1].type == "str"
-    assert config.ports[0].controls[2].type == "int"
-    assert config.ports[0].controls[3].type == "select"
-    assert len(config.ports[0].controls[3].options) == 3
-    assert type(config.ports[0].controls[3].options[0]) == dict
-    assert config.ports[0].controls[3].options[0]["value"] == 0
+    assert config.ports[0].controls[2].type == "multiselect"
+    assert len(config.ports[0].controls[2].options) == 4
+    assert type(config.ports[0].controls[2].options[0]) == dict
+    assert config.ports[0].controls[2].options[0]["value"] == "house"
+    assert config.ports[0].controls[3].type == "bool"
+
+def test_literal_single():
+    config = Config.from_function_list([get_matter_state])
+    assert len(config.ports) == 1
+    assert config.ports[0].type == "Literal"
+    assert len(config.ports[0].controls) == 1
+    assert config.ports[0].controls[0].type == "select"
+    assert len(config.ports[0].controls[0].options) == 3
+
+def test_literal_multiple():
+    config = Config.from_function_list([get_continent_list])
+    assert len(config.ports) == 1
+    assert config.ports[0].type == "list"
+    assert len(config.ports[0].controls) == 1
+    assert config.ports[0].controls[0].type == "multiselect"
+    assert len(config.ports[0].controls[0].options) == 7
+
+def test_optional():
+    config = Config.from_function_list([get_optional_arg])
+    assert len(config.ports) == 1
+    assert config.ports[0].type == "str"
+    assert len(config.ports[0].controls) == 1
+    assert config.ports[0].controls[0].type == "str"
