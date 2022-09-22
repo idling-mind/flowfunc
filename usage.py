@@ -137,6 +137,8 @@ def subtract(a: Union[int, float], b: Union[int, float]):
     """
     return a - b
 
+def select_range(r: "slider"):
+    return r
 
 flist = [
     add,
@@ -148,6 +150,7 @@ flist = [
     test_port_node,
     enter_city_and_pin,
     aggregate_option,
+    select_range,
 ]
 app = dash.Dash(__name__)
 fconfig = config.Config.from_function_list(

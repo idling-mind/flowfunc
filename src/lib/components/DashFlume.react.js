@@ -27,7 +27,7 @@ export default class DashFlume extends Component {
   updateConfig = () => {
     // Function to convert the python based config data to a FlumeConfig object
     const config = this.props.config;
-    // console.log(config);
+    console.log(config);
     this.flconfig = new FlumeConfig();
     // Adding all standard ports first
     for (const port of config.portTypes) {
@@ -82,7 +82,7 @@ export default class DashFlume extends Component {
       }
       this.flconfig.addNodeType(node_obj);
     }
-    // console.log(this.flconfig);
+    console.log(this.flconfig);
     if (!this.props.type_safety) {
       // Use acceptTypes from the object port
       const allPortTypes = this.flconfig.portTypes.object.acceptTypes;

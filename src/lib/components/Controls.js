@@ -2,16 +2,17 @@ import { Colors, Controls } from 'flume'
 
 const generateControl = (itype) => {
     return (props) => {
+        const {name, label, others} = props
         return Controls.custom(
             {
-                name: props.name,
-                label: props.label,
+                name: name,
+                label: label,
                 render: (data, onChange, context, redraw, portProps, inputData) => {
                     return (
                         <>
                             <label data-flume-component="control-label" className="Control_controlLabel__3ga2-">{portProps.label}</label>
                             <div className="TextInput_wrapper__tefOZ" data-flume-component="text-input">
-                                <input type={itype} data-flume-component={`text-input-$(itype)`} className="TextInput_input__1QHwS" defaultValue={data} onChange={(e) => onChange(e.target.value)} />
+                                <input type={itype} data-flume-component={`text-input-$(itype)`} className="TextInput_input__1QHwS" defaultValue={data} onChange={(e) => onChange(e.target.value)} {...others} />
                             </div>
                         </>
                     )
@@ -50,6 +51,7 @@ const standardControls = {
     time: generateControl("time"),
     month: generateControl("month"),
     week: generateControl("week"),
+    slider: generateControl("range"),
 }
 
 export { standardControls }
