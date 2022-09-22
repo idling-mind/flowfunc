@@ -385,12 +385,16 @@ class Config:
             extra_nodes = []
         if extra_ports is None:
             extra_ports = []
-        # Some of the standard ports will be added at the js end
-        # Finding unique ports. extra_ports have to be the first so that if there
-        # is a duplicate the ports in that list gets precedence over the ports
-        # from nodes
         ports = list(set(extra_ports + ports_from_nodes(nodes)))
         nodes = nodes + extra_nodes
+        object_port = Port(
+            type=ControlType.object,
+            name="object",
+            label="object (object)",
+            acceptTypes=[port.type for port in ports],
+        )
+        ports.append(object_port)
+        print(object_port)
         return cls(nodes, ports)
 
     def __init__(self, nodes, ports=None) -> None:
