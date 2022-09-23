@@ -24,7 +24,6 @@ class ControlType(str, Enum):
     week = "week"
     object = "object"
     custom = "custom"
-    slider = "slider"
 
 
 class Color(str, Enum):
