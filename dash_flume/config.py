@@ -379,17 +379,8 @@ class Config:
         """
         nodes = []
         for func in function_list:
-            try:
-                # Making sure node from doc string has the same number of input
-                # args as from the inspect. If inspect shows more, use that.
-                node_docstring = process_node_docstring(func)
-                node_inspect = process_node_inspect(func)
-                if len(node_docstring.inputs) < len(node_inspect.inputs):
-                    node = node_inspect
-                else:
-                    node = node_docstring
-            except Exception as e:
-                node = process_node_inspect(func)
+            # Not using docstring based parsing
+            node = process_node_inspect(func)
             nodes.append(node)
 
         if extra_nodes is None:
