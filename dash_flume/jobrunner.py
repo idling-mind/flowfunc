@@ -211,7 +211,8 @@ class JobRunner:
         if hasattr(out_node, "result") and out_node.result:
             return
         config_node = self.flume_config.get_node(out_node.type)
-        method = validate_arguments(config_node.method)
+        # method = validate_arguments(config_node.method)
+        method = config_node.method
         out_node.result = None
         out_node.result_mapped = {}
         input_args = {}
@@ -244,14 +245,14 @@ class JobRunner:
             input_args[key] = dependent_node.result_mapped[connections[0].portName]
         if inspect.iscoroutinefunction(method):
             try:
-                method_output = await method(**input_args)
+                method_output = await validate_arguments(method)(**input_args)
             except Exception as e:
                 out_node.error = e
                 out_node.status = "failed"
         else:
             # await asyncio.sleep(0)
             try:
-                method_output = method(**input_args)
+                method_output = validate_arguments(method)(**input_args)
             except Exception as e:
                 out_node.error = e
                 out_node.status = "failed"
