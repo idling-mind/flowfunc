@@ -122,12 +122,7 @@ def process_port_inspect(pname, pobj) -> Port:
         )
     elif isinstance(pobj, str):
         ptype = pobj.split("|")[0].strip()
-        return Port(
-            type=ptype,
-            name=pname,
-            label=f"{pname} ({ptype})",
-            py_type=ptype
-        )
+        return Port(type=ptype, name=pname, label=f"{pname} ({ptype})", py_type=ptype)
     d = {}
     origin = get_origin(pobj)
     if origin == Union:
@@ -257,7 +252,6 @@ def control_from_field(cname: str, cobj: Any) -> Control:
     Returns:
         Control: A dash_flume Control object corresponding to the type annotation
     """
-    print(cname, cobj)
     control_types = [x.name for x in ControlType]
     if get_origin(cobj) == Literal:
         # Literal
