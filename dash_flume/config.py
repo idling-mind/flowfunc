@@ -242,7 +242,9 @@ def process_node_inspect(func: Callable) -> Node:
     return Node(**node_dict)
 
 
-def control_from_field(cname: str, cobj: Any) -> Control:
+def control_from_field(
+    cname: str, cobj: Any, port: Optional[Port] = None
+) -> Control:
     """Create a control from a give type object and it's properties
 
     Paramters:
@@ -301,6 +303,15 @@ def control_from_field(cname: str, cobj: Any) -> Control:
             name=cname,
             label=clabel,
         )
+    if port and port.acceptTypes and any([x in control_types for x in port.acceptTypes]):
+        # If any of the accepted type has a corresponding control
+        for t in port.acceptTypes:
+            if t in control_types:
+                return Control(
+                    type=t,
+                    name=cname,
+                    label=port.label,
+                )
 
 
 def ports_from_nodes(nodes: List[Node]) -> List[Port]:
@@ -335,7 +346,7 @@ def ports_from_nodes(nodes: List[Node]) -> List[Port]:
                 )
 
         else:
-            control = control_from_field(port.name, port.py_type)
+            control = control_from_field(port.name, port.py_type, port)
             # Dont set controls if there are no controls corresponding to type
             if control:
                 port.controls = [control]
