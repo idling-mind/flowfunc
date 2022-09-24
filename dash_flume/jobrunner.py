@@ -224,6 +224,8 @@ class JobRunner:
                 variable_value = values
             else:
                 # else return the value of the first item in the dict
+                # TODO: when flume implements option to have multiple inputs
+                # address it here.
                 variable_value = next(iter(values.values()))
             if variable_value is None:
                 continue  # This is null coming from react for unset controls
