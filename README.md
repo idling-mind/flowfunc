@@ -34,9 +34,7 @@ The app will have the node editor and a button to evaluate the current state of
 the node editor. The result of the evaluation will be displayed in a separate `div`
 at the bottom.
 
-The nodes are created from regular python functions with docstrings (the `add`
-function in the following example). If docstrings are not found, the parser will
-fall back to function signature (as in the `subtract` function).
+The nodes are created from regular python functions using it's function signature.
 It is also possible to create a node manually which offers more control.
 
 ```python
@@ -51,8 +49,7 @@ from dash_flume.models import OutNode
 app = dash.Dash(__name__)
 
 # Functions can be converted to nodes
-# Doc strings are parsed and converted to json which gets rendered at the front end
-def add(a, b):
+def add(a: int, b: int) -> int:
     """Add two numbers
 
     Parameters
@@ -69,7 +66,6 @@ def add(a, b):
     """
     return a + b
 
-# If docstrings are not usable, it falls back to function signature and type annotations.
 def subtract(a: int, b: int) -> int:
     """Find difference between two numbers"""
     return a - b
@@ -127,9 +123,14 @@ runner = JobRunner(nodeeditor_config)
 result = runner.run(output_nodes)
 ```
 `JobRunner` object helps evaluate the output of the front end node editor by making
-sure the inputs and outputs are routed properly. It returns a dictionary of `OutNode`
-objects which has a `result` attribute which contains the return object of the
-python function associated with the node.
+sure the inputs and outputs are routed properly. It takes in the output from the
+nodeeditor, parses it using pydantic and creates a dict of `OutNode` objects, evaluates
+each of the objects by making sure the dependent inputs are routed properly.
+It uses the functions defined in the config object to evaluate a node.
+The output of `runner.run` is the same dictionary that it parsed initially, but
+now with an addtional `result` attribute on each node. If you are running in
+a distributed way, it will have a `job_id` attribute on every node. You can use
+this `job_id` and the `queue` object to retrieve the results of the node.
 
 ```python
 DashFlume(id="nodeeditor", config=nodeeditor_config.config_dict())
@@ -140,14 +141,16 @@ the config object created previously, but converted to a dictionary.
 ## Nodes
 
 `Nodes` are the building blocks which you can connect together using their exposed
-`Ports`. DashFlume let's you easily create nodes from python functions by parsing
-their docstrings. The parameters of the function becomes the input ports and
-return value of the function becomes the output port. The docstring should document
-the function description, the parameters it accepts and their type and also the
-return name and type. If the parser encounters an error while parsing the docstring,
-it will fallback to the function signature.
+`Ports`. DashFlume let's you easily create nodes from python functions by inspecting
+their signature and type annotations. The parameters of the function becomes the
+input ports and return value of the function becomes the output port. You can give
+different types of type annotations. Even dataclasses and `pydantic` classes.
+The parser does it's best to interpret the type annotations and render an 
+equivalent node with different types of controls on it. If you aren't happy with
+the controls that the parser creted, you can manually specify how the node should
+be constructed.
 
-Once the parser processes the docstring or the function signature, it creates a
+Once the parser processed the the function signature, it creates a
 `Node` object which is a `pydantic` object.
 
 ## Ports
@@ -173,7 +176,8 @@ to define functions in javascript as well.
 will contain all the `Port` pydantic objects. 
 
 ## JobRunner
-`JobRunner` object helps process the output of the node editor.
+`JobRunner` object helps process the output of the node editor. When you pass
+the 
 
 
 .... documentation in progress.
