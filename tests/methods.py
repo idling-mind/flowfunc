@@ -5,6 +5,10 @@ from pydantic import BaseModel
 from dataclasses import dataclass
 
 
+def add_normal(a: int, b: int) -> int:
+    """Add two numbers"""
+    return a + b
+
 def add_with_docstring(a, b):
     """Add two numbers together
 
@@ -201,6 +205,7 @@ def get_optional_arg(s: Optional[str]) -> str:
 
 
 all_methods = [
+    add_normal,
     add_with_docstring,
     add_alternate_docstring,
     add_diff_int_and_float_inspect,
@@ -212,3 +217,12 @@ all_methods = [
     get_pydantic_user,
     get_dataclass_user,
 ]
+
+async def add_async_with_sleep(a: int, b: int) -> int:
+    """adding numbers with async sleep"""
+    await asyncio.sleep(0.1)
+    return a+b
+    
+def divide_numbers(a: int, b: int) -> float:
+    """Divide one number by another"""
+    return a/b
