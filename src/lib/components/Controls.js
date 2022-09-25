@@ -54,4 +54,9 @@ const standardControls = {
     slider: generateControl("range"),
 }
 
+/**
+ * standardControls: Extra controls for Flume ports
+ * standardControls are created to add to the regular controls exposed by flume
+ * that can be added to a port. The plan is to add more and more controls here.
+ */
 export { standardControls }
