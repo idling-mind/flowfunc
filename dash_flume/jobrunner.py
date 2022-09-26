@@ -9,6 +9,7 @@ from .config import Config
 from .distributed import NodeQueue
 from .exceptions import ErrorInDependentNode, QueueError
 from .models import OutNode
+from .utils import logger
 
 
 def default_meta_method(
@@ -157,8 +158,15 @@ class JobRunner:
             return
         mapped_dict = deepcopy(out_dict)
         if selected_node_ids:
+            logger.info(
+                f"Running {len(selected_node_ids)} node(s) out of {len(mapped_dict)}"
+                f" in {self.method} mode."
+            )
             dependent_node_ids = self.dependent_nodes(selected_node_ids, mapped_dict)
+            logger.info(f"Found {len(dependent_node_ids)} nodes dependent on selected nodes.")
             mapped_dict = {nodeid: mapped_dict[nodeid] for nodeid in dependent_node_ids}
+        else:
+            logger.info(f"Running {len(mapped_dict)} nodes in {self.method} mode.")
         if self.method == "sync":
             return asyncio.run(self.run_async(mapped_dict))
         elif self.method == "async":
@@ -213,6 +221,7 @@ class JobRunner:
         config_node = self.flume_config.get_node(out_node.type)
         # method = validate_arguments(config_node.method)
         method = config_node.method
+        logger.info(f"Evaluating node with id {nodeid} and function {method}")
         out_node.result = None
         out_node.result_mapped = {}
         input_args = {}
@@ -236,6 +245,7 @@ class JobRunner:
             dependent_nodeid = connections[0].nodeId
             dependent_node = mapped_dict[dependent_nodeid]
             out_node.status = "deferred"
+            logger.info(f"Node {nodeid} waiting for Node {dependent_nodeid} to finish.")
             await dependent_node.run_event.wait()
             if hasattr(dependent_node, "error") and dependent_node.error:
                 out_node.error = ErrorInDependentNode(
@@ -256,6 +266,7 @@ class JobRunner:
             try:
                 method_output = validate_arguments(method)(**input_args)
             except Exception as e:
+                logger.error(f"Execution of Node {nodeid} has failed.")
                 out_node.error = e
                 out_node.status = "failed"
         out_node.run_event.set()
@@ -322,6 +333,7 @@ class JobRunner:
             # Hence using the first one
             dependent_nodeid = connections[0].nodeId
             dependent_node = mapped_dict[dependent_nodeid]
+            logger.info(f"Node {nodeid} waiting for Node {dependent_nodeid} to be submitted.")
             await dependent_node.run_event.wait()
             connections[0].job_id = dependent_node.job_id
             dependents.append(dependent_node)
@@ -348,6 +360,7 @@ class JobRunner:
             dependents=dependents,
             job_kwargs=job_kwargs,
         )
+        logger.info(f"Node {nodeid} has been submitted.")
         node.job_id = node.job.id
         # Setting the current job's output connection job id
         # This may not be required
