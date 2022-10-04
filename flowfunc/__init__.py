@@ -66,12 +66,12 @@ _js_dist.extend(
 _js_dist.extend(
     [
         {
-            'relative_package_path': 'dash_flume.min.js',
+            'relative_package_path': 'flowfunc.min.js',
     
             'namespace': package_name
         },
         {
-            'relative_package_path': 'dash_flume.min.js.map',
+            'relative_package_path': 'flowfunc.min.js.map',
     
             'namespace': package_name,
             'dynamic': True

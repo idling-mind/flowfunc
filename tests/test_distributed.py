@@ -3,10 +3,10 @@ import json
 from pathlib import Path
 import time
 from fakeredis import FakeStrictRedis
-from dash_flume.config import Config
-from dash_flume.distributed import NodeJob, NodeQueue
-from dash_flume.jobrunner import JobRunner
-from dash_flume.models import Node, OutNode
+from flowfunc.config import Config
+from flowfunc.distributed import NodeJob, NodeQueue
+from flowfunc.jobrunner import JobRunner
+from flowfunc.models import Node, OutNode
 from tests.methods import add_async_with_sleep, add_normal
 from redis import Redis
 from uuid import uuid4

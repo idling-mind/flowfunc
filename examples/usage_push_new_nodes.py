@@ -4,8 +4,8 @@ from uuid import uuid4
 
 import dash
 from dash import Input, Output, State, html
-from dash_flume import DashFlume, config, jobrunner
-from dash_flume.models import OutConnections, OutNode
+from flowfunc import Flowfunc, config, jobrunner
+from flowfunc.models import OutConnections, OutNode
 from yaml import safe_load
 
 date = NewType("date", str)
@@ -69,7 +69,7 @@ app.layout = html.Div(
         html.Button(id="btn_run", children=["Run"]),
         html.Button(id="btn_addnode", children=["Add a node"]),
         html.Div(
-            DashFlume(
+            Flowfunc(
                 id="someid",
                 config=fconfig.dict(),
                 disableZoom=True,

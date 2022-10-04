@@ -252,7 +252,7 @@ def control_from_field(
         cobj: Type hint used
 
     Returns:
-        Control: A dash_flume Control object corresponding to the type annotation
+        Control: A flowfunc Control object corresponding to the type annotation
     """
     control_types = [x.name for x in ControlType]
     if get_origin(cobj) == Literal:

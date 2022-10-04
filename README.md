@@ -1,8 +1,8 @@
-![DashFlume](./docs/source/images/logo.png)
+![Flowfunc](./docs/source/images/logo.png)
 
 A node editor for [plotly dash](https://dash.plotly.com/)
 
-DashFlume is a plotly dash component which works as a web based node editor.
+Flowfunc is a plotly dash component which works as a web based node editor.
 You can create nodes based on python functions and connect them together to define
 the logic during runtime.
 
@@ -18,18 +18,18 @@ comments.
 ### Basic installation
 
 ```
-pip install dash_flume
+pip install flowfunc
 ```
 
 ### Distributed
 If you want to run your nodes using [rq](https://python-rq.org/) in a distributed
 manner.
 ```
-pip install dash_flume[distributed]
+pip install flowfunc[distributed]
 ```
 ## Basic Usage
 
-A fully functioning dash app with DashFlume node editor would look like below.
+A fully functioning dash app with Flowfunc node editor would look like below.
 The app will have the node editor and a button to evaluate the current state of
 the node editor. The result of the evaluation will be displayed in a separate `div`
 at the bottom.
@@ -41,10 +41,10 @@ It is also possible to create a node manually which offers more control.
 from typing import Dict
 import dash
 from dash import html, Input, Output, State
-from dash_flume import DashFlume
-from dash_flume.config import Config
-from dash_flume.jobrunner import JobRunner
-from dash_flume.models import OutNode
+from flowfunc import Flowfunc
+from flowfunc.config import Config
+from flowfunc.jobrunner import JobRunner
+from flowfunc.models import OutNode
 
 app = dash.Dash(__name__)
 
@@ -80,7 +80,7 @@ runner = JobRunner(nodeeditor_config)
 app.layout = html.Div(
     [
         html.Button(id="btn_run", children="Run"),
-        DashFlume(id="nodeeditor", config=nodeeditor_config.dict()),
+        Flowfunc(id="nodeeditor", config=nodeeditor_config.dict()),
         html.Div(id="output"),
     ], style={"height": "600px"}
 )
@@ -112,7 +112,7 @@ if __name__ == "__main__":
 ```python
 nodeeditor_config = Config.from_function_list([add, subtract])
 ```
-The `DashFlume` component requires a `Config` object which contains the list of all
+The `Flowfunc` component requires a `Config` object which contains the list of all
 nodes as an input. You can create the list of nodes easily from a list of python
 functions using the class method `from_function_list`. It will accept async
 functions also.
@@ -133,7 +133,7 @@ a distributed way, it will have a `job_id` attribute on every node. You can use
 this `job_id` and the `queue` object to retrieve the results of the node.
 
 ```python
-DashFlume(id="nodeeditor", config=nodeeditor_config.config_dict())
+Flowfunc(id="nodeeditor", config=nodeeditor_config.config_dict())
 ```
 This is the dash component with `id` equal to `nodeeditor`. You need to pass in
 the config object created previously, but converted to a dictionary.
@@ -141,7 +141,7 @@ the config object created previously, but converted to a dictionary.
 ## Nodes
 
 `Nodes` are the building blocks which you can connect together using their exposed
-`Ports`. DashFlume let's you easily create nodes from python functions by inspecting
+`Ports`. Flowfunc let's you easily create nodes from python functions by inspecting
 their signature and type annotations. The parameters of the function becomes the
 input ports and return value of the function becomes the output port. You can give
 different types of type annotations. Even dataclasses and `pydantic` classes.

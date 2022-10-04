@@ -1,7 +1,7 @@
 import asyncio
-from dash_flume.config import Config
-from dash_flume.jobrunner import JobRunner
-from dash_flume.exceptions import ErrorInDependentNode
+from flowfunc.config import Config
+from flowfunc.jobrunner import JobRunner
+from flowfunc.exceptions import ErrorInDependentNode
 from pathlib import Path
 import json
 from tests.methods import add_normal, add_async_with_sleep, add_with_docstring, divide_numbers

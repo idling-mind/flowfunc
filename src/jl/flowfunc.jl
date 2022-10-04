@@ -1,12 +1,12 @@
 # AUTO GENERATED FILE - DO NOT EDIT
 
-export dashflume
+export flowfunc
 
 """
-    dashflume(;kwargs...)
+    flowfunc(;kwargs...)
 
-A DashFlume component.
-DashFlume: A node editor for dash
+A Flowfunc component.
+Flowfunc: A node editor for dash
 This component gives a flow based programming interface for dash users.
 The developer can define the nodes using simple python functions and these
 will be available as nodes which can be connected together to create a logic
@@ -32,9 +32,9 @@ Following statuses are possible.
 - `style` (Dict; optional): The style of the container div
 - `type_safety` (Bool; optional): If any port can connect to any other port
 """
-function dashflume(; kwargs...)
+function flowfunc(; kwargs...)
         available_props = Symbol[:id, :comments, :config, :context, :default_nodes, :disable_pan, :disable_zoom, :double_clicked_node, :editor_status, :initial_scale, :nodes, :nodes_status, :selected_nodes, :space_to_pan, :style, :type_safety]
         wild_props = Symbol[]
-        return Component("dashflume", "DashFlume", "dash_flume", available_props, wild_props; kwargs...)
+        return Component("flowfunc", "Flowfunc", "flowfunc", available_props, wild_props; kwargs...)
 end
 

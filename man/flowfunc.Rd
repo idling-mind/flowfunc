@@ -1,16 +1,16 @@
 % Auto-generated: do not edit by hand
-\name{dashFlume}
+\name{flowfunc}
 
-\alias{dashFlume}
+\alias{flowfunc}
 
-\title{DashFlume component}
+\title{Flowfunc component}
 
 \description{
-DashFlume: A node editor for dash This component gives a flow based programming interface for dash users. The developer can define the nodes using simple python functions and these will be available as nodes which can be connected together to create a logic at runtime.
+Flowfunc: A node editor for dash This component gives a flow based programming interface for dash users. The developer can define the nodes using simple python functions and these will be available as nodes which can be connected together to create a logic at runtime.
 }
 
 \usage{
-dashFlume(id=NULL, comments=NULL, config=NULL, context=NULL,
+flowfunc(id=NULL, comments=NULL, config=NULL, context=NULL,
 default_nodes=NULL, disable_pan=NULL, disable_zoom=NULL,
 double_clicked_node=NULL, editor_status=NULL,
 initial_scale=NULL, nodes=NULL, nodes_status=NULL,

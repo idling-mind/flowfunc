@@ -9,7 +9,7 @@ import sys
 import importlib
 
 
-components_package = 'dash_flume'
+components_package = 'flowfunc'
 
 components_lib = importlib.import_module(components_package)
 

@@ -1,6 +1,6 @@
 import pytest
-from dash_flume.config import process_node_docstring, process_node_inspect
-from dash_flume.models import Node, Port
+from flowfunc.config import process_node_docstring, process_node_inspect
+from flowfunc.models import Node, Port
 from .methods import (
     add_with_docstring,
     add_alternate_docstring,

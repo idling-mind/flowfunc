@@ -7,13 +7,13 @@ import { standardControls } from './Controls';
 import "./nodeeditor.css"
 
 /**
- * DashFlume: A node editor for dash
+ * Flowfunc: A node editor for dash
  * This component gives a flow based programming interface for dash users.
  * The developer can define the nodes using simple python functions and these
  * will be available as nodes which can be connected together to create a logic
  * at runtime.
  */
-export default class DashFlume extends Component {
+export default class Flowfunc extends Component {
 
   constructor(props) {
     super(props)
@@ -205,9 +205,9 @@ export default class DashFlume extends Component {
   }
 }
 
-DashFlume.defaultProps = {};
+Flowfunc.defaultProps = {};
 
-DashFlume.propTypes = {
+Flowfunc.propTypes = {
   /**
    * The ID used to identify this component in Dash callbacks.
    */

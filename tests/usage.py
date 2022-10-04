@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import dash
 from dash import Input, Output, State, html
-from dash_flume import DashFlume, config, jobrunner
+from flowfunc import Flowfunc, config, jobrunner
 from methods import add_async_with_sleep, add_str_inspect, add_with_docstring, divide_numbers
 
 app = dash.Dash(__name__)
@@ -16,7 +16,7 @@ app.layout = html.Div(
         html.Button(id="btn_run", children=["Run"]),
         html.Button(id="btn_addnode", children=["Add a node"]),
         html.Div(
-            DashFlume(
+            Flowfunc(
                 id="someid",
                 config=fconfig.dict(),
                 disable_zoom=True,

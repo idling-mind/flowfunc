@@ -3,9 +3,9 @@
 from dash.development.base_component import Component, _explicitize_args
 
 
-class DashFlume(Component):
-    """A DashFlume component.
-DashFlume: A node editor for dash
+class Flowfunc(Component):
+    """A Flowfunc component.
+Flowfunc: A node editor for dash
 This component gives a flow based programming interface for dash users.
 The developer can define the nodes using simple python functions and these
 will be available as nodes which can be connected together to create a logic
@@ -64,8 +64,8 @@ Keyword arguments:
     If any port can connect to any other port."""
     _children_props = []
     _base_nodes = ['children']
-    _namespace = 'dash_flume'
-    _type = 'DashFlume'
+    _namespace = 'flowfunc'
+    _type = 'Flowfunc'
     @_explicitize_args
     def __init__(self, id=Component.UNDEFINED, style=Component.UNDEFINED, nodes=Component.UNDEFINED, nodes_status=Component.UNDEFINED, editor_status=Component.UNDEFINED, selected_nodes=Component.UNDEFINED, double_clicked_node=Component.UNDEFINED, comments=Component.UNDEFINED, type_safety=Component.UNDEFINED, default_nodes=Component.UNDEFINED, context=Component.UNDEFINED, initial_scale=Component.UNDEFINED, disable_zoom=Component.UNDEFINED, disable_pan=Component.UNDEFINED, space_to_pan=Component.UNDEFINED, config=Component.UNDEFINED, **kwargs):
         self._prop_names = ['id', 'comments', 'config', 'context', 'default_nodes', 'disable_pan', 'disable_zoom', 'double_clicked_node', 'editor_status', 'initial_scale', 'nodes', 'nodes_status', 'selected_nodes', 'space_to_pan', 'style', 'type_safety']
@@ -80,4 +80,4 @@ Keyword arguments:
             if k not in args:
                 raise TypeError(
                     'Required argument `' + k + '` was not specified.')
-        super(DashFlume, self).__init__(**args)
+        super(Flowfunc, self).__init__(**args)

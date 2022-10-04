@@ -1,14 +1,14 @@
 import time
-import dash_flume
-from dash_flume.config import Config
-from dash_flume.jobrunner import JobRunner
+import flowfunc
+from flowfunc.config import Config
+from flowfunc.jobrunner import JobRunner
 import dash
 from dash.dependencies import Input, Output, State
 from dash import html, dcc
 import json
 import base64
 
-from dash_flume.models import OutNode
+from flowfunc.models import OutNode
 from nodes import all_functions
 import numpy as np
 
@@ -29,7 +29,7 @@ app.layout = html.Div(
         html.Div(
             id="nodeeditor_container",
             style={"height": "800px", "width": "100%"},
-            children=dash_flume.DashFlume(
+            children=flowfunc.Flowfunc(
                 id="input",
                 style={"height": "800px"},
                 # config=inconfig,

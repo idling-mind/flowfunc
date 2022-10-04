@@ -1,7 +1,7 @@
 {
-  "src/lib/components/DashFlume.react.js": {
-    "description": "DashFlume: A node editor for dash\nThis component gives a flow based programming interface for dash users.\nThe developer can define the nodes using simple python functions and these\nwill be available as nodes which can be connected together to create a logic\nat runtime.",
-    "displayName": "DashFlume",
+  "src/lib/components/Flowfunc.react.js": {
+    "description": "Flowfunc: A node editor for dash\nThis component gives a flow based programming interface for dash users.\nThe developer can define the nodes using simple python functions and these\nwill be available as nodes which can be connected together to create a logic\nat runtime.",
+    "displayName": "Flowfunc",
     "methods": [
       {
         "name": "updateConfig",

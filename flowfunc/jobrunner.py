@@ -323,6 +323,8 @@ class JobRunner:
         for key, values in node.inputData.items():
             if not values:
                 continue
+            # TODO: when flume implements multiple inputs for a node, address
+            # it here
             variable_value = next(iter(values.values()))
             if variable_value is None:
                 continue  # This is null coming from react

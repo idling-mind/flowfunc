@@ -1,9 +1,7 @@
 {
     "python.formatting.provider": "black",
     "python.testing.pytestArgs": [
-        "tests",
-        "--cov=dash_flume",
-        "--cov-report=xml"
+        "tests"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true

@@ -1,6 +1,6 @@
 import pytest
-from dash_flume.config import Config
-from dash_flume.models import Node
+from flowfunc.config import Config
+from flowfunc.models import Node
 from .methods import add_str_inspect, add_str_type, all_methods, add_with_type_anno, get_continent_list, get_dataclass_user, get_matter_state, get_optional_arg, get_pydantic_user
 
 

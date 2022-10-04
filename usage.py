@@ -1,14 +1,16 @@
 from datetime import date
 from enum import Enum
+from functools import lru_cache
 from pprint import pprint
+from time import sleep
 from typing import Any, List, Literal, NewType, Union
 from uuid import uuid4
 from pydantic import BaseModel
 
 import dash
 from dash import Input, Output, State, html
-from dash_flume import DashFlume, config, jobrunner
-from dash_flume.models import (
+from flowfunc import Flowfunc, config, jobrunner
+from flowfunc.models import (
     ControlType,
     OutConnections,
     OutNode,
@@ -101,6 +103,10 @@ def enter_string(input_string: str) -> str:
 def get_month_from_date(d: date):
     return d.month
 
+@lru_cache(maxsize=None)
+def slow_add(a:int, b:int) -> int:
+    sleep(5)
+    return a + b
 
 def add(a: Union[int, float], b: Union[int, float]):
     """Add two numbers
@@ -137,9 +143,6 @@ def subtract(a: Union[int, float], b: Union[int, float]):
     """
     return a - b
 
-def select_range(r: "slider"):
-    return r
-
 flist = [
     add,
     subtract,
@@ -150,7 +153,7 @@ flist = [
     test_port_node,
     enter_city_and_pin,
     aggregate_option,
-    select_range,
+    slow_add,
 ]
 app = dash.Dash(__name__)
 fconfig = config.Config.from_function_list(
@@ -164,7 +167,7 @@ app.layout = html.Div(
         html.Button(id="btn_run", children=["Run"]),
         html.Button(id="btn_addnode", children=["Add a node"]),
         html.Div(
-            DashFlume(
+            Flowfunc(
                 id="someid",
                 config=fconfig.dict(),
                 disable_zoom=True,
