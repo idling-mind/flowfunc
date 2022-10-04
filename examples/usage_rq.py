@@ -1,8 +1,8 @@
 from pprint import pprint
 import time
-import dash_flume
-from dash_flume.config import Config
-from dash_flume.jobrunner import JobRunner
+import flowfunc
+from flowfunc.config import Config
+from flowfunc.jobrunner import JobRunner
 import dash
 from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output, State
@@ -11,8 +11,8 @@ import json
 import base64
 from redis import Redis
 
-from dash_flume.models import OutNode, OutNodes
-from dash_flume.distributed import NodeJob, NodeQueue
+from flowfunc.models import OutNode, OutNodes
+from flowfunc.distributed import NodeJob, NodeQueue
 
 from nodes import all_functions
 
@@ -66,7 +66,7 @@ app.layout = html.Div(
         html.Div(
             id="nodeeditor_container",
             style={"height": "90vh"},
-            children=dash_flume.DashFlume(
+            children=flowfunc.Flowfunc(
                 id="input",
                 # config=inconfig,
                 config=fconfig.dict(),

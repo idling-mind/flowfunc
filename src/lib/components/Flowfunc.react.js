@@ -3,17 +3,17 @@ import * as R from 'ramda'
 import { NodeEditor } from 'flume';
 import { FlumeConfig, Colors, Controls } from 'flume'
 import PropTypes, { string } from 'prop-types';
-import { standardPorts } from './Ports';
+import { standardControls } from './Controls';
 import "./nodeeditor.css"
 
 /**
- * DashFlume: A node editor for dash
+ * Flowfunc: A node editor for dash
  * This component gives a flow based programming interface for dash users.
  * The developer can define the nodes using simple python functions and these
  * will be available as nodes which can be connected together to create a logic
  * at runtime.
  */
-export default class DashFlume extends Component {
+export default class Flowfunc extends Component {
 
   constructor(props) {
     super(props)
@@ -27,12 +27,9 @@ export default class DashFlume extends Component {
   updateConfig = () => {
     // Function to convert the python based config data to a FlumeConfig object
     const config = this.props.config;
-    // console.log(config);
+    console.log(config);
     this.flconfig = new FlumeConfig();
     // Adding all standard ports first
-    standardPorts.map(port => {
-      this.flconfig.addPortType(port);
-    })
     for (const port of config.portTypes) {
       const { color, controls, ...port_obj } = port;
       if (!R.isNil(color) && !R.isEmpty(color)) {
@@ -41,7 +38,7 @@ export default class DashFlume extends Component {
       if (!R.isNil(controls) && !R.isEmpty(controls)) {
         port_obj.controls = controls.map(control => {
           const { type, ...others } = control;
-          return Controls[type]({
+          return standardControls[type]({
             ...others
           })
         })
@@ -85,7 +82,7 @@ export default class DashFlume extends Component {
       }
       this.flconfig.addNodeType(node_obj);
     }
-    // console.log(this.flconfig);
+    console.log(this.flconfig);
     if (!this.props.type_safety) {
       // Use acceptTypes from the object port
       const allPortTypes = this.flconfig.portTypes.object.acceptTypes;
@@ -100,8 +97,10 @@ export default class DashFlume extends Component {
     this.props.setProps({
       editor_status: "client",
       nodes: this.nodeEditor.current.getNodes(),
+      comments: this.nodeEditor.current.getComments(),
     })
-    // console.log(this.nodeEditor.current.getNodes());
+    // console.log(this.props.comments);
+    // console.log(this.props.nodes);
   }
 
   componentDidMount() {
@@ -197,6 +196,7 @@ export default class DashFlume extends Component {
           disablePan={this.props.disable_pan}
           spaceToPan={this.props.space_to_pan}
           onChange={this.handleChange}
+          onCommentsChange={this.handleChange}
           key={this.ukey}
         />
       </div>
@@ -205,9 +205,9 @@ export default class DashFlume extends Component {
   }
 }
 
-DashFlume.defaultProps = {};
+Flowfunc.defaultProps = {};
 
-DashFlume.propTypes = {
+Flowfunc.propTypes = {
   /**
    * The ID used to identify this component in Dash callbacks.
    */

@@ -1,15 +1,15 @@
-.dashFlume_js_metadata <- function() {
-deps_metadata <- list(`dash_flume` = structure(list(name = "dash_flume",
+.flowfunc_js_metadata <- function() {
+deps_metadata <- list(`flowfunc` = structure(list(name = "flowfunc",
 version = "0.0.1", src = list(href = NULL,
 file = "deps"), meta = NULL,
-script = 'dash_flume.min.js',
-stylesheet = NULL, head = NULL, attachment = NULL, package = "dashFlume",
+script = 'flowfunc.min.js',
+stylesheet = NULL, head = NULL, attachment = NULL, package = "flowfunc",
 all_files = FALSE), class = "html_dependency"),
-`dash_flume` = structure(list(name = "dash_flume",
+`flowfunc` = structure(list(name = "flowfunc",
 version = "0.0.1", src = list(href = NULL,
 file = "deps"), meta = NULL,
-script = 'dash_flume.min.js.map',
-stylesheet = NULL, head = NULL, attachment = NULL, package = "dashFlume",
+script = 'flowfunc.min.js.map',
+stylesheet = NULL, head = NULL, attachment = NULL, package = "flowfunc",
 all_files = FALSE, dynamic = TRUE), class = "html_dependency"))
 return(deps_metadata)
 }

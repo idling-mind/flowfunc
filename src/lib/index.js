@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
-import DashFlume from './components/DashFlume.react';
+import Flowfunc from './components/Flowfunc.react';
 
 export {
-    DashFlume
+    Flowfunc
 };

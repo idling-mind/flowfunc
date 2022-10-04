@@ -1,6 +1,6 @@
 
-name = "DashFlume"
-uuid = "1b08a953-4be3-4667-9a23-2dbe09201113"
+name = "Flowfunc"
+uuid = "1b08a953-4be3-4667-9a23-112f0d177a99"
 authors = ["Najeem Muhammed <najeem@gmail.com>"]
 version = "0.0.1"
 

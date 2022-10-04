@@ -8,11 +8,21 @@ from pydantic import BaseModel
 class ControlType(str, Enum):
     """Control types available at the React side"""
 
-    text = "text"
     number = "number"
+    int = "int"
+    float = "float"
+    text = "text"
+    str = "str"
     checkbox = "checkbox"
+    bool = "bool"
     select = "select"
     multiselect = "multiselect"
+    color = "color"
+    date = "date"
+    time = "time"
+    month = "month"
+    week = "week"
+    object = "object"
     custom = "custom"
 
 
@@ -38,7 +48,7 @@ class Control(BaseModel):
     placeHolder: Optional[str]
     step: Optional[int]
     defaultValue: Optional[Any]
-    options: Optional[List[dict]]  # Not implemented yet
+    options: Optional[List[dict]]
     render: Optional[str]  # Not implemented yet
 
     class Config:
@@ -53,6 +63,7 @@ class Port(BaseModel):
     type: str
     name: str
     label: str
+    py_type: Optional[Any]  # Associated python type
     arg_or_kwarg: Optional[str]
     color: Optional[Color]
     acceptTypes: Optional[List[str]]
@@ -67,7 +78,10 @@ class Port(BaseModel):
 
     class Config:
         use_enum_values = True
-        fields = {"arg_or_kwarg": {"exclude": True}}
+        fields = {
+            "arg_or_kwarg": {"exclude": True},
+            "py_type": {"exclude": True},
+        }
 
 
 class Node(BaseModel):

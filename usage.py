@@ -1,12 +1,16 @@
 from datetime import date
+from enum import Enum
+from functools import lru_cache
 from pprint import pprint
-from typing import Any, NewType, Union
+from time import sleep
+from typing import Any, List, Literal, NewType, Union
 from uuid import uuid4
+from pydantic import BaseModel
 
 import dash
 from dash import Input, Output, State, html
-from dash_flume import DashFlume, config, jobrunner
-from dash_flume.models import (
+from flowfunc import Flowfunc, config, jobrunner
+from flowfunc.models import (
     ControlType,
     OutConnections,
     OutNode,
@@ -25,6 +29,14 @@ test_port = Port(
         Control(type=ControlType.number, name="test_port_number", label="some number"),
     ],
 )
+date_port = Port(
+    type="date",
+    name="date",
+    label="date",
+    controls=[
+        Control(type=ControlType.date, name="date", label="some date"),
+    ],
+)
 
 city_port = Port(
     type="city",
@@ -33,7 +45,7 @@ city_port = Port(
     controls=[
         Control(
             type=ControlType.select,
-            name="city",
+            name="name",
             label="Select a city",
             options=[
                 {"label": "Gothenburg", "value": "Gothenburg"},
@@ -46,21 +58,41 @@ city_port = Port(
 )
 
 n = NewType("test_port", Any)
-city = NewType("city", dict)
+
+
+class town(BaseModel):
+    name: str
+    pin: int
+    established_date: date
+    zone: Literal["Zone1", "Zone2", "Zone3"]
+    extra_zone: List[Literal["Zone1", "Zone2", "Zone3"]]
 
 
 def enter_date(d: date) -> str:
-    print(type(d))
     return str(d)
 
 
-def enter_city_and_pin(city: city):
+def enter_city_and_pin(city: town):
     """Enter a city and a PIN"""
     return city
 
 
+class AggOption(Enum):
+    Min = 1
+    Max = 2
+    Mean = 3
+    SomethingElse = 4
+
+
+def aggregate_option(
+    # agg: List[Literal["min", "max", "mean", "count"]],
+    egg: AggOption,
+    # beg: List[AggOption],
+) -> str:
+    return egg.value
+
+
 def test_port_node(input: n):
-    print(type(input))
     return input
 
 
@@ -71,6 +103,10 @@ def enter_string(input_string: str) -> str:
 def get_month_from_date(d: date):
     return d.month
 
+@lru_cache(maxsize=None)
+def slow_add(a:int, b:int) -> int:
+    sleep(5)
+    return a + b
 
 def add(a: Union[int, float], b: Union[int, float]):
     """Add two numbers
@@ -107,7 +143,6 @@ def subtract(a: Union[int, float], b: Union[int, float]):
     """
     return a - b
 
-
 flist = [
     add,
     subtract,
@@ -117,9 +152,13 @@ flist = [
     get_month_from_date,
     test_port_node,
     enter_city_and_pin,
+    aggregate_option,
+    slow_add,
 ]
 app = dash.Dash(__name__)
-fconfig = config.Config.from_function_list(flist, extra_ports=[test_port, city_port])
+fconfig = config.Config.from_function_list(
+    flist, extra_ports=[test_port, city_port, date_port]
+)
 # pprint(fconfig.dict())
 runner = jobrunner.JobRunner(fconfig)
 
@@ -128,7 +167,7 @@ app.layout = html.Div(
         html.Button(id="btn_run", children=["Run"]),
         html.Button(id="btn_addnode", children=["Add a node"]),
         html.Div(
-            DashFlume(
+            Flowfunc(
                 id="someid",
                 config=fconfig.dict(),
                 disable_zoom=True,
@@ -145,16 +184,16 @@ app.layout = html.Div(
     [Output("output", "children"), Output("someid", "nodes_status")],
     Input("btn_run", "n_clicks"),
     State("someid", "nodes"),
+    State("someid", "comments"),
 )
-def run(nclicks, nodes):
+def run(nclicks, nodes, comments):
     if not nodes:
         return [], {}
-    pprint(nodes)
     output = runner.run(nodes)
     output_html = []
     nodes_status = {}
     for node in output.values():
-        output_html.append(html.Div(f"{node.type}: {node.value}"))
+        output_html.append(html.Div(f"{node.type}: {node.result}"))
         if node.error:
             output_html.append(html.Div(f"{node.error}"))
         nodes_status[node.id] = node.status

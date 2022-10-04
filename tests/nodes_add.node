@@ -1,0 +1,169 @@
+{
+    "node_1": {
+        "id": "node_1",
+        "x": -594.5,
+        "y": -190,
+        "type": "tests.methods.add_normal",
+        "width": 200,
+        "connections": {
+            "inputs": {},
+            "outputs": {
+                "result": [
+                    {
+                        "nodeId": "node_2",
+                        "portName": "a"
+                    },
+                    {
+                        "nodeId": "node_3",
+                        "portName": "b"
+                    }
+                ]
+            }
+        },
+        "inputData": {
+            "a": {
+                "a": 1
+            },
+            "b": {
+                "a": 2
+            }
+        }
+    },
+    "node_2": {
+        "id": "node_2",
+        "x": -314.5,
+        "y": -255,
+        "type": "tests.methods.add_normal",
+        "width": 200,
+        "connections": {
+            "inputs": {
+                "a": [
+                    {
+                        "nodeId": "node_1",
+                        "portName": "result"
+                    }
+                ]
+            },
+            "outputs": {
+                "result": [
+                    {
+                        "nodeId": "node_4",
+                        "portName": "a"
+                    }
+                ]
+            }
+        },
+        "inputData": {
+            "a": {
+                "a": 0
+            },
+            "b": {
+                "a": 3
+            }
+        }
+    },
+    "node_3": {
+        "id": "node_3",
+        "x": -312.5,
+        "y": -19,
+        "type": "tests.methods.add_normal",
+        "width": 200,
+        "connections": {
+            "inputs": {
+                "b": [
+                    {
+                        "nodeId": "node_1",
+                        "portName": "result"
+                    }
+                ]
+            },
+            "outputs": {
+                "result": [
+                    {
+                        "nodeId": "node_5",
+                        "portName": "b"
+                    }
+                ]
+            }
+        },
+        "inputData": {
+            "a": {
+                "a": 4
+            },
+            "b": {
+                "a": 0
+            }
+        }
+    },
+    "node_4": {
+        "id": "node_4",
+        "x": -63.5,
+        "y": -109,
+        "type": "tests.methods.add_normal",
+        "width": 200,
+        "connections": {
+            "inputs": {
+                "a": [
+                    {
+                        "nodeId": "node_2",
+                        "portName": "result"
+                    }
+                ],
+                "b": [
+                    {
+                        "nodeId": "node_5",
+                        "portName": "result"
+                    }
+                ]
+            },
+            "outputs": {}
+        },
+        "inputData": {
+            "a": {
+                "a": 0
+            },
+            "b": {
+                "a": 0
+            }
+        }
+    },
+    "node_5": {
+        "id": "node_5",
+        "x": -63.5,
+        "y": -109,
+        "type": "tests.methods.add_normal",
+        "width": 200,
+        "connections": {
+            "inputs": {
+                "a": [
+                    {
+                        "nodeId": "node_1",
+                        "portName": "result"
+                    }
+                ],
+                "b": [
+                    {
+                        "nodeId": "node_3",
+                        "portName": "result"
+                    }
+                ]
+            },
+            "outputs": {
+                "result": [
+                    {
+                        "nodeId": "node_4",
+                        "portName": "b"
+                    }
+                ]
+            }
+        },
+        "inputData": {
+            "a": {
+                "a": 0
+            },
+            "b": {
+                "a": 0
+            }
+        }
+    }
+}

@@ -1,4 +1,4 @@
 # AUTO GENERATED FILE - DO NOT EDIT
 
-export(DashFlume)
-export(dashFlume)
+export(Flowfunc)
+export(flowfunc)

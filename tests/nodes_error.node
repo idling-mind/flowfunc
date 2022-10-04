@@ -1,0 +1,54 @@
+{
+    "node_1": {
+        "id": "node_1",
+        "x": -401.5,
+        "y": -232,
+        "type": "tests.methods.divide_numbers",
+        "width": 200,
+        "connections": {
+            "inputs": {},
+            "outputs": {
+                "result": [
+                    {
+                        "nodeId": "node_2",
+                        "portName": "a"
+                    }
+                ]
+            }
+        },
+        "inputData": {
+            "a": {
+                "a": 1
+            },
+            "b": {
+                "a": 0
+            }
+        }
+    },
+    "node_2": {
+        "id": "node_2",
+        "x": -110.5,
+        "y": -137,
+        "type": "tests.methods.divide_numbers",
+        "width": 200,
+        "connections": {
+            "inputs": {
+                "a": [
+                    {
+                        "nodeId": "node_1",
+                        "portName": "result"
+                    }
+                ]
+            },
+            "outputs": {}
+        },
+        "inputData": {
+            "a": {
+                "a": 0
+            },
+            "b": {
+                "a": 2
+            }
+        }
+    }
+}
