@@ -17,8 +17,12 @@ setup(
     license=package["license"],
     description=package.get("description", package_name),
     install_requires=[
-        "pydantic>=1.9", "docstring_parser==0.13"],
-    extras_require={"distributed": ["rq"]},
+        "pydantic>=1.9"
+    ],
+    extras_require={
+        "distributed": ["rq>=1.11"],
+        "full": ["dash>=2.6", "rq>=1.11"]
+    },
     classifiers=[
         "Framework :: Dash",
     ],
