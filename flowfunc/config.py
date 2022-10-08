@@ -6,7 +6,11 @@ from typing import Any, Callable, List, Literal, Optional, Union, get_args, get_
 from warnings import warn
 from pydantic import BaseModel
 
-from docstring_parser import parse
+try:
+    from docstring_parser import parse
+except ImportError:
+    # Dont use docstring based parsing
+    pass
 
 from .models import Color, ConfigModel, ControlType, Node, Port, Control
 

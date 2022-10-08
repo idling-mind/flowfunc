@@ -6,10 +6,14 @@ from typing import Any, Callable, Dict, List, Optional
 from pydantic import validate_arguments
 
 from .config import Config
-from .distributed import NodeQueue
 from .exceptions import ErrorInDependentNode, QueueError
 from .models import OutNode
 from .utils import logger
+try:
+    from .distributed import NodeQueue
+except ImportError:
+    # Not opted for distributed
+    pass
 
 
 def default_meta_method(
@@ -114,7 +118,9 @@ class JobRunner:
         flume_config: Config,
         method: str = "sync",
         same_worker: bool = False,
-        default_queue: Optional[NodeQueue] = None,
+        # default_queue should be a NodeQueue instance but cannot annotate with
+        # NodeQueue since it will make python-rq a required dependency
+        default_queue: Optional[Any] = None,
         meta_map: Optional[Dict[Callable, Callable]] = None,
         meta_data: Optional[Dict[str, Any]] = None,
     ):
