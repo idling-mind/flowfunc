@@ -46,7 +46,9 @@ class NodeJob(Job):
     @property
     def func(self):
         """Overriding Job class' func method to include argument validation"""
-        return validate_arguments(super().func)
+        return validate_arguments(
+            super().func, config=dict(arbitrary_types_allowed=True)
+        )
 
     def perform(self):
         """Overriding the perform method of the parent class"""

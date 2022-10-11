@@ -9,6 +9,7 @@ from .config import Config
 from .exceptions import ErrorInDependentNode, QueueError
 from .models import OutNode
 from .utils import logger
+
 try:
     from .distributed import NodeQueue
 except ImportError:
@@ -169,7 +170,9 @@ class JobRunner:
                 f" in {self.method} mode."
             )
             dependent_node_ids = self.dependent_nodes(selected_node_ids, mapped_dict)
-            logger.info(f"Found {len(dependent_node_ids)} nodes dependent on selected nodes.")
+            logger.info(
+                f"Found {len(dependent_node_ids)} nodes dependent on selected nodes."
+            )
             mapped_dict = {nodeid: mapped_dict[nodeid] for nodeid in dependent_node_ids}
         else:
             logger.info(f"Running {len(mapped_dict)} nodes in {self.method} mode.")
@@ -263,14 +266,17 @@ class JobRunner:
             input_args[key] = dependent_node.result_mapped[connections[0].portName]
         if inspect.iscoroutinefunction(method):
             try:
-                method_output = await validate_arguments(method)(**input_args)
+                method_output = await validate_arguments(
+                    method, config=dict(arbitrary_types_allowed=True)
+                )(**input_args)
             except Exception as e:
                 out_node.error = e
                 out_node.status = "failed"
         else:
-            # await asyncio.sleep(0)
             try:
-                method_output = validate_arguments(method)(**input_args)
+                method_output = validate_arguments(
+                    method, config=dict(arbitrary_types_allowed=True)
+                )(**input_args)
             except Exception as e:
                 logger.error(f"Execution of Node {nodeid} has failed.")
                 out_node.error = e
@@ -341,7 +347,9 @@ class JobRunner:
             # Hence using the first one
             dependent_nodeid = connections[0].nodeId
             dependent_node = mapped_dict[dependent_nodeid]
-            logger.info(f"Node {nodeid} waiting for Node {dependent_nodeid} to be submitted.")
+            logger.info(
+                f"Node {nodeid} waiting for Node {dependent_nodeid} to be submitted."
+            )
             await dependent_node.run_event.wait()
             connections[0].job_id = dependent_node.job_id
             dependents.append(dependent_node)
