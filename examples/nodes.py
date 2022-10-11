@@ -1,4 +1,6 @@
-from typing import Union, Tuple
+from typing import Literal, Union, Tuple
+from dash import html, dcc
+import plotly.express as px
 import pandas as pd
 import numpy as np
 import asyncio
@@ -6,48 +8,10 @@ import time
 import dash
 
 
-async def add_async(number1: Union[int, float], number2: int) -> int:
-    """Add Numbers
-
-    Add two numbers together
-
-    Parameters
-    ----------
-    number1 : float
-        Number1
-    number2: float
-        Number2
-
-    Returns
-    -------
-    number: float
-        Sum
-    """
-    sleeptime = np.random.randint(0, 10)
+async def add_async(number1: int, number2: int) -> int:
+    """Add Numbers"""
+    sleeptime = np.random.randint(0, 5)
     print(f"sleeping for {sleeptime}")
-    await asyncio.sleep(sleeptime)
-    return number1 + number2
-
-
-async def add_async_win(number1: Union[int, float], number2: int) -> int:
-    """Add Numbers
-
-    Add two numbers together
-
-    Parameters
-    ----------
-    number1 : float
-        Number1
-    number2: float
-        Number2
-
-    Returns
-    -------
-    number: float
-        Sum
-    """
-    sleeptime = np.random.randint(0, 10)
-    print(f"sleeping for {sleeptime} in windows")
     await asyncio.sleep(sleeptime)
     return number1 + number2
 
@@ -69,14 +33,10 @@ def add_sync(number1: Union[int, float], number2: int) -> int:
     number: float
         Sum
     """
-    sleeptime = np.random.randint(0, 10)
+    sleeptime = np.random.randint(0, 5)
     print(f"sleeping for {sleeptime}")
     time.sleep(sleeptime)
     return number1 + number2
-
-
-def junk(abc, xyz: Union[str, int, float]) -> Tuple[str, int]:
-    return "hey", 3223
 
 
 def add_same_objects(object1, object2):
@@ -99,123 +59,23 @@ def add_same_objects(object1, object2):
     return object1 + object2
 
 
-def create_file(filepath, filetext):
-    """Create File
-
-    Create a file and writes a text and a number to it
-
-    Parameters
-    ----------
-    filepath : str
-        Path to the file
-    filetext : str
-        Text to write to the file
-    """
-    with open(filepath, "w") as f:
-        f.write(filetext)
-
-
-def enter_string(in_string):
-    """String
-
-    Input a string
-
-    Parameters
-    ----------
-    in_string: str
-        Input String
-        {"hidePort": true}
-
-    Returns
-    -------
-    string: str
-        Entered String
-    """
+def enter_string(in_string:str) -> str:
+    """String"""
     return in_string
 
 
-def enter_number(in_int):
-    """String
-
-    Input a string
-
-    Parameters
-    ----------
-    in_int: int
-        Input Number
-        {"hidePort": true}
-
-    Returns
-    -------
-    number: int
-        Entered Number
-    """
+def enter_integer(in_int: int) -> int:
+    """String"""
     return in_int
 
 
-def multiply(**kwargs):
-    """Multiply Numbers
-
-    Multiply two numbers
-
-    Parameters
-    ----------
-    number1 : float
-        Number1
-    number2: float
-        Number2
-
-    Returns
-    -------
-    number: float
-        Product
-    """
-    return kwargs.get("number1") * kwargs.get("number2")
+def multiply(a: Union[int, float], b: Union[int, float]) -> Union[int, float]:
+    """Multiply Numbers"""
+    return a * b
 
 
 def sum(list_of_items: list) -> Union[float, int, str]:
     return sum(list_of_items)
-
-
-def shaderman(shade1, color):
-    """Shader control test
-
-    Parameters
-    ----------
-    shade1 : shader
-        shader1
-    color: str
-        color of shader
-
-    Returns
-    -------
-    number: shader
-        someshader
-    """
-    return shade1 + color
-
-
-def read_file(filepath):
-    """Read File
-
-    Read a file and return the contents
-
-    Parameters
-    ----------
-    filepath: str
-        Path to the file
-
-    Returns
-    -------
-    output: str
-        Content of file
-    """
-    try:
-        with open(filepath) as f:
-            return f.read()
-    except FileNotFoundError:
-        return ""
-
 
 def convert_to_string(obj):
     """Convert to string
@@ -233,28 +93,6 @@ def convert_to_string(obj):
         String output
     """
     return str(obj)
-
-
-def read_json_pandas(api_address):
-    """Fake People
-
-    Generate fake people data
-
-    Parameters
-    ----------
-    api_address: str
-        Web address of the api
-
-    Returns
-    -------
-    Dataframe: object
-        Pandas dataframe
-    """
-    import requests
-    import json
-
-    r = requests.get("https://fakerapi.it/api/v1/persons")
-    return pd.DataFrame(json.loads(r.text)["data"])
 
 
 def dataframe_to_datatable(df: pd.DataFrame):
@@ -279,7 +117,7 @@ def dataframe_to_datatable(df: pd.DataFrame):
     )
 
 
-def display_markdown(markdown):
+def convert_to_markdown(markdown: str):
     """Display Markdown
 
     Display markdown in the dash app
@@ -296,17 +134,32 @@ def display_markdown(markdown):
     """
     return dash.dcc.Markdown(markdown)
 
+def display(output1, output2="", output3="", output4="", output5=""):
+    """Display outputs"""
+    return html.Div([output1, output2, output3, output4, output5])
+
+def read_dataframe(url: str, data_type: Literal["csv", "excel"], separator: str) -> pd.DataFrame:
+    """Read a dataframe"""
+    if data_type == "csv":
+        return pd.read_csv(url, sep=separator)
+    elif data_type == "excel":
+        return pd.read_excel(url)
+    return pd.read_table(url)
+
+def scatter_plot(df: pd.DataFrame, x: str, y: str) -> dcc.Graph:
+    """Create a scatter plot from a dataframe"""
+    return dcc.Graph(figure=px.scatter(df, x=x, y=y))
 
 all_functions = [
     add_async,
     add_sync,
-    add_async_win,
-    shaderman,
     enter_string,
-    enter_number,
-    junk,
+    enter_integer,
     add_same_objects,
     convert_to_string,
     dataframe_to_datatable,
-    display_markdown,
+    convert_to_markdown,
+    read_dataframe,
+    display,
+    scatter_plot,
 ]

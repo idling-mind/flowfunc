@@ -5,39 +5,64 @@ from flowfunc.jobrunner import JobRunner
 import dash
 from dash.dependencies import Input, Output, State
 from dash import html, dcc
+import dash_bootstrap_components as dbc
 import json
 import base64
 
 from flowfunc.models import OutNode
 from nodes import all_functions
-import numpy as np
 
-app = dash.Dash(__name__)
+app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
 
 fconfig = Config.from_function_list(all_functions)
 job_runner = JobRunner(fconfig)
 
-app.layout = html.Div(
+node_editor = html.Div(
     [
-        html.Button(id="run", children="Run"),
-        html.Button(id="save", children="Save"),
-        html.Button(id="clear", children="Clear"),
-        html.Button(id="change", children="Change Config"),
-        dcc.Upload(id="uploader", children=html.Button(id="load", children="Load")),
-        html.Div(id="output"),
-        dash.dcc.Download(id="download"),
+        dbc.ButtonGroup(
+            [
+                dbc.Button(id="run", children="Run"),
+                dbc.Button(id="save", children="Save"),
+                dbc.Button(id="clear", children="Clear"),
+                dcc.Upload(
+                    id="uploader", children=dbc.Button(id="load", children="Load")
+                ),
+                dash.dcc.Download(id="download"),
+            ],
+            style={
+                "position": "absolute",
+                "top": "15px",
+                "left": "15px",
+                "z-index": "15",
+            },
+        ),
         html.Div(
             id="nodeeditor_container",
-            style={"height": "800px", "width": "100%"},
             children=flowfunc.Flowfunc(
                 id="input",
-                style={"height": "800px"},
                 # config=inconfig,
                 config=fconfig.dict(),
                 context={"context": "initial"},
             ),
+            style={
+                "position": "relative",
+                "width": "100%",
+                "height": "100vh",
+            },
         ),
     ]
+)
+
+app.layout = html.Div(
+    dbc.Row(
+        [
+            dbc.Col(width=8, children=node_editor),
+            dbc.Col(
+                id="output", width=4, style={"height": "100vh", "overflow": "auto"}
+            ),
+        ],
+    ),
+    style={"overflow": "hidden"},
 )
 
 
@@ -67,7 +92,6 @@ def parse_uploaded_contents(contents):
     ],
 )
 def display_output(runclicks, nodes):
-    # Run
     if not nodes:
         return [], {}
     starttime = time.perf_counter()
@@ -75,18 +99,13 @@ def display_output(runclicks, nodes):
     nodes_output = job_runner.run(nodes)
     # nodes_output = {node_id: OutNode(**node) for node_id, node in output_dict.items()}
     endtime = time.perf_counter()
-    print(starttime - endtime)
     outdiv = html.Div(children=[])
     for node in nodes_output.values():
         if node.error:
             outdiv.children.append(str(node.error))
-            continue
-        if "pandas_to_plot" in node.type:
-            outdiv.children.append(node.value["Plot"])
-        if "display_markdown" in node.type:
-            outdiv.children.append(node.value["markdown"])
-        if "dataframe_to_datatable" in node.type:
-            outdiv.children.append(node.value["Datatable"])
+        if "display" in node.type:
+            outdiv.children.append(node.result)
+
     return outdiv, {node_id: node.status for node_id, node in nodes_output.items()}
 
 
@@ -97,16 +116,6 @@ def display_output(runclicks, nodes):
 )
 def func(n_clicks, nodes):
     return dict(content=json.dumps(nodes), filename="nodes.json")
-
-
-@app.callback(
-    Output("input", "config"),
-    [Input("change", "n_clicks")],
-    prevent_initial_call=True,
-)
-def func(n_clicks):
-    config = Config(all_functions[:2]).dict()
-    return config
 
 
 @app.callback(
