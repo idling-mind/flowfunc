@@ -2,7 +2,6 @@ import asyncio
 import json
 from pathlib import Path
 import time
-from fakeredis import FakeStrictRedis
 from flowfunc.config import Config
 from flowfunc.distributed import NodeJob, NodeQueue
 from flowfunc.jobrunner import JobRunner
