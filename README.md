@@ -57,20 +57,7 @@ app = dash.Dash(__name__)
 
 # Functions can be converted to nodes
 def add(a: int, b: int) -> int:
-    """Add two numbers
-
-    Parameters
-    ----------
-    a: int
-        First number
-    b: int
-        Second number
-    
-    Returns
-    -------
-    sum: int
-        Sum of a and b
-    """
+    """Add two numbers"""
     return a + b
 
 def subtract(a: int, b: int) -> int:
@@ -104,7 +91,7 @@ def run_nodes(nclicks: int, output_nodes: Dict[str, OutNode]):
     result = runner.run(output_nodes)
     output = []
     for node in result.values():
-        # node.value contains the result of the node
+        # node.result contains the result of the node
         output.append(
             html.Div([html.H1(f"{node.type}: {node.id}"), html.P(str(node.result))])
         )
@@ -140,7 +127,7 @@ a distributed way, it will have a `job_id` attribute on every node. You can use
 this `job_id` and the `queue` object to retrieve the results of the node.
 
 ```python
-Flowfunc(id="nodeeditor", config=nodeeditor_config.config_dict())
+Flowfunc(id="nodeeditor", config=nodeeditor_config.dict())
 ```
 This is the dash component with `id` equal to `nodeeditor`. You need to pass in
 the config object created previously, but converted to a dictionary.
@@ -151,13 +138,13 @@ the config object created previously, but converted to a dictionary.
 `Ports`. Flowfunc let's you easily create nodes from python functions by inspecting
 their signature and type annotations. The parameters of the function becomes the
 input ports and return value of the function becomes the output port. You can give
-different types of type annotations. Even dataclasses and `pydantic` classes.
+different types of type annotations. Even `dataclasses` and `pydantic` classes.
 The parser does it's best to interpret the type annotations and render an 
 equivalent node with different types of controls on it. If you aren't happy with
 the controls that the parser creted, you can manually specify how the node should
 be constructed.
 
-Once the parser processed the the function signature, it creates a
+Once the parser processed the function signature, it creates a
 `Node` object which is a `pydantic` object.
 
 ## Ports
@@ -167,7 +154,9 @@ interact with them and pass in data. There are some ports (read datatypes) which
 come with a default control. They are `int`, `float`, `str`, `bool`, `color`,
 `time`, `date`, `month`, `week`. Some of these are not standard python types and
 hence, you cannot use them in type annotation directly. If you want to use type
-annotation, create a custom type with these names.
+annotation, create a custom type with these names. In future, the plan is to create
+some kind of interface to make this process easier and also make more controls
+available.
 
 A default set of ports are automatically created when the nodes are processed
 from python functions. `Port` object is also a pydantic object.
@@ -186,5 +175,3 @@ will contain all the `Port` pydantic objects.
 `JobRunner` object helps process the output of the node editor. When you pass
 the 
 
-
-.... documentation in progress.
