@@ -1,36 +1,62 @@
-from pprint import pprint
 import time
 import flowfunc
 from flowfunc.config import Config
 from flowfunc.jobrunner import JobRunner
 import dash
-from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output, State
 from dash import html, dcc
+import dash_bootstrap_components as dbc
 import json
 import base64
 from redis import Redis
 
-from flowfunc.models import OutNode, OutNodes
+from flowfunc.models import OutNode
 from flowfunc.distributed import NodeJob, NodeQueue
-
 from nodes import all_functions
 
-external_stylesheets = [
-    "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css",
-    "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@300&family=Roboto&display=swap",
-    "https://use.fontawesome.com/releases/v5.8.1/css/all.css",
-]
-
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
 
 rconn = Redis(host="localhost", port=6379)
 q = NodeQueue(connection=rconn)
-q_win = NodeQueue("win", connection=rconn)
 
 fconfig = Config.from_function_list(all_functions)
-
 job_runner = JobRunner(fconfig, method="distributed", default_queue=q)
+
+node_editor = html.Div(
+    [
+        dbc.ButtonGroup(
+            [
+                dbc.Button(id="run", children="Run"),
+                dbc.Button(id="save", children="Save"),
+                dbc.Button(id="clear", children="Clear"),
+                dcc.Upload(
+                    id="uploader", children=dbc.Button(id="load", children="Load")
+                ),
+                dash.dcc.Download(id="download"),
+            ],
+            style={
+                "position": "absolute",
+                "top": "15px",
+                "left": "15px",
+                "z-index": "15",
+            },
+        ),
+        html.Div(
+            id="nodeeditor_container",
+            children=flowfunc.Flowfunc(
+                id="input",
+                # config=inconfig,
+                config=fconfig.dict(),
+                context={"context": "initial"},
+            ),
+            style={
+                "position": "relative",
+                "width": "100%",
+                "height": "100vh",
+            },
+        ),
+    ]
+)
 
 app.layout = html.Div(
     [
@@ -40,40 +66,16 @@ app.layout = html.Div(
             n_intervals=0,
         ),
         dcc.Store(id="job_store"),
-        html.Div(
-            children=[
-                html.Button(id="run", children="Run"),
-                html.Button(id="save", children="Save"),
-                dash.dcc.Download(id="download"),
-                html.Button(id="clear", children="Clear"),
-                html.Button(id="change", children="Change Config"),
-                dcc.Upload(
-                    id="uploader",
-                    children=html.Div(["Drag and Drop or ", html.A("Select Files")]),
-                    style={
-                        "height": "60px",
-                        "lineHeight": "60px",
-                        "borderWidth": "1px",
-                        "borderStyle": "dashed",
-                        "borderRadius": "5px",
-                        "textAlign": "center",
-                        "margin": "10px",
-                    },
+        dbc.Row(
+            [
+                dbc.Col(width=8, children=node_editor),
+                dbc.Col(
+                    id="output", width=4, style={"height": "100vh", "overflow": "auto"}
                 ),
-            ]
-        ),
-        html.Div(id="output"),
-        html.Div(
-            id="nodeeditor_container",
-            style={"height": "90vh"},
-            children=flowfunc.Flowfunc(
-                id="input",
-                # config=inconfig,
-                config=fconfig.dict(),
-                context={"context": "initial"},
-            ),
+            ],
         ),
     ],
+    style={"overflow": "hidden"},
 )
 
 
@@ -99,21 +101,17 @@ def parse_uploaded_contents(contents):
         State("input", "nodes"),
     ],
 )
-def run_nodes(runclicks, nodes):
-    # Run
-    starttime = time.perf_counter()
+def display_output(runclicks, nodes):
     if not nodes:
         return {}
-    job = job_runner.run(nodes)
-    job_nodes = OutNodes.parse_obj(job)
+    nodes_output = job_runner.run(nodes)
     store = {}
-    for nodeid, node in job.items():
-        store[nodeid] = OutNode.parse_obj(node).dict(
-            exclude={"run_event", "job", "repr_method"}
+    for nodeid, node in nodes_output.items():
+        store[nodeid] = node.dict(
+            exclude={"run_event", "job"}
         )
 
     return store
-
 
 @app.callback(
     [
@@ -133,10 +131,11 @@ def get_status(ninterval, data):
     status = {}
     result = []
     for nodeid, node in data.items():
+        node = OutNode.parse_obj(node)
         job = NodeJob.fetch(OutNode.parse_obj(node).job_id, connection=rconn)
         status[nodeid] = job.get_status()
-        if job.result:
-            result.append(str(job.result))
+        if not job.result is None and "display" in node.type:
+            result.append(job.result)
     if any([x in ["started", "deferred"] for x in status.values()]):
         interval = 1000
     return result, status, interval
@@ -152,35 +151,10 @@ def func(n_clicks, nodes):
 
 
 @app.callback(
-    Output("input", "config"),
     [
-        Input("change", "n_clicks"),
-        State("input", "config"),
+        Output("input", "nodes"),
+        Output("input", "editor_status"),
     ],
-    prevent_initial_call=True,
-)
-def func(n_clicks, config):
-    return config
-
-
-@app.callback(
-    Output("input", "selected_nodes"),
-    [
-        Input("input", "selected_nodes"),
-        Input("input", "nodes"),
-    ],
-    prevent_initial_call=True,
-)
-def func(selected, nodes):
-    if not selected or not nodes:
-        raise PreventUpdate
-    for node in selected:
-        print(nodes[node])
-    return selected
-
-
-@app.callback(
-    [Output("input", "nodes"), Output("input", "editor_status")],
     [
         Input("uploader", "contents"),
         Input("clear", "n_clicks"),
