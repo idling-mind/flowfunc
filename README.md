@@ -164,6 +164,11 @@ annotation, create a custom type with these names. In future, the plan is to cre
 some kind of interface to make this process easier and also make more controls
 available.
 
+When you annotate a argument with a `dataclass` or `pydantic` object, `flowfunc`
+will inspect the attributes of this class and it will try to create controls for
+each of the attributes of the object. As of now, `flowfunc` cannot handle nested
+`pydantic` or `dataclass` objects.
+
 A default set of ports are automatically created when the nodes are processed
 from python functions. `Port` object is also a pydantic object.
 
@@ -178,6 +183,7 @@ to define functions in javascript as well.
 will contain all the `Port` pydantic objects. 
 
 ## JobRunner
-`JobRunner` object helps process the output of the node editor. When you pass
-the 
+`JobRunner` object helps process the output of the node editor. `JobRunnber` can
+run in as blocking (sync), return an awaitable (async), return a dict of rq
+jobs (distributed) or await on a dict of rq jobs (async_distributed).
 
