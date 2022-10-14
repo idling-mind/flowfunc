@@ -2,7 +2,7 @@ from copy import deepcopy
 from dataclasses import fields, is_dataclass
 from enum import Enum
 import inspect
-from typing import Any, Callable, List, Literal, Optional, Union, get_args, get_origin
+from typing import Any, Callable, List, Optional, Union, get_args, get_origin
 from warnings import warn
 from pydantic import BaseModel
 
@@ -259,20 +259,6 @@ def control_from_field(
         Control: A flowfunc Control object corresponding to the type annotation
     """
     control_types = [x.name for x in ControlType]
-    if get_origin(cobj) == Literal:
-        # Literal
-        clabel = f"{cname} (literal)"
-        options = [{"label": x, "value": x} for x in get_args(cobj)]
-        return Control(
-            type=ControlType.select, name=cname, label=clabel, options=options
-        )
-    if get_origin(cobj) == list and get_origin(get_args(cobj)[0]) == Literal:
-        # List of literals
-        clabel = f"{cname} (list)"
-        options = [{"label": x, "value": x} for x in get_args(get_args(cobj)[0])]
-        return Control(
-            type=ControlType.multiselect, name=cname, label=clabel, options=options
-        )
     if inspect.isclass(cobj) and issubclass(cobj, Enum):
         # Enum
         clabel = f"{cname} (enum)"

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Literal, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 import asyncio
 from pydantic import BaseModel
 from dataclasses import dataclass
@@ -170,35 +170,6 @@ def get_pydantic_user(user: PydanticUser) -> PydanticUser:
 def get_dataclass_user(user: DataclassUser) -> DataclassUser:
     return user
 
-
-def get_matter_state(s: Literal["Gas", "Liquid", "Solid"]) -> Literal["Gas", "Liquid", "Solid"]:
-    return s
-
-
-def get_continent_list(
-    c: List[
-        Literal[
-            "Asia",
-            "Africa",
-            "Europe",
-            "North Americal",
-            "South America",
-            "Australia",
-            "Antartica",
-        ]
-    ]
-) -> List[
-        Literal[
-            "Asia",
-            "Africa",
-            "Europe",
-            "North Americal",
-            "South America",
-            "Australia",
-            "Antartica",
-        ]
-    ]:
-    return c
 
 def get_optional_arg(s: Optional[str]) -> str:
     return s
