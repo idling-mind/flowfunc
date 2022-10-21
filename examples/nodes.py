@@ -1,4 +1,5 @@
-from typing import Literal, Union, Tuple
+from enum import Enum
+from typing import Any, Literal, Union, Tuple
 from dash import html, dcc
 import plotly.express as px
 import pandas as pd
@@ -8,95 +9,33 @@ import time
 import dash
 
 
-async def add_async(number1: int, number2: int) -> int:
-    """Add Numbers"""
-    sleeptime = np.random.randint(0, 5)
-    print(f"sleeping for {sleeptime}")
-    await asyncio.sleep(sleeptime)
-    return number1 + number2
-
-
-def add_sync(number1: Union[int, float], number2: int) -> int:
-    """Add Numbers
-
-    Add two numbers together
-
-    Parameters
-    ----------
-    number1 : float
-        Number1
-    number2: float
-        Number2
-
-    Returns
-    -------
-    number: float
-        Sum
-    """
-    sleeptime = np.random.randint(0, 5)
-    print(f"sleeping for {sleeptime}")
-    time.sleep(sleeptime)
-    return number1 + number2
-
-
-def add_same_objects(object1, object2):
-    """Add Objects
-
-    Add any two objects of the same type
-
-    Parameters
-    ----------
-    object1: object
-        First Object
-    object2: object
-        Second Object
-
-    Returns
-    -------
-    combined_object: object
-        Combined Object
-    """
-    return object1 + object2
+def add(item1: Any, item2: Any) -> Any:
+    """Add two objects"""
+    return item1 + item2
 
 
 def enter_string(in_string:str) -> str:
-    """String"""
+    """Enter a string"""
     return in_string
 
 
 def enter_integer(in_int: int) -> int:
-    """String"""
+    """Enter an integer"""
     return in_int
 
 
 def multiply(a: Union[int, float], b: Union[int, float]) -> Union[int, float]:
-    """Multiply Numbers"""
+    """Multiply two numbers"""
     return a * b
 
 
-def sum(list_of_items: list) -> Union[float, int, str]:
-    return sum(list_of_items)
-
 def convert_to_string(obj):
-    """Convert to string
-
-    Convert any object to string
-
-    Parameters
-    ----------
-    obj: object
-        Object to convert
-
-    Returns
-    -------
-    string: str
-        String output
-    """
+    """Convert any object to string"""
     return str(obj)
 
 
 def dataframe_to_datatable(df: pd.DataFrame):
-    """Convert dataframe to a dash datatable
+    """Convert dataframe to a dash datatable so that it can be displayed
 
     Parameters
     ----------
@@ -108,12 +47,14 @@ def dataframe_to_datatable(df: pd.DataFrame):
     Datatable : object
         Dash datatable
     """
+    ddf = df.copy(deep=True)
+    ddf.columns = [".".join(x) for x in df.columns.tolist()]  # For multiindex columns
     from dash import dash_table
 
     return dash_table.DataTable(
         id="table",
-        columns=[{"name": i, "id": i} for i in df.columns],
-        data=df.to_dict("records"),
+        columns=ddf.columns,
+        data=ddf.to_dict("records"),
     )
 
 
@@ -138,28 +79,50 @@ def display(output1, output2="", output3="", output4="", output5=""):
     """Display outputs"""
     return html.Div([output1, output2, output3, output4, output5])
 
-def read_dataframe(url: str, data_type: Literal["csv", "excel"], separator: str) -> pd.DataFrame:
+
+class DataFileType(Enum):
+    csv = "csv"
+    excel = "excel"
+
+def read_dataframe(url: str, data_type: DataFileType, separator: str) -> pd.DataFrame:
     """Read a dataframe"""
-    if data_type == "csv":
+    if data_type.value == "csv":
         return pd.read_csv(url, sep=separator)
-    elif data_type == "excel":
+    elif data_type.value == "excel":
         return pd.read_excel(url)
     return pd.read_table(url)
+
+def iris_dataset() -> pd.DataFrame:
+    """Iris data as a dataframe"""
+    return read_dataframe(
+        "https://gist.github.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv",
+        DataFileType.csv,
+        ","
+    )
+
+def titanic_dataset() -> pd.DataFrame:
+    """Titanic data as a dataframe"""
+    return read_dataframe(
+        "https://github.com/datasciencedojo/datasets/raw/master/titanic.csv",
+        DataFileType.csv,
+        ","
+    )
 
 def scatter_plot(df: pd.DataFrame, x: str, y: str) -> dcc.Graph:
     """Create a scatter plot from a dataframe"""
     return dcc.Graph(figure=px.scatter(df, x=x, y=y))
 
 all_functions = [
-    add_async,
-    add_sync,
+    add,
     enter_string,
     enter_integer,
-    add_same_objects,
+    multiply,
     convert_to_string,
     dataframe_to_datatable,
     convert_to_markdown,
     read_dataframe,
     display,
     scatter_plot,
+    iris_dataset,
+    titanic_dataset,
 ]
