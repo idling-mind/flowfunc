@@ -110,6 +110,10 @@ def scatter_plot(df: pd.DataFrame, x: str, y: str) -> dcc.Graph:
     """Create a scatter plot from a dataframe"""
     return dcc.Graph(figure=px.scatter(df, x=x, y=y))
 
+def describe_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """Statistics of a dataframe"""
+    return df.describe()
+
 all_functions = [
     add,
     enter_string,
@@ -122,4 +126,5 @@ all_functions = [
     display,
     scatter_plot,
     sample_data,
+    describe_dataframe,
 ]
