@@ -54,7 +54,7 @@ def dataframe_to_datatable(df: pd.DataFrame):
 
     return dash_table.DataTable(
         id="table",
-        columns=ddf.columns,
+        columns=[{"name":col, "id": col} for col in ddf.columns.tolist()],
         data=ddf.to_dict("records"),
     )
 

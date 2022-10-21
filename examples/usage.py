@@ -61,14 +61,16 @@ app.layout = html.Div(
                 id="output_col",
                 width=4,
                 style={"height": "100vh", "overflow": "auto"},
-                children=dash.dcc.Loading(
-                    id="loading_comp",
-                    type="circle",
-                    style={"justify":"center","align": "center"},
-                    children=html.Div(
-                        id="output"
+                children=html.Div(
+                    style={"padding-top":"20px"},
+                    children=dash.dcc.Loading(
+                        id="loading_comp",
+                        type="circle",
+                        children=html.Div(
+                            id="output"
+                        )
                     )
-                )
+                ),
             ),
         ],
     ),
