@@ -58,7 +58,16 @@ app.layout = html.Div(
         [
             dbc.Col(width=8, children=node_editor),
             dbc.Col(
-                id="output", width=4, style={"height": "100vh", "overflow": "auto"}
+                id="output_col",
+                width=4,
+                style={"height": "100vh", "overflow": "auto"},
+                children=dash.dcc.Loading(
+                    id="loading_comp",
+                    type="circle",
+                    children=html.Div(
+                        id="output"
+                    )
+                )
             ),
         ],
     ),
