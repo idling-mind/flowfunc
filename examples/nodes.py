@@ -95,11 +95,12 @@ def read_dataframe(url: str, data_type: DataFileType, separator: str) -> pd.Data
     return pd.read_table(url)
 
 class SampleDataURL(Enum):
-    iris: "https://gist.github.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv"
-    titanic: "https://github.com/datasciencedojo/datasets/raw/master/titanic.csv"
+    iris = "https://gist.github.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv"
+    titanic = "https://github.com/datasciencedojo/datasets/raw/master/titanic.csv"
 
 @lru_cache(maxsize=None)
-def sample_data(dataset: SampleDataURL):
+def sample_data(dataset: SampleDataURL) -> pd.DataFrame:
+    """Sample data sets like tianic, iris etc"""
     return read_dataframe(
         dataset.value,
         DataFileType.csv,
