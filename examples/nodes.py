@@ -48,7 +48,8 @@ def dataframe_to_datatable(df: pd.DataFrame):
         Dash datatable
     """
     ddf = df.copy()
-    ddf.columns = [".".join(x) for x in df.columns.tolist()]  # For multiindex columns
+    if isinstance(ddf.columns[0], tuple):
+        ddf.columns = [".".join(x) for x in df.columns.tolist()]  # For multiindex columns
     from dash import dash_table
 
     return dash_table.DataTable(

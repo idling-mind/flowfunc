@@ -64,6 +64,7 @@ app.layout = html.Div(
                 children=dash.dcc.Loading(
                     id="loading_comp",
                     type="circle",
+                    style={"justify":"center","align": "center"},
                     children=html.Div(
                         id="output"
                     )
