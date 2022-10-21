@@ -1,3 +1,4 @@
+from functools import lru_cache
 from enum import Enum
 from typing import Any, Literal, Union, Tuple
 from dash import html, dcc
@@ -93,18 +94,14 @@ def read_dataframe(url: str, data_type: DataFileType, separator: str) -> pd.Data
         return pd.read_excel(url)
     return pd.read_table(url)
 
-def iris_dataset() -> pd.DataFrame:
-    """Iris data as a dataframe"""
-    return read_dataframe(
-        "https://gist.github.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv",
-        DataFileType.csv,
-        ","
-    )
+class SampleDataURL(Enum):
+    iris: "https://gist.github.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv"
+    titanic: "https://github.com/datasciencedojo/datasets/raw/master/titanic.csv"
 
-def titanic_dataset() -> pd.DataFrame:
-    """Titanic data as a dataframe"""
+@lru_cache(maxsize=None)
+def sample_data(dataset: SampleDataURL):
     return read_dataframe(
-        "https://github.com/datasciencedojo/datasets/raw/master/titanic.csv",
+        dataset.value,
         DataFileType.csv,
         ","
     )
@@ -124,6 +121,5 @@ all_functions = [
     read_dataframe,
     display,
     scatter_plot,
-    iris_dataset,
-    titanic_dataset,
+    sample_data,
 ]
