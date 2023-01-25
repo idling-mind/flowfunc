@@ -6,7 +6,9 @@ Flowfunc is a plotly dash component which works as a web based node editor.
 You can create nodes based on python functions and connect them together to define
 the logic during runtime.
 
-![Animation](./docs/source/images/animation.gif)
+[Demo](https://najeem.pythonanywhere.com/)
+
+[![Animation](./docs/source/images/animation.gif)](https://najeem.pythonanywhere.com/)
 
 The front end is created using the react package [Flume](https://flume.dev). The
 data model is also heavily influenced by this package.
