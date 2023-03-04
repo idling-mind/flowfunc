@@ -59,9 +59,9 @@ def test_str_port_controls():
 def test_str_type_controls():
     config = Config.from_function_list([add_str_type])
     assert len(config.ports) == 1
-    assert config.ports[0].type == "number"
+    assert config.ports[0].type == "int"
     assert len(config.ports[0].controls) == 1
-    assert config.ports[0].controls[0].type == "number"
+    assert config.ports[0].controls[0].type == "int"
 
 
 def test_pydantic_user():
