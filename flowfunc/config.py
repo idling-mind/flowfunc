@@ -2,7 +2,11 @@ from copy import deepcopy
 from dataclasses import fields, is_dataclass
 from enum import Enum
 import inspect
-from typing import Any, Callable, List, Optional, Union, get_args, get_origin
+from typing import Any, Callable, List, Optional, Union
+try:
+    from typing import get_args, get_origin
+except ImportError:
+    from typing_extensions import get_args, get_origin
 from warnings import warn
 from pydantic import BaseModel
 
