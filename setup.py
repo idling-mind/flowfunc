@@ -17,7 +17,8 @@ setup(
     license=package["license"],
     description=package.get("description", package_name),
     install_requires=[
-        "pydantic>=1.9"
+        "pydantic>=1.9",
+        "typing-extensions >= 4.5.0; python_version <= '3.7'",
     ],
     extras_require={
         "distributed": ["rq>=1.11"],
