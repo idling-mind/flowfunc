@@ -120,7 +120,7 @@ def add_wrong_docstring(a: int, b: int) -> int:
     return a + b
 
 
-def add_str_type(a: "number", b: "number") -> "number":
+def add_str_type(a: "int", b: "int") -> "int":
     return a + b
 
 
