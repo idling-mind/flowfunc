@@ -11,7 +11,6 @@ from .methods import (
     add_diff_int_and_float_inspect,
     sumnprod_with_docstring,
     add_position_only,
-    sumnprod_with_inspect,
     add_str_type,
     add_tuples_inspect
 )
@@ -189,16 +188,16 @@ def test_process_node_inspect_add_with_type_anno():
 def test_position_only_warning():
     """This should raise a warning"""
     with pytest.warns(UserWarning):
-        node = process_node_inspect(add_position_only)
+        _ = process_node_inspect(add_position_only)
 
 def test_str_type():
     """Node with str type"""
     add_node = process_node_inspect(add_str_type)
     assert isinstance(add_node, Node)
     assert add_node.method == add_str_type
-    assert add_node.inputs[0].type == "number"
-    assert add_node.inputs[1].type == "number"
-    assert add_node.outputs[0].type == "number"
+    assert add_node.inputs[0].type == "int"
+    assert add_node.inputs[1].type == "int"
+    assert add_node.outputs[0].type == "int"
 
 def test_add_tuple_inspect():
     """Inspect node with tuples"""
