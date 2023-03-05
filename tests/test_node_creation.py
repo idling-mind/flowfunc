@@ -195,9 +195,9 @@ def test_str_type():
     add_node = process_node_inspect(add_str_type)
     assert isinstance(add_node, Node)
     assert add_node.method == add_str_type
-    assert add_node.inputs[0].type == "number"
-    assert add_node.inputs[1].type == "number"
-    assert add_node.outputs[0].type == "number"
+    assert add_node.inputs[0].type == "int"
+    assert add_node.inputs[1].type == "int"
+    assert add_node.outputs[0].type == "int"
 
 def test_add_tuple_inspect():
     """Inspect node with tuples"""
