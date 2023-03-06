@@ -2,9 +2,11 @@ import dash
 from dash import Input, Output, State, html
 from flowfunc import Flowfunc, config, jobrunner
 
+
 def add(a: int, b: int):
     """Add two numbers"""
     return a + b
+
 
 def subtract(a: int, b: int):
     """Subtract one number from another"""

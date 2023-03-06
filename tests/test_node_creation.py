@@ -12,7 +12,7 @@ from .methods import (
     sumnprod_with_docstring,
     add_position_only,
     add_str_type,
-    add_tuples_inspect
+    add_tuples_inspect,
 )
 
 
@@ -87,6 +87,7 @@ def test_process_node_int_float_docstring():
     assert add_node.outputs[0].type == "float|int"
     assert add_node.outputs[0].label == "sum (int or float)"
 
+
 def test_process_node_int_float_inspect():
     """Testing add with multiple types"""
     add_node = process_node_inspect(add_int_float_inspect)
@@ -110,6 +111,7 @@ def test_process_node_int_float_inspect():
     assert add_node.outputs[0].type == "float|int"
     assert add_node.outputs[0].label == "result (float,int)"
 
+
 def test_process_node_int_and_float_inspect():
     """Testing add with multiple types"""
     add_node = process_node_inspect(add_diff_int_and_float_inspect)
@@ -122,6 +124,7 @@ def test_process_node_int_and_float_inspect():
     assert add_node.outputs[0].label == "int"
     assert add_node.outputs[1].type == "float"
     assert add_node.outputs[1].label == "float"
+
 
 def test_process_node_sum_prod_docstring():
     """Testing add with multiple types"""
@@ -137,7 +140,7 @@ def test_process_node_sum_prod_docstring():
 
 def test_raise_exception():
     with pytest.raises(Exception):
-        add_node = process_node_docstring(add_nothing)
+        _ = process_node_docstring(add_nothing)
 
 
 def test_process_node_inspect_add():
@@ -185,10 +188,12 @@ def test_process_node_inspect_add_with_type_anno():
     assert add_node.outputs[0].type == "int"
     assert add_node.outputs[0].label == "result (int)"
 
+
 def test_position_only_warning():
     """This should raise a warning"""
     with pytest.warns(UserWarning):
         _ = process_node_inspect(add_position_only)
+
 
 def test_str_type():
     """Node with str type"""
@@ -198,6 +203,7 @@ def test_str_type():
     assert add_node.inputs[0].type == "int"
     assert add_node.inputs[1].type == "int"
     assert add_node.outputs[0].type == "int"
+
 
 def test_add_tuple_inspect():
     """Inspect node with tuples"""

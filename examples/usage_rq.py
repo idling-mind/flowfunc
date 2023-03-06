@@ -1,4 +1,3 @@
-import time
 import flowfunc
 from flowfunc.config import Config
 from flowfunc.jobrunner import JobRunner
@@ -86,7 +85,7 @@ def parse_uploaded_contents(contents):
     data = json.loads(decoded.decode("utf-8"))
     try:
         for key, value in data.items():
-            node = OutNode(**value)
+            _ = OutNode(**value)
         # Parsing succeeded
         return data
     except Exception as e:
@@ -107,11 +106,10 @@ def display_output(runclicks, nodes):
     nodes_output = job_runner.run(nodes)
     store = {}
     for nodeid, node in nodes_output.items():
-        store[nodeid] = node.dict(
-            exclude={"run_event", "job"}
-        )
+        store[nodeid] = node.dict(exclude={"run_event", "job"})
 
     return store
+
 
 @app.callback(
     [
@@ -134,7 +132,7 @@ def get_status(ninterval, data):
         node = OutNode.parse_obj(node)
         job = NodeJob.fetch(OutNode.parse_obj(node).job_id, connection=rconn)
         status[nodeid] = job.get_status()
-        if not job.result is None and "display" in node.type:
+        if job.result is not None and "display" in node.type:
             result.append(job.result)
     if any([x in ["started", "deferred"] for x in status.values()]):
         interval = 1000

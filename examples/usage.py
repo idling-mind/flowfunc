@@ -1,4 +1,3 @@
-import time
 import flowfunc
 from flowfunc.config import Config
 from flowfunc.jobrunner import JobRunner
@@ -73,7 +72,7 @@ def parse_uploaded_contents(contents):
     data = json.loads(decoded.decode("utf-8"))
     try:
         for key, value in data.items():
-            node = OutNode(**value)
+            _ = OutNode(**value)
         # Parsing succeeded
         return data
     except Exception as e:
@@ -94,11 +93,7 @@ def parse_uploaded_contents(contents):
 def display_output(runclicks, nodes):
     if not nodes:
         return [], {}
-    starttime = time.perf_counter()
-    # output_dict = job_runner.run(nodes)
     nodes_output = job_runner.run(nodes)
-    # nodes_output = {node_id: OutNode(**node) for node_id, node in output_dict.items()}
-    endtime = time.perf_counter()
     outdiv = html.Div(children=[])
     for node in nodes_output.values():
         if node.error:

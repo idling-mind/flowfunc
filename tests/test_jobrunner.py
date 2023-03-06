@@ -4,7 +4,13 @@ from flowfunc.jobrunner import JobRunner
 from flowfunc.exceptions import ErrorInDependentNode
 from pathlib import Path
 import json
-from tests.methods import add_normal, add_async_with_sleep, add_with_docstring, divide_numbers
+from tests.methods import (
+    add_normal,
+    add_async_with_sleep,
+    add_with_docstring,
+    divide_numbers,
+)
+
 
 def test_blank():
     """Testing if running empty dict will return empty output"""
@@ -13,6 +19,7 @@ def test_blank():
     runner = JobRunner(config)
     results = runner.run(nodes)
     assert not results
+
 
 def test_run_add():
     """Testing basic functionality"""
@@ -23,14 +30,18 @@ def test_run_add():
     assert results
     assert isinstance(results, dict)
     assert len(results) == 5
-    assert results["node_1"].result == 1 + 2 # 3
+    assert results["node_1"].result == 1 + 2  # 3
     assert results["node_1"].result_mapped == {"result": results["node_1"].result}
-    assert results["node_2"].result == 3 + results["node_1"].result # 6
+    assert results["node_2"].result == 3 + results["node_1"].result  # 6
     assert results["node_2"].result_mapped == {"result": results["node_2"].result}
     assert results["node_3"].result == 4 + results["node_1"].result
     assert results["node_3"].result_mapped == {"result": results["node_3"].result}
-    assert results["node_4"].result == results["node_2"].result + results["node_5"].result
-    assert results["node_5"].result == results["node_1"].result + results["node_3"].result
+    assert (
+        results["node_4"].result == results["node_2"].result + results["node_5"].result
+    )
+    assert (
+        results["node_5"].result == results["node_1"].result + results["node_3"].result
+    )
     assert all([n.status == "finished" for n in results.values()])
 
 
@@ -43,15 +54,20 @@ def test_run_add_async():
     assert results
     assert isinstance(results, dict)
     assert len(results) == 5
-    assert results["node_1"].result == 1 + 2 # 3
+    assert results["node_1"].result == 1 + 2  # 3
     assert results["node_1"].result_mapped == {"result": results["node_1"].result}
-    assert results["node_2"].result == 3 + results["node_1"].result # 6
+    assert results["node_2"].result == 3 + results["node_1"].result  # 6
     assert results["node_2"].result_mapped == {"result": results["node_2"].result}
     assert results["node_3"].result == 4 + results["node_1"].result
     assert results["node_3"].result_mapped == {"result": results["node_3"].result}
-    assert results["node_4"].result == results["node_2"].result + results["node_5"].result
-    assert results["node_5"].result == results["node_1"].result + results["node_3"].result
+    assert (
+        results["node_4"].result == results["node_2"].result + results["node_5"].result
+    )
+    assert (
+        results["node_5"].result == results["node_1"].result + results["node_3"].result
+    )
     assert all([n.status == "finished" for n in results.values()])
+
 
 def test_run_add_async_return_coroutine():
     """JobRunner returns a coroutine"""
@@ -63,15 +79,20 @@ def test_run_add_async_return_coroutine():
     assert results
     assert isinstance(results, dict)
     assert len(results) == 5
-    assert results["node_1"].result == 1 + 2 # 3
+    assert results["node_1"].result == 1 + 2  # 3
     assert results["node_1"].result_mapped == {"result": results["node_1"].result}
-    assert results["node_2"].result == 3 + results["node_1"].result # 6
+    assert results["node_2"].result == 3 + results["node_1"].result  # 6
     assert results["node_2"].result_mapped == {"result": results["node_2"].result}
     assert results["node_3"].result == 4 + results["node_1"].result
     assert results["node_3"].result_mapped == {"result": results["node_3"].result}
-    assert results["node_4"].result == results["node_2"].result + results["node_5"].result
-    assert results["node_5"].result == results["node_1"].result + results["node_3"].result
+    assert (
+        results["node_4"].result == results["node_2"].result + results["node_5"].result
+    )
+    assert (
+        results["node_5"].result == results["node_1"].result + results["node_3"].result
+    )
     assert all([n.status == "finished" for n in results.values()])
+
 
 def test_null_values():
     """Testing basic functionality"""
@@ -83,6 +104,7 @@ def test_null_values():
     assert isinstance(results, dict)
     assert len(results) == 2
     assert results["node_1"].status == "failed"
+
 
 def test_error_in_node():
     """Testing basic functionality"""
@@ -106,9 +128,11 @@ def test_run_add_async_dependent():
     assert results
     assert isinstance(results, dict)
     assert len(results) == 3
-    assert results["node_1"].result == 1 + 2 # 3
+    assert results["node_1"].result == 1 + 2  # 3
     assert results["node_1"].result_mapped == {"result": results["node_1"].result}
     assert results["node_3"].result == 4 + results["node_1"].result
     assert results["node_3"].result_mapped == {"result": results["node_3"].result}
-    assert results["node_5"].result == results["node_1"].result + results["node_3"].result
+    assert (
+        results["node_5"].result == results["node_1"].result + results["node_3"].result
+    )
     assert all([n.status == "finished" for n in results.values()])

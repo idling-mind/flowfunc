@@ -3,6 +3,7 @@ from dataclasses import fields, is_dataclass
 from enum import Enum
 import inspect
 from typing import Any, Callable, List, Optional, Union
+
 try:
     from typing import get_args, get_origin
 except ImportError:
@@ -250,9 +251,7 @@ def process_node_inspect(func: Callable) -> Node:
     return Node(**node_dict)
 
 
-def control_from_field(
-    cname: str, cobj: Any, port: Optional[Port] = None
-) -> Control:
+def control_from_field(cname: str, cobj: Any, port: Optional[Port] = None) -> Control:
     """Create a control from a give type object and it's properties
 
     Paramters:
@@ -297,7 +296,11 @@ def control_from_field(
             name=cname,
             label=clabel,
         )
-    if port and port.acceptTypes and any([x in control_types for x in port.acceptTypes]):
+    if (
+        port
+        and port.acceptTypes
+        and any([x in control_types for x in port.acceptTypes])
+    ):
         # If any of the accepted type has a corresponding control
         for t in port.acceptTypes:
             if t in control_types:
@@ -313,7 +316,6 @@ def ports_from_nodes(nodes: List[Node]) -> List[Port]:
     ports_: List[Port] = []
     for node in nodes:
         ports_ += node.inputs + node.outputs
-    colors = [x.name for x in Color]
     ports = []
     for port_ in ports_:
         port = deepcopy(port_)
@@ -354,9 +356,11 @@ class Config:
     Attributes
     ----------
     nodes: list[Node]
-        A list of pydantic Node objects which represent a node in the node editor config.
+        A list of pydantic Node objects which represent a node in the node
+        editor config.
     ports: list
-        A list of pydantic Port objects which represent a port in the node editor config.
+        A list of pydantic Port objects which represent a port in the node
+        editor config.
     """
 
     @classmethod

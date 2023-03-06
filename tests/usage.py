@@ -1,14 +1,19 @@
-from datetime import date
-from enum import Enum
 import json
 from pathlib import Path
 import dash
 from dash import Input, Output, State, html
 from flowfunc import Flowfunc, config, jobrunner
-from methods import add_async_with_sleep, add_str_inspect, add_with_docstring, divide_numbers
+from methods import (
+    add_async_with_sleep,
+    add_str_inspect,
+    add_with_docstring,
+    divide_numbers,
+)
 
 app = dash.Dash(__name__)
-fconfig = config.Config.from_function_list([divide_numbers, add_async_with_sleep, add_str_inspect, add_with_docstring])
+fconfig = config.Config.from_function_list(
+    [divide_numbers, add_async_with_sleep, add_str_inspect, add_with_docstring]
+)
 runner = jobrunner.JobRunner(fconfig)
 
 app.layout = html.Div(

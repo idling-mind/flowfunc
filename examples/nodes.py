@@ -1,4 +1,4 @@
-from typing import Literal, Union, Tuple
+from typing import Literal, Union
 from dash import html, dcc
 import plotly.express as px
 import pandas as pd
@@ -59,7 +59,7 @@ def add_same_objects(object1, object2):
     return object1 + object2
 
 
-def enter_string(in_string:str) -> str:
+def enter_string(in_string: str) -> str:
     """String"""
     return in_string
 
@@ -76,6 +76,7 @@ def multiply(a: Union[int, float], b: Union[int, float]) -> Union[int, float]:
 
 def sum(list_of_items: list) -> Union[float, int, str]:
     return sum(list_of_items)
+
 
 def convert_to_string(obj):
     """Convert to string
@@ -134,11 +135,15 @@ def convert_to_markdown(markdown: str):
     """
     return dash.dcc.Markdown(markdown)
 
+
 def display(output1, output2="", output3="", output4="", output5=""):
     """Display outputs"""
     return html.Div([output1, output2, output3, output4, output5])
 
-def read_dataframe(url: str, data_type: Literal["csv", "excel"], separator: str) -> pd.DataFrame:
+
+def read_dataframe(
+    url: str, data_type: Literal["csv", "excel"], separator: str
+) -> pd.DataFrame:
     """Read a dataframe"""
     if data_type == "csv":
         return pd.read_csv(url, sep=separator)
@@ -146,9 +151,11 @@ def read_dataframe(url: str, data_type: Literal["csv", "excel"], separator: str)
         return pd.read_excel(url)
     return pd.read_table(url)
 
+
 def scatter_plot(df: pd.DataFrame, x: str, y: str) -> dcc.Graph:
     """Create a scatter plot from a dataframe"""
     return dcc.Graph(figure=px.scatter(df, x=x, y=y))
+
 
 all_functions = [
     add_async,

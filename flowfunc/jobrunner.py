@@ -10,13 +10,6 @@ from .exceptions import ErrorInDependentNode, QueueError
 from .models import OutNode
 from .utils import logger
 
-try:
-    from .distributed import NodeQueue
-except ImportError:
-    # Not opted for distributed
-    pass
-
-
 def default_meta_method(
     method,
     job_queue,
@@ -132,7 +125,8 @@ class JobRunner:
         self.meta_data = meta_data if meta_data else {}
         if self.method == "distributed" and self.queue is None:
             raise QueueError(
-                "If the method is distributed, the `default_queue` argument cannot be empty."
+                "If the method is distributed, the `default_queue` argument "
+                "cannot be empty."
             )
         self.same_worker = same_worker
 
@@ -242,13 +236,13 @@ class JobRunner:
                 variable_value = values
             else:
                 # else return the value of the first item in the dict
-                # TODO: when flume implements option to have multiple inputs
-                # address it here.
                 variable_value = next(iter(values.values()))
             if variable_value is None:
                 continue  # This is null coming from react for unset controls
             input_args[key] = variable_value
         for key, connections in out_node.connections.inputs.items():
+            # TODO: when flume implements option to have multiple inputs
+            # address it here.
             # Now only one connection is supported by flume.
             # Hence using the first one
             dependent_nodeid = connections[0].nodeId
@@ -270,6 +264,7 @@ class JobRunner:
                     method, config=dict(arbitrary_types_allowed=True)
                 )(**input_args)
             except Exception as e:
+                logger.error(f"Execution of Node {nodeid} has failed.")
                 out_node.error = e
                 out_node.status = "failed"
         else:
@@ -327,8 +322,8 @@ class JobRunner:
         if hasattr(node, "job_id") and node.job_id:
             try:
                 node.run_event.set()
-            except:
-                pass
+            except Exception:
+                pass # The event is already set
             return
         method = self.flume_config.get_node(node.type).method
         input_args = {}
