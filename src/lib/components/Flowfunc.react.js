@@ -27,7 +27,7 @@ export default class Flowfunc extends Component {
   updateConfig = () => {
     // Function to convert the python based config data to a FlumeConfig object
     const config = this.props.config;
-    console.log(config);
+    // console.log(config);
     this.flconfig = new FlumeConfig();
     // Adding all standard ports first
     for (const port of config.portTypes) {
@@ -65,13 +65,14 @@ export default class Flowfunc extends Component {
       const { inputs, outputs, label, category, ...node_obj } = node;
       if (!R.isNil(inputs) && !R.isEmpty(inputs)) {
         node_obj.inputs = (ports) => inputs.map(input => {
-          const { type, ...input_data } = input;
+          const { type, controls, ...input_data } = input;
+          // console.log(input, type, controls, input_data);
           return ports[type](input_data);
         })
       }
       if (!R.isNil(outputs) && !R.isEmpty(outputs)) {
         node_obj.outputs = (ports) => outputs.map(output => {
-          const { type, ...output_data } = output;
+          const { type, controls, ...output_data } = output;
           return ports[type](output_data);
         })
       }
@@ -82,7 +83,7 @@ export default class Flowfunc extends Component {
       }
       this.flconfig.addNodeType(node_obj);
     }
-    console.log(this.flconfig);
+    // console.log(this.flconfig);
     if (!this.props.type_safety) {
       // Use acceptTypes from the object port
       const allPortTypes = this.flconfig.portTypes.object.acceptTypes;

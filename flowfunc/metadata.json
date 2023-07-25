@@ -1,6 +1,6 @@
 {
   "src/lib/components/Flowfunc.react.js": {
-    "description": "Flowfunc: A node editor for dash\nThis component gives a flow based programming interface for dash users.\nThe developer can define the nodes using simple python functions and these\nwill be available as nodes which can be connected together to create a logic\nat runtime.",
+    "description": "Flowfunc: A node editor for dash\r\nThis component gives a flow based programming interface for dash users.\r\nThe developer can define the nodes using simple python functions and these\r\nwill be available as nodes which can be connected together to create a logic\r\nat runtime.",
     "displayName": "Flowfunc",
     "methods": [
       {
@@ -82,7 +82,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "A property denoting the status of the editor\nFollowing statuses are possible.\n[\"client\", \"server\"]"
+        "description": "A property denoting the status of the editor\r\nFollowing statuses are possible.\r\n[\"client\", \"server\"]"
       },
       "selected_nodes": {
         "type": {
@@ -117,7 +117,7 @@
           "name": "array"
         },
         "required": false,
-        "description": "Default nodes present in the editor\nA list of nodes from the config"
+        "description": "Default nodes present in the editor\r\nA list of nodes from the config"
       },
       "context": {
         "type": {
@@ -166,7 +166,7 @@
           "name": "func"
         },
         "required": false,
-        "description": "Dash-assigned callback that should be called to report property changes\nto Dash, to make them available for callbacks."
+        "description": "Dash-assigned callback that should be called to report property changes\r\nto Dash, to make them available for callbacks."
       }
     }
   }

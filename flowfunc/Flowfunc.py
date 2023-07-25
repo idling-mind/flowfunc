@@ -26,7 +26,7 @@ Keyword arguments:
     Pass extra data to nodes.
 
 - default_nodes (list; optional):
-    Default nodes present in the editor A list of nodes from the
+    Default nodes present in the editor  A list of nodes from the
     config.
 
 - disable_pan (boolean; optional):
@@ -39,8 +39,8 @@ Keyword arguments:
     Node on which a double click event was registered.
 
 - editor_status (string; optional):
-    A property denoting the status of the editor Following statuses
-    are possible. [\"client\", \"server\"].
+    A property denoting the status of the editor  Following statuses
+    are possible.  [\"client\", \"server\"].
 
 - initial_scale (number; optional):
     Initial zoom level of the editor.
@@ -75,9 +75,6 @@ Keyword arguments:
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()
         _locals.update(kwargs)  # For wildcard attrs and excess named props
-        args = {k: _locals[k] for k in _explicit_args if k != 'children'}
-        for k in []:
-            if k not in args:
-                raise TypeError(
-                    'Required argument `' + k + '` was not specified.')
+        args = {k: _locals[k] for k in _explicit_args}
+
         super(Flowfunc, self).__init__(**args)
