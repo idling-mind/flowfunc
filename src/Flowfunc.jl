@@ -3,7 +3,7 @@ module Flowfunc
 using Dash
 
 const resources_path = realpath(joinpath( @__DIR__, "..", "deps"))
-const version = "0.0.3"
+const version = "0.0.4"
 
 include("jl/''_flowfunc.jl")
 
