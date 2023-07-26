@@ -21,22 +21,41 @@ def convert_template(**kwargs):
     return str(kwargs)
 
 
-generate_ports = PortFunction(path="dynamic_ports")
+def convert_to_list(**kwargs):
+    return list(kwargs.values())
+
+
+increasing_ports_function = PortFunction(path="increasing_ports")
+
+dynamic_port_function = PortFunction(path="dynamic_ports")
 # "dynamic_ports" should be defined in /assets/*.js at the
 # path window.dash_clientside.flowfunc.dynamic_ports
 
-portf_node = Node(
+
+template_node = Node(
     type="dynamic_ports",
     label="Dynamic Ports",
     description="Testing dynamic ports",
     method=convert_template,
-    inputs=generate_ports,
+    inputs=dynamic_port_function,
     outputs=[Port(type="str", name="template", label="Template")],
 )
 
+list_node = Node(
+    type="increasing_list",
+    label="Auto increasing list",
+    description="Auto increasing list",
+    method=convert_to_list,
+    inputs=increasing_ports_function,
+    outputs=[Port(type="object", name="object", label="List")],
+)
+
+
 app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
 
-fconfig = Config.from_function_list(all_functions, extra_nodes=[portf_node])
+fconfig = Config.from_function_list(
+    all_functions, extra_nodes=[template_node, list_node]
+)
 # fconfig = Config.from_function_list(all_functions)
 job_runner = JobRunner(fconfig)
 
