@@ -1,6 +1,7 @@
 window.dash_clientside = Object.assign({}, window.dash_clientside, {
     flowfunc: {
-        portf: function (ports, inputData, connections, context) {
+        dynamic_ports: function (ports, inputData, connections, context) {
+            // Example from flume.dev
             const template = (inputData && inputData.template && inputData.template.in_string) || "";
             const re = /\{(.*?)\}/g;
             let res, ids = []

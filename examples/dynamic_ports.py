@@ -2,6 +2,7 @@ import time
 import flowfunc
 from flowfunc.config import Config
 from flowfunc.jobrunner import JobRunner
+from flowfunc.models import Node, Port, PortFunction
 import dash
 from dash.dependencies import Input, Output, State
 from dash import html, dcc
@@ -13,30 +14,29 @@ from flowfunc.models import OutNode
 from nodes import all_functions
 
 app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
-from flowfunc.models import Node, Port, Control, ControlType, PortFunction
 
-# This is a simple function which will pass on the selected file name(from the select control) to the output port
-# You could as well use an api call or pull data from a database or so to get the file/data.
+
 def convert_template(**kwargs):
+    """Testing dynamic ports"""
     return str(kwargs)
 
-generate_ports = PortFunction(path="portf")
-# "portf" should be defined in /assets/*.js at the
-# path window.dash_clientside.flowfunc.portf
+
+generate_ports = PortFunction(path="dynamic_ports")
+# "dynamic_ports" should be defined in /assets/*.js at the
+# path window.dash_clientside.flowfunc.dynamic_ports
 
 portf_node = Node(
-    type="file_selector",
-    label="File Selector",
+    type="dynamic_ports",
+    label="Dynamic Ports",
+    description="Testing dynamic ports",
     method=convert_template,
     inputs=generate_ports,
-    outputs=[Port(type="str", name="template", label="Template")]
+    outputs=[Port(type="str", name="template", label="Template")],
 )
 
 app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
 
-fconfig = Config.from_function_list(
-    all_functions, extra_nodes=[portf_node]
-)
+fconfig = Config.from_function_list(all_functions, extra_nodes=[portf_node])
 # fconfig = Config.from_function_list(all_functions)
 job_runner = JobRunner(fconfig)
 
@@ -56,7 +56,7 @@ node_editor = html.Div(
                 "position": "absolute",
                 "top": "15px",
                 "left": "15px",
-                "z-index": "15",
+                "zIndex": "15",
             },
         ),
         html.Div(
