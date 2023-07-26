@@ -27,7 +27,6 @@ export default class Flowfunc extends Component {
   updateConfig = () => {
     // Function to convert the python based config data to a FlumeConfig object
     const config = this.props.config;
-    // console.log(config);
     this.flconfig = new FlumeConfig();
     // Adding all standard ports first
     for (const port of config.portTypes) {
@@ -64,11 +63,30 @@ export default class Flowfunc extends Component {
     for (const node of config.nodeTypes) {
       const { inputs, outputs, label, category, ...node_obj } = node;
       if (!R.isNil(inputs) && !R.isEmpty(inputs)) {
-        node_obj.inputs = (ports) => inputs.map(input => {
-          const { type, controls, ...input_data } = input;
-          // console.log(input, type, controls, input_data);
-          return ports[type](input_data);
-        })
+        if (R.hasIn("source", inputs)) {
+          var func = new Function(inputs.source);
+          node_obj.inputs = ports => (inputData, connections, context) => {
+            return func(ports, inputData, connections, context)
+          }
+        }
+        else if (R.hasIn("path", inputs)) {
+          try{
+            node_obj.inputs = ports => (inputData, connections, context) => {
+              var func = window.dash_clientside.flowfunc[inputs.path];
+              return func(ports, inputData, connections, context)
+            }
+          }
+          catch (e){
+            console.log("Error in evaluating function from path", e);
+          }
+        }
+        else {
+          node_obj.inputs = (ports) => inputs.map(input => {
+            const { type, controls, ...input_data } = input;
+            // console.log(input, type, controls, input_data);
+            return ports[type](input_data);
+          })
+        }
       }
       if (!R.isNil(outputs) && !R.isEmpty(outputs)) {
         node_obj.outputs = (ports) => outputs.map(output => {
