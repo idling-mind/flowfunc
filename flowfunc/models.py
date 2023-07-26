@@ -84,6 +84,11 @@ class Port(BaseModel):
         }
 
 
+class PortFunction(BaseModel):
+    """Use clientside javascript functions instead of ports"""
+    source: str
+
+
 class Node(BaseModel):
     """Objects corresponding to python functions. But only the name of the
     function are stored in the pydantic model
@@ -98,8 +103,8 @@ class Node(BaseModel):
     initialWidth: Optional[Union[int, float]]
     addable: Optional[bool]
     deletable: Optional[bool]
-    inputs: Optional[List[Port]]
-    outputs: Optional[List[Port]]
+    inputs: Optional[Union[List[Port], PortFunction]]
+    outputs: Optional[Union[List[Port], PortFunction]]
 
     def __hash__(self):
         return hash(self.type)

@@ -13,8 +13,63 @@ from flowfunc.models import OutNode
 from nodes import all_functions
 
 app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
+from flowfunc.models import Node, Port, Control, ControlType, PortFunction
 
-fconfig = Config.from_function_list(all_functions)
+# This is a simple function which will pass on the selected file name(from the select control) to the output port
+# You could as well use an api call or pull data from a database or so to get the file/data.
+def file_selector(**kwargs):
+    return kwargs
+
+portf = PortFunction(source="""
+{
+    console.log(arguments);
+    var ports = arguments[0];
+    var data = arguments[1];
+    const template = (data && data.template && data.template.in_string) || "";
+    const re = /\{(.*?)\}/g;
+    let res, ids = []
+    while ((res = re.exec(template)) !== null) {
+    if (!ids.includes(res[1])) ids.push(res[1]);
+    }
+    console.log(ids);
+    return [
+    ports.str({ name: "template", label: "Template", hidePort: true }),
+    ...ids.map(id => ports.str({ name: id, label: id }))
+    ];
+}
+""")
+
+file_selector_control = Control(
+    type=ControlType.select,
+    name="file_selector",
+    label="Select a File",
+    options=[
+        # List your files in here. Create this dictionary from the uploaded files.
+        {"value": "file1.txt", "label": "this is file 1"},
+        {"value": "file2.txt", "label": "this is file 2"},
+    ],
+)
+file_selector_port = Port(
+    type="file_selector",
+    name="infile",
+    label="Select File",
+    controls=[file_selector_control],
+)
+
+portf_node = Node(
+    type="file_selector",
+    label="File Selector",
+    method=file_selector,
+    inputs=portf,
+    # outputs=[file_selector_port]
+)
+
+app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
+
+fconfig = Config.from_function_list(
+    all_functions, extra_nodes=[portf_node]
+)
+# fconfig = Config.from_function_list(all_functions)
 job_runner = JobRunner(fconfig)
 
 node_editor = html.Div(
