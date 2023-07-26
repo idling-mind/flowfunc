@@ -37,9 +37,22 @@ export default class Flowfunc extends Component {
       if (!R.isNil(controls) && !R.isEmpty(controls)) {
         port_obj.controls = controls.map(control => {
           const { type, ...others } = control;
-          return standardControls[type]({
-            ...others
-          })
+          if (type in standardControls) {
+            return standardControls[type]({
+              ...others
+            })
+          } else if (R.hasIn("render_function", control)) {
+            try {
+              var func = window.dash_clientside.flowfunc[control.render_function];
+              return Controls.custom({
+                ...others,
+                render: func
+              })
+            }
+            catch (e) {
+              console.log("Error in evaluating function from path", e);
+            }
+          }
         })
       }
       else {

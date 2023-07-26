@@ -2,7 +2,7 @@ import time
 import flowfunc
 from flowfunc.config import Config
 from flowfunc.jobrunner import JobRunner
-from flowfunc.models import Node, Port, PortFunction
+from flowfunc.models import Node, Port, PortFunction, Control, ControlType
 import dash
 from dash.dependencies import Input, Output, State
 from dash import html, dcc
@@ -50,11 +50,28 @@ list_node = Node(
     outputs=[Port(type="object", name="object", label="List")],
 )
 
+custom_control_port = Port(type="cc", name="cc", label="custom control", controls=[
+    Control(
+        type=ControlType.custom,
+        name="custom",
+        label="Custom",
+        render_function="custom_control",
+    )
+])
+
+custom_control_node = Node(
+    type="custom_control",
+    label="Custom Control",
+    description="Custom Control",
+    method=convert_to_list,
+    inputs=[Port(type="cc", name="cc", label="custom control")],
+)
 
 app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
 
 fconfig = Config.from_function_list(
-    all_functions, extra_nodes=[template_node, list_node]
+    all_functions[:5], extra_nodes=[template_node, list_node, custom_control_node],
+    extra_ports=[custom_control_port]
 )
 # fconfig = Config.from_function_list(all_functions)
 job_runner = JobRunner(fconfig)
