@@ -39,6 +39,8 @@ portf = PortFunction(source="""
 }
 """)
 
+portf = PortFunction(path="portf")
+
 file_selector_control = Control(
     type=ControlType.select,
     name="file_selector",

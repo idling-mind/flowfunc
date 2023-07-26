@@ -1,15 +1,16 @@
 window.dash_clientside = Object.assign({}, window.dash_clientside, {
     flowfunc: {
-        onLoad: function(x) {
-            console.log(x);
-            x.addNodeType({
-                type: "string",
-                label: "Text",
-                description: "Outputs a string of text",
-                inputs: ports => x => {
-                    console.log(x);
-                }
-            })
+        portf: function (ports, inputData, connections, context) {
+            const template = (inputData && inputData.template && inputData.template.in_string) || "";
+            const re = /\{(.*?)\}/g;
+            let res, ids = []
+            while ((res = re.exec(template)) !== null) {
+                if (!ids.includes(res[1])) ids.push(res[1]);
+            }
+            return [
+                ports.str({ name: "template", label: "Template", hidePort: true }),
+                ...ids.map(id => ports.str({ name: id, label: id }))
+            ];
         }
     }
 });

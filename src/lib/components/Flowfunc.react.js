@@ -27,7 +27,6 @@ export default class Flowfunc extends Component {
   updateConfig = () => {
     // Function to convert the python based config data to a FlumeConfig object
     const config = this.props.config;
-    console.log(config);
     this.flconfig = new FlumeConfig();
     // Adding all standard ports first
     for (const port of config.portTypes) {
@@ -65,13 +64,21 @@ export default class Flowfunc extends Component {
       const { inputs, outputs, label, category, ...node_obj } = node;
       if (!R.isNil(inputs) && !R.isEmpty(inputs)) {
         if (R.hasIn("source", inputs)) {
-          console.log("Evaluating source", inputs);
           var func = new Function(inputs.source);
           node_obj.inputs = ports => (inputData, connections, context) => {
             return func(ports, inputData, connections, context)
           }
-          // node_obj.inputs = ports => []
-          console.log(node_obj);
+        }
+        else if (R.hasIn("path", inputs)) {
+          try{
+            var func = window.dash_clientside.flowfunc[inputs.path];
+            node_obj.inputs = ports => (inputData, connections, context) => {
+              return func(ports, inputData, connections, context)
+            }
+          }
+          catch (e){
+            console.log("Error in evaluating function from path", e);
+          }
         }
         else {
           node_obj.inputs = (ports) => inputs.map(input => {
@@ -94,7 +101,7 @@ export default class Flowfunc extends Component {
       }
       this.flconfig.addNodeType(node_obj);
     }
-    console.log(this.flconfig);
+    // console.log(this.flconfig);
     if (!this.props.type_safety) {
       // Use acceptTypes from the object port
       const allPortTypes = this.flconfig.portTypes.object.acceptTypes;

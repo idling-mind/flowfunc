@@ -86,7 +86,8 @@ class Port(BaseModel):
 
 class PortFunction(BaseModel):
     """Use clientside javascript functions instead of ports"""
-    source: str
+    source: Optional[str]
+    path: Optional[str]
 
 
 class Node(BaseModel):
