@@ -129,6 +129,8 @@ def process_port_inspect(pname, pobj) -> Port:
             label=f"{pname} (object)",
         )
     elif isinstance(pobj, str):
+        if pobj.startswith("'") and pobj.endswith("'"):
+            pobj = pobj[1:-1]
         ptype = pobj.split("|")[0].strip()
         return Port(type=ptype, name=pname, label=f"{pname} ({ptype})", py_type=ptype)
     d = {}
