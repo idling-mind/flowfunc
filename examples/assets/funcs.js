@@ -24,7 +24,13 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
         },
         custom_control: function (data, onChange) {
             return (
-                window.dash_html_components.Div({children:"Hello Div!"})
+                window.dash_bootstrap_components.Button({
+                    children: "1",
+                    onClick: (e) => {
+                        e.target.textContent = String(Number(e.target.textContent)+1);
+                        onChange(e.target.textContent);
+                    }
+                })
             )
         }
     }

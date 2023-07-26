@@ -55,7 +55,8 @@ custom_control_port = Port(type="cc", name="cc", label="custom control", control
         type=ControlType.custom,
         name="custom",
         label="Custom",
-        render_function="custom_control",
+        defaultValue="1",
+        render_function="custom_control", # defined in assets/funcs.js
     )
 ])
 
@@ -63,14 +64,19 @@ custom_control_node = Node(
     type="custom_control",
     label="Custom Control",
     description="Custom Control",
-    method=convert_to_list,
-    inputs=[Port(type="cc", name="cc", label="custom control")],
+    method=convert_template,
+    initialWidth=100,
+    inputs=[
+        Port(type="cc", name="cc1", label="custom control"),
+        Port(type="cc", name="cc2", label="custom control"),
+    ],
+    outputs=[Port(type="str", name="output", label="output control")],
 )
 
 app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
 
 fconfig = Config.from_function_list(
-    all_functions[:5], extra_nodes=[template_node, list_node, custom_control_node],
+    all_functions, extra_nodes=[template_node, list_node, custom_control_node],
     extra_ports=[custom_control_port]
 )
 # fconfig = Config.from_function_list(all_functions)
