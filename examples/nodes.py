@@ -1,11 +1,13 @@
-from typing import Literal, Union, Tuple
+from time import sleep
+from typing import Literal, Union, Tuple, NewType
 from dash import html, dcc
 import plotly.express as px
 import pandas as pd
 import numpy as np
 import asyncio
-import time
 import dash
+from flowfunc.types import date, time, month, color, week
+from dataclasses import dataclass
 
 
 async def add_async(number1: int, number2: int) -> int:
@@ -33,9 +35,6 @@ def add_sync(number1: Union[int, float], number2: int) -> int:
     number: float
         Sum
     """
-    sleeptime = np.random.randint(0, 5)
-    print(f"sleeping for {sleeptime}")
-    time.sleep(sleeptime)
     return number1 + number2
 
 
@@ -150,6 +149,26 @@ def scatter_plot(df: pd.DataFrame, x: str, y: str) -> dcc.Graph:
     """Create a scatter plot from a dataframe"""
     return dcc.Graph(figure=px.scatter(df, x=x, y=y))
 
+def custom_controls(m: month, w: week, d: date, t: time, c: color) -> str:
+    """Trying custom controls"""
+    out = ""
+    for item in [m, w, d, t, c]:
+        out += f"{item} ({type(item)})\n"
+    return out.strip()
+
+@dataclass
+class vector:
+    x: int
+    y: int
+    z: int
+
+    def magnitude(self):
+        return (self.x **2 + self.y**2 + self.z **2)**0.5
+
+def get_vector_magnitude(v: vector):
+    """Using dataclass as a port with multiple controls"""
+    return v.magnitude()
+
 all_functions = [
     add_async,
     add_sync,
@@ -162,4 +181,6 @@ all_functions = [
     read_dataframe,
     display,
     scatter_plot,
+    custom_controls,
+    get_vector_magnitude,
 ]
