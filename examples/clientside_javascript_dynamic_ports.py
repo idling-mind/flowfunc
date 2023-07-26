@@ -13,7 +13,31 @@ from flowfunc.models import OutNode
 from nodes import all_functions
 
 app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
-fconfig = Config.from_function_list(all_functions)
+from flowfunc.models import Node, Port, Control, ControlType, PortFunction
+
+# This is a simple function which will pass on the selected file name(from the select control) to the output port
+# You could as well use an api call or pull data from a database or so to get the file/data.
+def convert_template(**kwargs):
+    return str(kwargs)
+
+generate_ports = PortFunction(path="portf")
+# "portf" should be defined in /assets/*.js at the
+# path window.dash_clientside.flowfunc.portf
+
+portf_node = Node(
+    type="file_selector",
+    label="File Selector",
+    method=convert_template,
+    inputs=generate_ports,
+    outputs=[Port(type="str", name="template", label="Template")]
+)
+
+app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
+
+fconfig = Config.from_function_list(
+    all_functions, extra_nodes=[portf_node]
+)
+# fconfig = Config.from_function_list(all_functions)
 job_runner = JobRunner(fconfig)
 
 node_editor = html.Div(
