@@ -50,7 +50,7 @@ export default class Flowfunc extends Component {
               })
             }
             catch (e) {
-              console.log("Error in evaluating function from path", e);
+              console.log("Error in evaluating control from render_function", e);
             }
           }
         })

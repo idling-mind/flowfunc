@@ -5,15 +5,24 @@ from flowfunc.jobrunner import JobRunner
 from flowfunc.models import Node, Port, PortFunction, Control, ControlType
 import dash
 from dash.dependencies import Input, Output, State
-from dash import html, dcc
+from dash import html, dcc, ALL, MATCH
 import dash_bootstrap_components as dbc
 import json
 import base64
 
+from dash.dcc import Upload
+
+x = Upload(id="hi", children="hello")
+print(x.to_plotly_json())
+y = dbc.Button(id={"type":"btn", "index":"my button"}, children="My button")
+print(y.to_plotly_json())
+
 from flowfunc.models import OutNode
 from nodes import all_functions
 
-app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
+app = dash.Dash(
+    __name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.SLATE]
+)
 
 
 def convert_template(**kwargs):
@@ -50,15 +59,20 @@ list_node = Node(
     outputs=[Port(type="object", name="object", label="List")],
 )
 
-custom_control_port = Port(type="cc", name="cc", label="custom control", controls=[
-    Control(
-        type=ControlType.custom,
-        name="custom",
-        label="Custom",
-        defaultValue="1",
-        render_function="custom_control", # defined in assets/funcs.js
-    )
-])
+custom_control_port = Port(
+    type="cc",
+    name="cc",
+    label="custom control",
+    controls=[
+        Control(
+            type=ControlType.custom,
+            name="custom",
+            label="Custom",
+            defaultValue="1",
+            render_function="upload_control",  # defined in assets/funcs.js
+        )
+    ],
+)
 
 custom_control_node = Node(
     type="custom_control",
@@ -76,8 +90,9 @@ custom_control_node = Node(
 app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
 
 fconfig = Config.from_function_list(
-    all_functions, extra_nodes=[template_node, list_node, custom_control_node],
-    extra_ports=[custom_control_port]
+    all_functions,
+    extra_nodes=[template_node, list_node, custom_control_node],
+    extra_ports=[custom_control_port],
 )
 # fconfig = Config.from_function_list(all_functions)
 job_runner = JobRunner(fconfig)
@@ -93,6 +108,7 @@ node_editor = html.Div(
                     id="uploader", children=dbc.Button(id="load", children="Load")
                 ),
                 dash.dcc.Download(id="download"),
+                y,
             ],
             style={
                 "position": "absolute",
@@ -118,7 +134,7 @@ node_editor = html.Div(
     ]
 )
 
-app.layout = html.Div(
+app.layout = html.Div([
     dbc.Row(
         [
             dbc.Col(width=8, children=node_editor),
@@ -127,6 +143,9 @@ app.layout = html.Div(
             ),
         ],
     ),
+    dbc.Row([
+        dbc.Col(id="newout")
+    ])],
     style={"overflow": "hidden"},
 )
 
@@ -204,6 +223,14 @@ def update_output(contents, nclicks, nodes):
         newnodes = parse_uploaded_contents(contents)
         return newnodes, "server"
     return {}, "server"
+
+
+@app.callback(
+    Output("newout", "children"), Input({"type":"btn", "index": ALL}, "n_clicks"), prevent_initial_call=True
+)
+def change_btn(nclicks):
+    print("Clicked in python", nclicks)
+    return nclicks
 
 
 if __name__ == "__main__":

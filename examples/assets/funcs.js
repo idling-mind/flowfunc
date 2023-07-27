@@ -2,7 +2,6 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
     flowfunc: {
         dynamic_ports: function (ports, inputData, connections, context) {
             // Example from flume.dev
-            console.log(ports, connections, context);
             const template = (inputData && inputData.template && inputData.template.in_string) || "";
             const re = /\{(.*?)\}/g;
             let res, ids = []
@@ -25,13 +24,24 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
         custom_control: function (data, onChange) {
             return (
                 window.dash_bootstrap_components.Button({
-                    children: "1",
+                    children: data,
                     onClick: (e) => {
                         e.target.textContent = String(Number(e.target.textContent)+1);
                         onChange(e.target.textContent);
                     }
                 })
             )
+        },
+        upload_control: function(data, onChange) {
+            var i = {type:"btn", index: crypto.randomUUID()};
+            var comp = React.createElement(window.dash_core_components.Upload, {
+                id: JSON.stringify(i),
+                setProps: (props) => {
+                    onChange(props);
+                    return props
+                }
+            }, data?.filename ? data.filename : "Upload");
+            return comp
         }
     }
 });
