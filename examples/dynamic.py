@@ -12,11 +12,6 @@ import base64
 
 from dash.dcc import Upload
 
-x = Upload(id="hi", children="hello")
-print(x.to_plotly_json())
-y = dbc.Button(id={"type":"btn", "index":"my button"}, children="My button")
-print(y.to_plotly_json())
-
 from flowfunc.models import OutNode
 from nodes import all_functions
 
@@ -66,9 +61,9 @@ custom_control_port = Port(
     controls=[
         Control(
             type=ControlType.custom,
-            name="custom",
-            label="Custom",
-            defaultValue="1",
+            name="upload",
+            label="Upload",
+            # defaultValue="1",
             render_function="upload_control",  # defined in assets/funcs.js
         )
     ],
@@ -79,10 +74,7 @@ custom_control_node = Node(
     label="Custom Control",
     description="Custom Control",
     method=convert_template,
-    inputs=[
-        Port(type="cc", name="cc1", label="custom control"),
-        Port(type="cc", name="cc2", label="custom control"),
-    ],
+    inputs=PortFunction(path="increasing_ports_upload"),
     outputs=[Port(type="str", name="output", label="output control")],
 )
 
@@ -107,7 +99,6 @@ node_editor = html.Div(
                     id="uploader", children=dbc.Button(id="load", children="Load")
                 ),
                 dash.dcc.Download(id="download"),
-                y,
             ],
             style={
                 "position": "absolute",
@@ -141,10 +132,7 @@ app.layout = html.Div([
                 id="output", width=4, style={"height": "100vh", "overflow": "auto"}
             ),
         ],
-    ),
-    dbc.Row([
-        dbc.Col(id="newout")
-    ])],
+    )],
     style={"overflow": "hidden"},
 )
 
@@ -222,14 +210,6 @@ def update_output(contents, nclicks, nodes):
         newnodes = parse_uploaded_contents(contents)
         return newnodes, "server"
     return {}, "server"
-
-
-@app.callback(
-    Output("newout", "children"), Input({"type":"btn", "index": ALL}, "n_clicks"), prevent_initial_call=True
-)
-def change_btn(nclicks):
-    print("Clicked in python", nclicks)
-    return nclicks
 
 
 if __name__ == "__main__":

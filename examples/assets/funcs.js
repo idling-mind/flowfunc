@@ -15,7 +15,7 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
         },
         increasing_ports: function (ports, inputData, connections, context) {
             const arr = [];
-            connection_count = Object.keys(connections.inputs).length;
+            var connection_count = Object.keys(connections.inputs).length;
             for (let i = 0; i <= connection_count; i++) {
                 arr.push(ports.str({ name: `port${i}`, label: `String ${i}` }));
             }
@@ -46,6 +46,22 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
                 }
             }, data?.filename ? data.filename : button);
             return comp
-        }
+        },
+        increasing_ports_upload: function (ports, inputData, connections, context) {
+            const arr = [];
+            var connection_count = Object.keys(connections.inputs).length;
+            var entry_count = 0;
+            Object.entries(inputData).forEach(
+                ([key, value]) => {
+                    if (value.upload) {
+                        entry_count += 1;
+                    }
+                }
+            );
+            for (let i = 0; i <= connection_count + entry_count; i++) {
+                arr.push(ports.cc({ name: `port${i}`, label: `Upload ${i}` }));
+            }
+            return arr
+        },
     }
 });
