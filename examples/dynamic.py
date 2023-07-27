@@ -79,7 +79,6 @@ custom_control_node = Node(
     label="Custom Control",
     description="Custom Control",
     method=convert_template,
-    initialWidth=100,
     inputs=[
         Port(type="cc", name="cc1", label="custom control"),
         Port(type="cc", name="cc2", label="custom control"),

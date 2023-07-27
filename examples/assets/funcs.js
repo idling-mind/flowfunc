@@ -34,13 +34,17 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
         },
         upload_control: function(data, onChange) {
             var i = {type:"btn", index: crypto.randomUUID()};
+            var button = React.createElement(
+                window.dash_bootstrap_components.Button,
+                {}, "Upload"
+            );
             var comp = React.createElement(window.dash_core_components.Upload, {
                 id: JSON.stringify(i),
                 setProps: (props) => {
                     onChange(props);
                     return props
                 }
-            }, data?.filename ? data.filename : "Upload");
+            }, data?.filename ? data.filename : button);
             return comp
         }
     }
