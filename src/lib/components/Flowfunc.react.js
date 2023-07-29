@@ -41,16 +41,16 @@ export default class Flowfunc extends Component {
             return standardControls[type]({
               ...others
             })
-          } else if (R.hasIn("render_function", control)) {
+          } else if (R.hasIn("renderFunction", control)) {
             try {
-              var func = window.dash_clientside.flowfunc[control.render_function];
+              var func = window.dash_clientside.flowfunc[control.renderFunction];
               return Controls.custom({
                 ...others,
                 render: func
               })
             }
             catch (e) {
-              console.log("Error in evaluating control from render_function", e);
+              console.log("Error in evaluating control from renderFunction", e);
             }
           }
         })

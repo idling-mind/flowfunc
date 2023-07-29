@@ -49,7 +49,7 @@ class Control(BaseModel):
     step: Optional[int]
     defaultValue: Optional[Any]
     options: Optional[List[dict]]
-    render_function: Optional[str]
+    renderFunction: Optional[str]
 
     class Config:
         use_enum_values = True

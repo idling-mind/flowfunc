@@ -64,7 +64,7 @@ custom_control_port = Port(
             name="upload",
             label="Upload",
             # defaultValue="1",
-            render_function="upload_control",  # defined in assets/funcs.js
+            renderFunction="upload_control",  # defined in assets/funcs.js
         )
     ],
 )
