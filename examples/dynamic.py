@@ -31,7 +31,7 @@ def convert_to_list(**kwargs):
 
 increasing_ports_function = PortFunction(path="increasing_ports")
 
-dynamic_port_function = PortFunction(path="dynamic_ports")
+dynamic_port_function = PortFunction(path="subspace.dynamic_ports")
 # "dynamic_ports" should be defined in /assets/*.js at the
 # path window.dash_clientside.flowfunc.dynamic_ports
 

@@ -85,7 +85,8 @@ export default class Flowfunc extends Component {
         else if (R.hasIn("path", inputs)) {
           try{
             node_obj.inputs = ports => (inputData, connections, context) => {
-              var func = window.dash_clientside.flowfunc[inputs.path];
+              var path = inputs.path.split(".");
+              const func = R.path(path, window.dash_clientside.flowfunc);
               return func(ports, inputData, connections, context)
             }
           }
