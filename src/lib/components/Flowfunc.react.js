@@ -43,7 +43,8 @@ export default class Flowfunc extends Component {
             })
           } else if (R.hasIn("renderFunction", control)) {
             try {
-              var func = window.dash_clientside.flowfunc[control.renderFunction];
+              const path = control.renderFunction.split(".");
+              const func = R.path(path, window.dash_clientside.flowfunc);
               return Controls.custom({
                 ...others,
                 render: func
@@ -85,7 +86,7 @@ export default class Flowfunc extends Component {
         else if (R.hasIn("path", inputs)) {
           try{
             node_obj.inputs = ports => (inputData, connections, context) => {
-              var path = inputs.path.split(".");
+              const path = inputs.path.split(".");
               const func = R.path(path, window.dash_clientside.flowfunc);
               return func(ports, inputData, connections, context)
             }
