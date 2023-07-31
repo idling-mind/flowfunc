@@ -10,89 +10,7 @@ except ImportError:
 from warnings import warn
 from pydantic import BaseModel
 
-try:
-    from docstring_parser import parse
-except ImportError:
-    # Dont use docstring based parsing
-    pass
-
 from .models import Color, ConfigModel, ControlType, Node, Port, Control, PortFunction
-
-
-def process_port_docstring(param, ptype) -> Port:
-    """Process an input or an output of a function and convert it to flume
-    config data
-
-    Parameters
-    ----------
-    param:
-        Parameter object from the docstring_parser module
-    ptype:
-        Parameter type
-
-    Returns
-    -------
-    output_dict: dict
-        Port data as dictionary
-    """
-    d = {}
-    # Find out the different type options
-    port_types = param.type_name.replace(" or ", ",").split(",")
-    port_types = sorted(set([p.strip() for p in port_types]))
-    # The type of the port should be unique depending on the different
-    # datatypes it accepts
-    d["type"] = "|".join(port_types)
-    d["acceptTypes"] = port_types
-    if ptype == "input":
-        d["name"] = param.arg_name
-        d["label"] = f"{param.arg_name} ({','.join(d['acceptTypes'])})"
-    if ptype == "output":
-        if param.return_name:
-            d["name"] = param.return_name
-            d["label"] = f"{param.return_name} ({param.type_name})"
-        else:
-            d["name"] = d["label"] = d["type"]
-    d["py_type"] = d["type"]
-    return Port(**d)
-
-
-def process_node_docstring(func: Callable) -> Node:
-    """Generate a node dict from a function object using it's docstring.
-
-    This function creates a dictionary with information on how to create a
-    flume node from the function by using the doc string of the function.
-    It will raise an exception if there is no docstring.
-
-    It expects the docstring format to be compatible with the docstring_parser
-    module.
-
-    Parameters
-    ----------
-    func: function
-        The function whose docstring should be parsed and extracted.
-
-    Returns
-    -------
-    node_dict: dict
-    """
-    node_dict = {}
-    if not func.__doc__:
-        raise Exception("Empty doc string!")
-    parsed = parse(func.__doc__)
-    node_dict["method"] = func
-    node_dict["type"] = ".".join([func.__module__, func.__name__])
-    node_dict["label"] = func.__name__.replace("_", " ").title()
-    node_dict["module"] = func.__module__
-    node_dict["description"] = parsed.short_description
-
-    node_dict["inputs"] = [
-        process_port_docstring(param, "input") for param in parsed.params
-    ]
-    node_dict["outputs"] = [
-        process_port_docstring(param, "output") for param in parsed.many_returns
-    ]
-
-    return Node(**node_dict)
 
 
 def arg_or_kwarg(par: inspect.Parameter):
@@ -285,7 +203,7 @@ def control_from_field(
             type=ControlType.multiselect, name=cname, label=clabel, options=options
         )
     if isinstance(cobj, str) and cobj in control_types:
-        # When type annotation is a string or the control is parsed from docstring
+        # When type annotation is a string
         clabel = f"{cname} ({cobj})"
         return Control(
             type=cobj,
@@ -389,7 +307,6 @@ class Config:
         """
         nodes = []
         for func in function_list:
-            # Not using docstring based parsing
             node = process_node_inspect(func)
             nodes.append(node)
 

@@ -2,4 +2,3 @@
 dash[dev]>=1.15.0
 rq==1.13.0
 pydantic>=1.9,<2
-docstring-parser
