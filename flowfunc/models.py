@@ -1,6 +1,6 @@
 # Pydantic models corresponding to flume's object structure
 
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union, NewType
 from enum import Enum
 from pydantic import BaseModel
 
@@ -69,6 +69,10 @@ class Port(BaseModel):
     acceptTypes: Optional[List[str]]
     hidePort: Optional[bool]
     controls: Optional[List[Control]]
+
+    @property
+    def annotation(self):
+        return NewType(self.type, self.py_type)
 
     def __eq__(self, other):
         return self.type == other.type

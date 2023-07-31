@@ -16,7 +16,7 @@ except ImportError:
     # Dont use docstring based parsing
     pass
 
-from .models import Color, ConfigModel, ControlType, Node, Port, Control
+from .models import Color, ConfigModel, ControlType, Node, Port, Control, PortFunction
 
 
 def process_port_docstring(param, ptype) -> Port:
@@ -314,7 +314,10 @@ def ports_from_nodes(nodes: List[Node]) -> List[Port]:
     """Function to find unique port types that are used in all nodes"""
     ports_: List[Port] = []
     for node in nodes:
-        ports_ += node.inputs + node.outputs
+        if not isinstance(node.inputs, PortFunction):
+            ports_ += node.inputs
+        if not isinstance(node.outputs, PortFunction):
+            ports_ += node.outputs
     colors = [x.name for x in Color]
     ports = []
     for port_ in ports_:
@@ -394,8 +397,8 @@ class Config:
             extra_nodes = []
         if extra_ports is None:
             extra_ports = []
-        ports = list(set(extra_ports + ports_from_nodes(nodes)))
         nodes = nodes + extra_nodes
+        ports = list(set(extra_ports + ports_from_nodes(nodes)))
         return cls(nodes, ports)
 
     def __init__(self, nodes, ports=None) -> None:
