@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import asyncio
 import dash
+from enum import Enum
 from flowfunc.types import date, time, month, color, week
 from flowfunc.models import Control, Port
 from dataclasses import dataclass
@@ -59,7 +60,7 @@ def add_same_objects(object1, object2):
     return object1 + object2
 
 
-def enter_string(in_string:str) -> str:
+def enter_string(in_string: str) -> str:
     """String"""
     return in_string
 
@@ -76,6 +77,7 @@ def multiply(a: Union[int, float], b: Union[int, float]) -> Union[int, float]:
 
 def sum(list_of_items: list) -> Union[float, int, str]:
     return sum(list_of_items)
+
 
 def convert_to_string(obj):
     """Convert to string
@@ -134,11 +136,20 @@ def convert_to_markdown(markdown: str):
     """
     return dash.dcc.Markdown(markdown)
 
+
 def display(output1, output2="", output3="", output4="", output5=""):
     """Display outputs"""
     return html.Div([output1, output2, output3, output4, output5])
 
-def read_dataframe(url: str, data_type: Literal["csv", "excel"], separator: str) -> pd.DataFrame:
+
+data_type_options = Enum(
+    "data_type_options", ((i, i) for i in ["csv", "excel", "table"])
+)
+
+
+def read_dataframe(
+    url: str, data_type: data_type_options, separator: str
+) -> pd.DataFrame:
     """Read a dataframe"""
     if data_type == "csv":
         return pd.read_csv(url, sep=separator)
@@ -146,9 +157,11 @@ def read_dataframe(url: str, data_type: Literal["csv", "excel"], separator: str)
         return pd.read_excel(url)
     return pd.read_table(url)
 
+
 def scatter_plot(df: pd.DataFrame, x: str, y: str) -> dcc.Graph:
     """Create a scatter plot from a dataframe"""
     return dcc.Graph(figure=px.scatter(df, x=x, y=y))
+
 
 def custom_controls(m: month, w: week, d: date, t: time, c: color) -> str:
     """Trying custom controls"""
@@ -157,6 +170,7 @@ def custom_controls(m: month, w: week, d: date, t: time, c: color) -> str:
         out += f"{item} ({type(item)})\n"
     return out.strip()
 
+
 @dataclass
 class vector:
     x: int
@@ -164,11 +178,13 @@ class vector:
     z: int
 
     def magnitude(self):
-        return (self.x **2 + self.y**2 + self.z **2)**0.5
+        return (self.x**2 + self.y**2 + self.z**2) ** 0.5
+
 
 def get_vector_magnitude(v: vector):
     """Using dataclass as a port with multiple controls"""
     return v.magnitude()
+
 
 slider_control = Control(
     type="slider",
@@ -188,8 +204,10 @@ slider_port = Port(
     controls=[slider_control],
 )
 
-def slider_node(s: slider_port.annotation):
-    return s
+
+def slider_node(s: slider_port.annotation, b: bool) -> Tuple[float, bool]:
+    return s, str(b)
+
 
 all_functions = [
     add_async,

@@ -315,7 +315,7 @@ class Config:
         if extra_ports is None:
             extra_ports = []
         nodes = nodes + extra_nodes
-        ports = list(set(extra_ports + ports_from_nodes(nodes)))
+        ports = extra_ports + ports_from_nodes(nodes)
         return cls(nodes, ports)
 
     def __init__(self, nodes, ports=None) -> None:

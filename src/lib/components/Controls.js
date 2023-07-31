@@ -44,12 +44,12 @@ const generateControl = (itype) => {
 }
 
 const standardControls = {
-    str: Controls.text,
     checkbox: Controls.checkbox,
     bool: Controls.checkbox,
     select: Controls.select,
     multiselect: Controls.multiselect,
     text: generateControl("text"),
+    str: generateControl("text"),
     int: generateControl("number"),
     float: generateControl("number"),
     number: generateControl("number"),
