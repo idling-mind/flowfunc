@@ -46,7 +46,11 @@ class Control(BaseModel):
     name: str
     label: str
     placeHolder: Optional[str]
-    step: Optional[int]
+    min: Optional[Union[int, float, str]]
+    max: Optional[Union[int, float, str]]
+    minlength: Optional[int]
+    maxlength: Optional[int]
+    step: Optional[Union[int, float]]
     defaultValue: Optional[Any]
     options: Optional[List[dict]]
     renderFunction: Optional[str]
@@ -57,7 +61,7 @@ class Control(BaseModel):
 
 class Port(BaseModel):
     """Port objects are equivalent to python types.
-    Some of the standard ports are avaiable at the React side.
+    Some of the standard ports are available at the React side.
     """
 
     type: str

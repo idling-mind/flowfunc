@@ -37,15 +37,15 @@ const objectControl = (props) => {
 }
 
 const standardControls = {
-    number: Controls.number,
-    int: Controls.number,
-    float: Controls.number,
-    text: Controls.text,
     str: Controls.text,
     checkbox: Controls.checkbox,
     bool: Controls.checkbox,
     select: Controls.select,
     multiselect: Controls.multiselect,
+    text: generateControl("text"),
+    int: generateControl("number"),
+    float: generateControl("number"),
+    number: generateControl("number"),
     color: generateControl("color"),
     date: generateControl("date"),
     time: generateControl("time"),
