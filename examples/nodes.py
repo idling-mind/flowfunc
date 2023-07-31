@@ -7,6 +7,7 @@ import numpy as np
 import asyncio
 import dash
 from flowfunc.types import date, time, month, color, week
+from flowfunc.models import Control, Port
 from dataclasses import dataclass
 
 
@@ -169,6 +170,27 @@ def get_vector_magnitude(v: vector):
     """Using dataclass as a port with multiple controls"""
     return v.magnitude()
 
+slider_control = Control(
+    type="slider",
+    name="slider",
+    label="Slider",
+    min=0.5,
+    max=10.5,
+    step=0.5,
+    defaultValue=5.5,
+)
+
+slider_port = Port(
+    type="special_slider",
+    name="special_slider",
+    label="Slider",
+    py_type=float,
+    controls=[slider_control],
+)
+
+def slider_node(s: slider_port.annotation):
+    return s
+
 all_functions = [
     add_async,
     add_sync,
@@ -183,4 +205,5 @@ all_functions = [
     scatter_plot,
     custom_controls,
     get_vector_magnitude,
+    slider_node,
 ]

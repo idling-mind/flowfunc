@@ -2,7 +2,7 @@ import { Colors, Controls } from 'flume'
 
 const generateControl = (itype) => {
     return (props) => {
-        const {name, label, others} = props
+        const { name, label, ...others } = props
         return Controls.custom(
             {
                 name: name,
@@ -12,7 +12,28 @@ const generateControl = (itype) => {
                         <>
                             <label data-flume-component="control-label" className="Control_controlLabel__3ga2-">{portProps.label}</label>
                             <div className="TextInput_wrapper__tefOZ" data-flume-component="text-input">
-                                <input type={itype} data-flume-component={`text-input-$(itype)`} className="TextInput_input__1QHwS" defaultValue={data} onChange={(e) => onChange(e.target.value)} {...others} />
+                                <input
+                                type={itype}
+                                data-flume-component={`text-input-$(itype)`}
+                                className="TextInput_input__1QHwS"
+                                defaultValue={data}
+                                onChange={
+                                    (e) => {
+                                        e.target.title = e.target.value;
+                                        onChange(e.target.value)
+                                    }
+                                }
+                                onMouseDown={
+                                    (e) => e.stopPropagation()
+                                }
+                                onDrag={
+                                    (e) => e.stopPropagation()
+                                }
+                                onDragStart={
+                                    (e) => e.stopPropagation()
+                                }
+                                {...others}
+                                />
                             </div>
                         </>
                     )
@@ -20,20 +41,6 @@ const generateControl = (itype) => {
             }
         )
     }
-}
-
-const objectControl = (props) => {
-    return Controls.custom(
-        {
-            name: props.name,
-            label: props.label,
-            render: (data, onChange, context, redraw, portProps, inputData) => {
-                return (
-                    <label data-flume-component="control-label" className="Control_controlLabel__3ga2-">{portProps.label}</label>
-                )
-            }
-        }
-    )
 }
 
 const standardControls = {

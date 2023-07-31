@@ -22,6 +22,7 @@ class ControlType(str, Enum):
     time = "time"
     month = "month"
     week = "week"
+    slider = "slider"
     object = "object"
     custom = "custom"
 
@@ -46,11 +47,11 @@ class Control(BaseModel):
     name: str
     label: str
     placeHolder: Optional[str]
-    min: Optional[Union[int, float, str]]
-    max: Optional[Union[int, float, str]]
+    min: Optional[Union[str, float, int]]
+    max: Optional[Union[str, float, int]]
     minlength: Optional[int]
     maxlength: Optional[int]
-    step: Optional[Union[int, float]]
+    step: Optional[Union[float, int]]
     defaultValue: Optional[Any]
     options: Optional[List[dict]]
     renderFunction: Optional[str]
