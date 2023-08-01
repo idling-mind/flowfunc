@@ -53,8 +53,7 @@ const generateControl = (itype, defaultValueIfUndefined=undefined, defaultStep=u
 }
 
 const sliderControl = (props) => {
-    console.log("slider", props);
-    const { name, label, defaultValue, step, max, min } = props;
+    const { name, label, defaultValue, step, max, min, ...others } = props;
     return Controls.custom(
         {
             name: name,
@@ -86,6 +85,7 @@ const sliderControl = (props) => {
                             max={parseFloat(max)}
                             min={parseFloat(min)}
                             step={parseFloat(step)}
+                            {...others}
                         />
                     </Box>
                 )

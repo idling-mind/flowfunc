@@ -123,7 +123,7 @@ export default class Flowfunc extends Component {
         obj.acceptTypes = allPortTypes;
       }
     }
-    console.log(this.flconfig);
+    // console.log(this.flconfig);
   }
 
   handleChange = () => {

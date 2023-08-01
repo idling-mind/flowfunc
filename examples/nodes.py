@@ -1,5 +1,5 @@
 from time import sleep
-from typing import Literal, Union, Tuple, NewType
+from typing import List, Literal, Union, Tuple, NewType
 from dash import html, dcc
 import plotly.express as px
 import pandas as pd
@@ -194,17 +194,18 @@ slider_control = Control(
     type="slider",
     name="slider",
     label="Slider",
-    min=0.5,
-    max=10.5,
-    step=0.5,
-    defaultValue=5.5,
+    min=0,
+    max=20,
+    step=1,
+    defaultValue=10,
+    marks=[{"label": i, "value": i} for i in range(0, 22, 5)],
 )
 
 slider_port = Port(
     type="special_slider",
     name="special_slider",
     label="Slider",
-    py_type=float,
+    py_type=Union[float, List[float]],
     controls=[slider_control],
 )
 

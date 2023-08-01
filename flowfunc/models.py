@@ -52,6 +52,7 @@ class Control(BaseModel):
     minlength: Optional[int]
     maxlength: Optional[int]
     step: Optional[Union[float, int]]
+    marks: Optional[Union[List[dict], bool]]
     defaultValue: Optional[Any]
     options: Optional[List[dict]]
     renderFunction: Optional[str]
