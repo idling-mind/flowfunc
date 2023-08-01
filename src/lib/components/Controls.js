@@ -1,24 +1,31 @@
 import { Colors, Controls } from 'flume'
 
-const generateControl = (itype) => {
+const generateControl = (itype, defaultValueIfUndefined=undefined, defaultStep=undefined) => {
     return (props) => {
-        const { name, label, ...others } = props
+        const { name, label, defaultValue, ...others } = props
         return Controls.custom(
             {
                 name: name,
                 label: label,
+                defaultValue: defaultValue ? defaultValue : defaultValueIfUndefined,
                 render: (data, onChange, context, redraw, portProps, inputData) => {
                     return (
                         <>
-                            <label data-flume-component="control-label" className="Control_controlLabel__3ga2-">{portProps.label}</label>
+                            <label
+                            data-flume-component="control-label"
+                            className="Control_controlLabel__3ga2-">
+                                {Object.keys(inputData).length > 1 ? portProps.portName+"."+portProps.label : portProps.inputLabel}
+                            </label>
                             <div className="TextInput_wrapper__tefOZ" data-flume-component="text-input">
                                 <input
                                 type={itype}
                                 data-flume-component={`text-input-$(itype)`}
                                 className="TextInput_input__1QHwS"
                                 defaultValue={data}
+                                step={portProps.step ? portProps.step : defaultStep}
                                 onChange={
                                     (e) => {
+                                        console.log(data, props);
                                         e.target.title = e.target.value;
                                         onChange(e.target.value)
                                     }
@@ -43,22 +50,25 @@ const generateControl = (itype) => {
     }
 }
 
+const today = new Date();
+const year = today.getFullYear();
+
 const standardControls = {
     checkbox: Controls.checkbox,
     bool: Controls.checkbox,
     select: Controls.select,
     multiselect: Controls.multiselect,
-    text: generateControl("text"),
-    str: generateControl("text"),
-    int: generateControl("number"),
-    float: generateControl("number"),
-    number: generateControl("number"),
-    color: generateControl("color"),
-    date: generateControl("date"),
-    time: generateControl("time"),
-    month: generateControl("month"),
-    week: generateControl("week"),
-    slider: generateControl("range"),
+    int: generateControl("number", 0, 1),
+    number: generateControl("number", 0.0, 0.1),
+    float: generateControl("number", 0.0, 0.1),
+    str: generateControl("text", ""),
+    text: generateControl("text", ""),
+    color: generateControl("color", "#000000"),
+    date: generateControl("date", `${year}-01-01`),
+    time: generateControl("time", "00:00"),
+    month: generateControl("month", `${year}-01`),
+    week: generateControl("week", `${year}-W01`),
+    slider: generateControl("range", 0.0),
 }
 
 /**

@@ -58,7 +58,6 @@ export default class Flowfunc extends Component {
         })
       }
       else {
-        console.log(port);
         port_obj.controls = [
           Controls.custom({
             name: port_obj.type,
@@ -100,7 +99,6 @@ export default class Flowfunc extends Component {
         else {
           node_obj.inputs = (ports) => inputs.map(input => {
             const { type, ...input_data } = input;
-            console.log(type, input_data);
             return ports[type](input_data);
           })
         }

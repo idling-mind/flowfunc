@@ -44,13 +44,13 @@ def process_port_inspect(pname, pobj) -> Port:
         return Port(
             type="object",
             name=pname,
-            label=f"{pname} (object)",
+            label=f"{pname}: object",
         )
     elif isinstance(pobj, str):
         if pobj.startswith("'") and pobj.endswith("'"):
             pobj = pobj[1:-1]
         ptype = pobj.split("|")[0].strip()
-        return Port(type=ptype, name=pname, label=f"{pname} ({ptype})", py_type=ptype)
+        return Port(type=ptype, name=pname, label=f"{pname}: {ptype}", py_type=ptype)
     d = {}
     origin = get_origin(pobj)
     if origin == Union:
@@ -82,7 +82,7 @@ def process_port_inspect(pname, pobj) -> Port:
         d["py_type"] = pobj
         d["acceptTypes"] = [pobj.__name__]
     d["name"] = pname
-    d["label"] = f"{pname} ({','.join(d['acceptTypes'])})"
+    d["label"] = f"{pname}: {','.join(d['acceptTypes'])}"
     return Port(**d)
 
 
@@ -185,7 +185,7 @@ def control_from_field(
     control_types = [x.name for x in ControlType]
     if inspect.isclass(cobj) and issubclass(cobj, Enum):
         # Enum
-        clabel = f"{cname} (enum)"
+        clabel = f"{cname}: enum"
         options = [{"label": x.name, "value": x.value} for x in cobj]
         return Control(
             type=ControlType.select, name=cname, label=clabel, options=options
@@ -196,7 +196,7 @@ def control_from_field(
         and issubclass(get_args(cobj)[0], Enum)
     ):
         # List of enums
-        clabel = f"{cname} (list)"
+        clabel = f"{cname}: list"
         options = [{"label": x.name, "value": x.value} for x in get_args(cobj)[0]]
         print("listenum", options)
         return Control(
@@ -204,14 +204,14 @@ def control_from_field(
         )
     if isinstance(cobj, str) and cobj in control_types:
         # When type annotation is a string
-        clabel = f"{cname} ({cobj})"
+        clabel = f"{cname}: {cobj}"
         return Control(
             type=cobj,
             name=cname,
             label=clabel,
         )
     if hasattr(cobj, "__name__") and cobj.__name__ in control_types:
-        clabel = f"{cname} ({cobj.__name__})"
+        clabel = f"{cname}: {cobj.__name__}"
         return Control(
             type=cobj.__name__,
             name=cname,

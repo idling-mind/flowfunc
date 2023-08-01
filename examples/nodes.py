@@ -173,17 +173,21 @@ def custom_controls(m: month, w: week, d: date, t: time, c: color) -> str:
 
 @dataclass
 class vector:
-    x: int
-    y: int
-    z: int
+    x: float
+    y: float
+    z: float
 
     def magnitude(self):
         return (self.x**2 + self.y**2 + self.z**2) ** 0.5
 
 
-def get_vector_magnitude(v: vector):
+def add_vectors(input_vector: vector, second_vector: vector):
     """Using dataclass as a port with multiple controls"""
-    return v.magnitude()
+    return vector(
+        x=input_vector.x + second_vector.x,
+        y=input_vector.y + second_vector.y,
+        z=input_vector.z + second_vector.z,
+    )
 
 
 slider_control = Control(
@@ -205,8 +209,14 @@ slider_port = Port(
 )
 
 
-def slider_node(s: slider_port.annotation, b: bool) -> Tuple[float, bool]:
-    return s, str(b)
+@dataclass
+class mycl:
+    mm: month
+    ww: week
+
+
+def slider_node(s: slider_port.annotation) -> float:
+    return s
 
 
 all_functions = [
@@ -222,6 +232,6 @@ all_functions = [
     display,
     scatter_plot,
     custom_controls,
-    get_vector_magnitude,
+    add_vectors,
     slider_node,
 ]

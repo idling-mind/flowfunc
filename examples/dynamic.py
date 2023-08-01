@@ -89,7 +89,7 @@ fconfig = Config.from_function_list(
 # fconfig = Config.from_function_list(all_functions)
 job_runner = JobRunner(fconfig)
 
-pprint(fconfig.dict())
+# pprint(fconfig.dict())
 
 node_editor = html.Div(
     [
