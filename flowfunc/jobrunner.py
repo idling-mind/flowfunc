@@ -1,3 +1,4 @@
+from __future__ import annotations
 import asyncio
 import inspect
 from copy import copy, deepcopy
@@ -121,7 +122,7 @@ class JobRunner:
         same_worker: bool = False,
         # default_queue should be a NodeQueue instance but cannot annotate with
         # NodeQueue since it will make python-rq a required dependency
-        default_queue: Optional[Any] = None,
+        default_queue: Optional["NodeQueue"] = None,
         meta_map: Optional[Dict[Callable, Callable]] = None,
         meta_data: Optional[Dict[str, Any]] = None,
     ):
