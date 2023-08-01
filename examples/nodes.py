@@ -190,23 +190,40 @@ def add_vectors(input_vector: vector, second_vector: vector):
     )
 
 
-slider_control = Control(
+slider1 = Control(
     type="slider",
-    name="slider",
-    label="Slider",
+    name="slider1",
+    label="Volume",
     min=0,
     max=20,
     step=1,
     defaultValue=10,
-    marks=[{"label": i, "value": i} for i in range(0, 22, 5)],
 )
 
-slider_port = Port(
-    type="special_slider",
-    name="special_slider",
-    label="Slider",
+slider2 = Control(
+    type="slider",
+    name="slider1",
+    label="Treble",
+    min=0,
+    max=50,
+    step=5,
+    defaultValue=25,
+)
+
+slider1_port = Port(
+    type="slider1",
+    name="slider1",
+    label="Volume",
     py_type=Union[float, List[float]],
-    controls=[slider_control],
+    controls=[slider1],
+)
+
+slider2_port = Port(
+    type="slider2",
+    name="slider2",
+    label="Treble",
+    py_type=Union[float, List[float]],
+    controls=[slider2],
 )
 
 
@@ -216,8 +233,8 @@ class mycl:
     ww: week
 
 
-def slider_node(s: slider_port.annotation) -> float:
-    return s
+def slider_node(s1: slider1_port.annotation, s2: slider2_port.annotation) -> tuple:
+    return s1, s2
 
 
 all_functions = [

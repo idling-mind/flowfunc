@@ -14,7 +14,7 @@ import base64
 from dash.dcc import Upload
 
 from flowfunc.models import OutNode
-from nodes import all_functions, slider_port
+from nodes import all_functions, slider1_port, slider2_port
 
 app = dash.Dash(
     __name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.SLATE]
@@ -84,7 +84,7 @@ app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
 fconfig = Config.from_function_list(
     all_functions,
     extra_nodes=[template_node, list_node, custom_control_node],
-    extra_ports=[custom_control_port, slider_port],
+    extra_ports=[custom_control_port, slider1_port, slider2_port],
 )
 # fconfig = Config.from_function_list(all_functions)
 job_runner = JobRunner(fconfig)

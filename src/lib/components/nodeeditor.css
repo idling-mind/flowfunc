@@ -25,3 +25,55 @@
 .canceled[data-flume-component="node"] {
     border-bottom: 5px solid rgb(107, 109, 94);
 }
+/********** Range Input Styles **********/
+/*Range Reset*/
+input[type="range"] {
+   -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+}
+
+/***** Chrome, Safari, Opera and Edge Chromium styles *****/
+/* slider track */
+input[type="range"]::-webkit-slider-runnable-track {
+   background-color: #707070;
+   border-radius: 1.5rem;
+   height: 1.5rem;
+}
+
+/* slider thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+   appearance: none;
+
+   /*custom styles*/
+   background-color: #272727;
+   height: 1.5rem;
+   width: 1.5rem;
+   border-radius: 1.5rem;
+}
+
+/******** Firefox styles ********/
+/* slider track */
+input[type="range"]::-moz-range-track {
+   background-color: #707070;
+   border-radius: 1.5rem;
+   height: 1.5rem;  
+}
+
+/* slider thumb */
+input[type="range"]::-moz-range-thumb {
+  -webkit-appearance: none; /* Override default look */
+   appearance: none;
+
+   /*custom styles*/
+   background-color: #272727;
+   height: 1.5rem;
+   width: 1.5rem;
+   border-radius: 1.5rem;
+}
+[data-flume-component='control-label-slider'] {
+    color: #bbbbbb;
+}
