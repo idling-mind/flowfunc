@@ -25,7 +25,6 @@ const generateControl = (itype, defaultValueIfUndefined=undefined, defaultStep=u
                                 step={portProps.step ? portProps.step : defaultStep}
                                 onChange={
                                     (e) => {
-                                        console.log(data, props);
                                         e.target.title = e.target.value;
                                         onChange(e.target.value)
                                     }
