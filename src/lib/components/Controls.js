@@ -1,4 +1,7 @@
 import { Colors, Controls } from 'flume'
+import Slider from '@mui/material/Slider';
+import Typopgraphy from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 const generateControl = (itype, defaultValueIfUndefined=undefined, defaultStep=undefined) => {
     return (props) => {
@@ -18,27 +21,27 @@ const generateControl = (itype, defaultValueIfUndefined=undefined, defaultStep=u
                             </label>
                             <div className="TextInput_wrapper__tefOZ" data-flume-component="text-input">
                                 <input
-                                type={itype}
-                                data-flume-component={`text-input-$(itype)`}
-                                className="TextInput_input__1QHwS"
-                                defaultValue={data}
-                                step={portProps.step ? portProps.step : defaultStep}
-                                onChange={
-                                    (e) => {
-                                        e.target.title = e.target.value;
-                                        onChange(e.target.value)
+                                    type={itype}
+                                    data-flume-component={`text-input-$(itype)`}
+                                    className="TextInput_input__1QHwS"
+                                    defaultValue={data}
+                                    step={portProps.step ? portProps.step : defaultStep}
+                                    onChange={
+                                        (e) => {
+                                            e.target.title = e.target.value;
+                                            onChange(e.target.value)
+                                        }
                                     }
-                                }
-                                onMouseDown={
-                                    (e) => e.stopPropagation()
-                                }
-                                onDrag={
-                                    (e) => e.stopPropagation()
-                                }
-                                onDragStart={
-                                    (e) => e.stopPropagation()
-                                }
-                                {...others}
+                                    onMouseDown={
+                                        (e) => e.stopPropagation()
+                                    }
+                                    onDrag={
+                                        (e) => e.stopPropagation()
+                                    }
+                                    onDragStart={
+                                        (e) => e.stopPropagation()
+                                    }
+                                    {...others}
                                 />
                             </div>
                         </>
@@ -47,6 +50,48 @@ const generateControl = (itype, defaultValueIfUndefined=undefined, defaultStep=u
             }
         )
     }
+}
+
+const sliderControl = (props) => {
+    console.log("slider", props);
+    const { name, label, defaultValue, step, max, min } = props;
+    return Controls.custom(
+        {
+            name: name,
+            label: label,
+            defaultValue: defaultValue || 0,
+            render: (data, onChange, context, redraw, portProps, inputData) => {
+                return (
+                    <Box>
+                        <label
+                        data-flume-component="control-label"
+                        className="Control_controlLabel__3ga2-">
+                            {Object.keys(inputData).length > 1 ? portProps.portName+"."+portProps.label : portProps.inputLabel}
+                        </label>
+                        <Slider
+                            value={data}
+                            defaultValue={data}
+                            valueLabelDisplay="auto"
+                            data-flume-component={`text-input-slider`}
+                            onChange={(e) => onChange(e.target.value)}
+                            onMouseDown={
+                                (e) => e.stopPropagation()
+                            }
+                            onDrag={
+                                (e) => e.stopPropagation()
+                            }
+                            onDragStart={
+                                (e) => e.stopPropagation()
+                            }
+                            max={parseFloat(max)}
+                            min={parseFloat(min)}
+                            step={parseFloat(step)}
+                        />
+                    </Box>
+                )
+            }
+        }
+    )
 }
 
 const today = new Date();
@@ -67,7 +112,8 @@ const standardControls = {
     time: generateControl("time", "00:00"),
     month: generateControl("month", `${year}-01`),
     week: generateControl("week", `${year}-W01`),
-    slider: generateControl("range", 0.0),
+    // slider: generateControl("range", 0.0, 0.1),
+    slider: sliderControl,
 }
 
 /**
