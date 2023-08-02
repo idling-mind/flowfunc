@@ -7,7 +7,7 @@ import numpy as np
 import asyncio
 import dash
 from enum import Enum
-from flowfunc.types import date, time, month, color, week, slider
+from flowfunc.types import date, time, month, color, week, slider, text
 from flowfunc.models import Control, Port
 from dataclasses import dataclass
 
@@ -119,7 +119,7 @@ def dataframe_to_datatable(df: pd.DataFrame):
     )
 
 
-def convert_to_markdown(markdown: str):
+def convert_to_markdown(markdown: text):
     """Display Markdown
 
     Display markdown in the dash app

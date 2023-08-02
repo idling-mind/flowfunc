@@ -60,40 +60,42 @@ const sliderControl = props => {
         label: label,
         defaultValue: defaultValue || 0,
         render: (data, onChange, context, redraw, portProps, inputData) => {
+            const min = min || 0;
+            const max = max || 100;
+            const filldivPercent = ((data - min) / (max - min)) * 100;
+            const filldivWidth = `calc(${filldivPercent}% - ${filldivPercent/100*1.5}rem + 1.5rem)`;
+            const filldivStyle = {
+                width: `${filldivWidth}`,
+            }
+            const inputStyle = {position: 'absolute', top: 0, left: 0}
             return (
-                <div style={{position: 'relative', height: '1.5em'}}>
-                    <label
-                        style={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            zIndex: 1,
-                            pointerEvents: 'none',
-                        }}
-                        data-flume-component='control-label-slider'
-                    >
-                        {label
-                            ? label
-                            : Object.keys(inputData).length > 1
-                            ? portProps.portName + '.' + portProps.label
-                            : portProps.inputLabel}{':'}
-                        {data}
-                    </label>
-                    <input
-                        style={{position: 'absolute', top: 0, left: 0}}
-                        type='range'
-                        value={data}
-                        data-flume-component='text-input-slider'
-                        onChange={e => onChange(e.target.value)}
-                        onMouseDown={e => e.stopPropagation()}
-                        onDrag={e => e.stopPropagation()}
-                        onDragStart={e => e.stopPropagation()}
-                        max={parseFloat(max) || 100}
-                        min={parseFloat(min) || 0}
-                        step={parseFloat(step) || 1}
-                        {...others}
-                    />
+                <div data-flume-component='control'>
+                    <div data-flume-component='slider'>
+                        <label data-flume-component='control-label-slider'>
+                            {label
+                                ? label
+                                : Object.keys(inputData).length > 1
+                                ? portProps.portName + '.' + portProps.label
+                                : portProps.inputLabel}
+                            {':'}
+                            {data}
+                        </label>
+                        <div style={filldivStyle} data-flume-component='control-slider-fill'></div>
+                        <input
+                            style={inputStyle}
+                            type='range'
+                            value={data}
+                            data-flume-component='text-input-slider'
+                            onChange={e => onChange(e.target.value)}
+                            onMouseDown={e => e.stopPropagation()}
+                            onDrag={e => e.stopPropagation()}
+                            onDragStart={e => e.stopPropagation()}
+                            max={parseFloat(max) || 100}
+                            min={parseFloat(min) || 0}
+                            step={parseFloat(step) || 1}
+                            {...others}
+                        />
+                    </div>
                 </div>
             )
         },
@@ -108,11 +110,11 @@ const standardControls = {
     bool: Controls.checkbox,
     select: Controls.select,
     multiselect: Controls.multiselect,
+    text: Controls.text,
     int: generateControl('number', 0, 1),
     number: generateControl('number', 0.0, 0.1),
     float: generateControl('number', 0.0, 0.1),
     str: generateControl('text', ''),
-    text: generateControl('text', ''),
     color: generateControl('color', '#000000'),
     date: generateControl('date', `${year}-01-01`),
     time: generateControl('time', '00:00'),
