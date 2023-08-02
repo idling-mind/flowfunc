@@ -1,6 +1,6 @@
 Package: flowfunc
 Title: Dash wrapper for flume node editor
-Version: 0.0.4
+Version: 0.0.5
 Description: Dash wrapper for flume node editor
 Depends: R (>= 3.0.2)
 Imports: 

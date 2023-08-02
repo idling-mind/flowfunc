@@ -1,17 +1,13 @@
-from pprint import pprint
-import time
 import flowfunc
 from flowfunc.config import Config
 from flowfunc.jobrunner import JobRunner
 from flowfunc.models import Node, Port, PortFunction, Control, ControlType
 import dash
 from dash.dependencies import Input, Output, State
-from dash import html, dcc, ALL, MATCH
+from dash import html, dcc
 import dash_bootstrap_components as dbc
 import json
 import base64
-
-from dash.dcc import Upload
 
 from flowfunc.models import OutNode
 from nodes import all_functions, slider1_port, slider2_port
@@ -30,19 +26,14 @@ def convert_to_list(**kwargs):
     return list(kwargs.values())
 
 
-increasing_ports_function = PortFunction(path="increasing_ports")
-
-dynamic_port_function = PortFunction(path="subspace.dynamic_ports")
-# "dynamic_ports" should be defined in /assets/*.js at the
-# path window.dash_clientside.flowfunc.dynamic_ports
-
-
 template_node = Node(
     type="dynamic_ports",
     label="Dynamic Ports",
     description="Testing dynamic ports",
     method=convert_template,
-    inputs=dynamic_port_function,
+    inputs=PortFunction(path="subspace.dynamic_ports"),
+    # "dynamic_ports" should be defined in /assets/*.js at the
+    # path window.dash_clientside.flowfunc.dynamic_ports
     outputs=[Port(type="str", name="template", label="Template")],
 )
 
@@ -51,7 +42,7 @@ list_node = Node(
     label="Auto increasing list",
     description="Auto increasing list",
     method=convert_to_list,
-    inputs=increasing_ports_function,
+    inputs=PortFunction(path="increasing_ports"),
     outputs=[Port(type="object", name="object", label="List")],
 )
 
@@ -127,15 +118,17 @@ node_editor = html.Div(
     ]
 )
 
-app.layout = html.Div([
-    dbc.Row(
-        [
-            dbc.Col(width=8, children=node_editor),
-            dbc.Col(
-                id="output", width=4, style={"height": "100vh", "overflow": "auto"}
-            ),
-        ],
-    )],
+app.layout = html.Div(
+    [
+        dbc.Row(
+            [
+                dbc.Col(width=8, children=node_editor),
+                dbc.Col(
+                    id="output", width=4, style={"height": "100vh", "overflow": "auto"}
+                ),
+            ],
+        )
+    ],
     style={"overflow": "hidden"},
 )
 

@@ -8,7 +8,7 @@ import asyncio
 import dash
 from enum import Enum
 from flowfunc.types import date, time, month, color, week, slider, text
-from flowfunc.models import Control, Port
+from flowfunc.models import Control, ControlType, Port
 from dataclasses import dataclass
 
 
@@ -190,40 +190,40 @@ def add_vectors(input_vector: vector, second_vector: vector):
     )
 
 
-slider1 = Control(
-    type="slider",
-    name="slider",
-    label="Volume",
-    min=0,
-    max=20,
-    step=1,
-    defaultValue=10,
-)
-
-slider2 = Control(
-    type="slider",
-    name="slider",
-    label="Treble",
-    min=0,
-    max=50,
-    step=5,
-    defaultValue=25,
-)
-
 slider1_port = Port(
     type="slider1",
     name="slider1",
     label="Volume",
     py_type=Union[float, List[float]],
-    controls=[slider1],
+    controls=[
+        Control(
+            type=ControlType.slider,
+            name="slider",
+            label="Volume",
+            min=0,
+            max=20,
+            step=1,
+            defaultValue=10,
+        )
+    ],
 )
 
 slider2_port = Port(
-    type="slider2",
+    type=ControlType.slider,
     name="slider2",
     label="Treble",
     py_type=Union[float, List[float]],
-    controls=[slider2],
+    controls=[
+        Control(
+            type="slider",
+            name="slider",
+            label="Treble",
+            min=0,
+            max=50,
+            step=5,
+            defaultValue=25,
+        )
+    ],
 )
 
 
@@ -235,6 +235,7 @@ class mycl:
 
 def slider_node(s1: slider1_port.annotation, s2: slider2_port.annotation):
     return f"Volume is {s1} and Treble is {s2}"
+
 
 def base_slider(s1: slider):
     return s1

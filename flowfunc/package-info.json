@@ -1,6 +1,6 @@
 {
   "name": "flowfunc",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Dash wrapper for flume node editor",
   "main": "build/index.js",
   "scripts": {
@@ -16,10 +16,7 @@
   "author": "Najeem Muhammed <najeem@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
-    "@mui/material": "^5.14.2",
     "flume": "^0.8.2",
     "ramda": "^0.28.0"
   },
