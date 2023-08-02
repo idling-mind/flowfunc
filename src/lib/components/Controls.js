@@ -67,7 +67,6 @@ const sliderControl = props => {
             const filldivStyle = {
                 width: `${filldivWidth}`,
             }
-            const inputStyle = {position: 'absolute', top: 0, left: 0}
             return (
                 <div data-flume-component='control'>
                     <div data-flume-component='slider'>
@@ -82,7 +81,6 @@ const sliderControl = props => {
                         </label>
                         <div style={filldivStyle} data-flume-component='control-slider-fill'></div>
                         <input
-                            style={inputStyle}
                             type='range'
                             value={data}
                             data-flume-component='text-input-slider'
