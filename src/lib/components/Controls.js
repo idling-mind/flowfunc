@@ -107,7 +107,10 @@ const objectControl = props => {
         label: label,
         render: (data, onChange, context, redraw, portProps, inputData) => {
             return (
-                <label data-flume-component='control-label'>
+                <label
+                    data-flume-component='control-label'
+                    className='Control_controlLabel__3ga2-'
+                >
                     {label
                         ? label
                         : Object.keys(inputData).length > 1
