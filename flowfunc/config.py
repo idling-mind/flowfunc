@@ -229,7 +229,7 @@ def control_from_field(
     return Control(
         type=ControlType.object,
         name=cname,
-        label=port.label,
+        label=f"{cname}: object",
     )
 
 
