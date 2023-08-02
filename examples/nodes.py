@@ -192,7 +192,7 @@ def add_vectors(input_vector: vector, second_vector: vector):
 
 slider1 = Control(
     type="slider",
-    name="slider1",
+    name="slider",
     label="Volume",
     min=0,
     max=20,
@@ -202,7 +202,7 @@ slider1 = Control(
 
 slider2 = Control(
     type="slider",
-    name="slider1",
+    name="slider",
     label="Treble",
     min=0,
     max=50,
@@ -233,8 +233,8 @@ class mycl:
     ww: week
 
 
-def slider_node(s1: slider1_port.annotation, s2: slider2_port.annotation) -> tuple:
-    return s1, s2
+def slider_node(s1: slider1_port.annotation, s2: slider2_port.annotation):
+    return f"Volume is {s1} and Treble is {s2}"
 
 
 all_functions = [

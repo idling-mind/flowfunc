@@ -94,12 +94,6 @@ const sliderControl = props => {
                         step={parseFloat(step)}
                         {...others}
                     />
-                    <label
-                        data-flume-component='value-label'
-                        className='Control_controlLabel__3ga2-'
-                    >
-                        {data}
-                    </label>
                 </div>
             )
         },

@@ -27,7 +27,7 @@
 }
 /********** Range Input Styles **********/
 /*Range Reset*/
-input[type="range"] {
+input[type="range"][data-flume-component="text-input-slider"] {
    -webkit-appearance: none;
     appearance: none;
     background: transparent;
@@ -37,19 +37,19 @@ input[type="range"] {
 
 /***** Chrome, Safari, Opera and Edge Chromium styles *****/
 /* slider track */
-input[type="range"]::-webkit-slider-runnable-track {
-   background-color: #707070;
+input[type="range"][data-flume-component="text-input-slider"]::-webkit-slider-runnable-track {
+   background-color: #ffffff33;
    border-radius: 1.5rem;
    height: 1.5rem;
 }
 
 /* slider thumb */
-input[type="range"]::-webkit-slider-thumb {
+input[type="range"][data-flume-component="text-input-slider"]::-webkit-slider-thumb {
   -webkit-appearance: none; /* Override default look */
    appearance: none;
 
    /*custom styles*/
-   background-color: #272727;
+   background-color: #336699;
    height: 1.5rem;
    width: 1.5rem;
    border-radius: 1.5rem;
@@ -57,19 +57,19 @@ input[type="range"]::-webkit-slider-thumb {
 
 /******** Firefox styles ********/
 /* slider track */
-input[type="range"]::-moz-range-track {
-   background-color: #707070;
+input[type="range"][data-flume-component="text-input-slider"]::-moz-range-track {
+   background-color: #ffffff33;
    border-radius: 1.5rem;
-   height: 1.5rem;  
+   height: 1.5rem;
 }
 
 /* slider thumb */
-input[type="range"]::-moz-range-thumb {
+input[type="range"][data-flume-component="text-input-slider"]::-moz-range-thumb {
   -webkit-appearance: none; /* Override default look */
    appearance: none;
 
    /*custom styles*/
-   background-color: #272727;
+   background-color: #336699;
    height: 1.5rem;
    width: 1.5rem;
    border-radius: 1.5rem;

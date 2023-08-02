@@ -168,11 +168,8 @@ def parse_uploaded_contents(contents):
 def display_output(runclicks, nodes):
     if not nodes:
         return [], {}
-    starttime = time.perf_counter()
     # output_dict = job_runner.run(nodes)
     nodes_output = job_runner.run(nodes)
-    # nodes_output = {node_id: OutNode(**node) for node_id, node in output_dict.items()}
-    endtime = time.perf_counter()
     outdiv = html.Div(children=[])
     for node in nodes_output.values():
         if node.error:
