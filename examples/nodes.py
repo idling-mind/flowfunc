@@ -7,7 +7,7 @@ import numpy as np
 import asyncio
 import dash
 from enum import Enum
-from flowfunc.types import date, time, month, color, week
+from flowfunc.types import date, time, month, color, week, slider
 from flowfunc.models import Control, Port
 from dataclasses import dataclass
 
@@ -236,6 +236,9 @@ class mycl:
 def slider_node(s1: slider1_port.annotation, s2: slider2_port.annotation):
     return f"Volume is {s1} and Treble is {s2}"
 
+def base_slider(s1: slider):
+    return s1
+
 
 all_functions = [
     add_async,
@@ -252,4 +255,5 @@ all_functions = [
     custom_controls,
     add_vectors,
     slider_node,
+    base_slider,
 ]

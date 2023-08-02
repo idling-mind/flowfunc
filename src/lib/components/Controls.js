@@ -89,9 +89,9 @@ const sliderControl = props => {
                         onMouseDown={e => e.stopPropagation()}
                         onDrag={e => e.stopPropagation()}
                         onDragStart={e => e.stopPropagation()}
-                        max={parseFloat(max)}
-                        min={parseFloat(min)}
-                        step={parseFloat(step)}
+                        max={parseFloat(max) || 100}
+                        min={parseFloat(min) || 0}
+                        step={parseFloat(step) || 1}
                         {...others}
                     />
                 </div>

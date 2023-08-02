@@ -76,4 +76,5 @@ input[type="range"][data-flume-component="text-input-slider"]::-moz-range-thumb 
 }
 [data-flume-component='control-label-slider'] {
     color: #bbbbbb;
+    font-size: 13px;
 }
