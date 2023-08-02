@@ -100,6 +100,26 @@ const sliderControl = props => {
     })
 }
 
+const objectControl = props => {
+    const {name, label, defaultValue, step, max, min, ...others} = props
+    return Controls.custom({
+        name: name,
+        label: label,
+        render: (data, onChange, context, redraw, portProps, inputData) => {
+            return (
+                <label data-flume-component='control-label'>
+                    {label
+                        ? label
+                        : Object.keys(inputData).length > 1
+                        ? portProps.portName + '.' + portProps.label
+                        : portProps.inputLabel}
+                </label>
+            )
+        },
+    })
+}
+
+
 const today = new Date()
 const year = today.getFullYear()
 
@@ -120,6 +140,7 @@ const standardControls = {
     week: generateControl('week', `${year}-W01`),
     // slider: generateControl("range", 0.0, 0.1),
     slider: sliderControl,
+    object: objectControl,
 }
 
 /**

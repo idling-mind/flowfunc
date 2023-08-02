@@ -226,6 +226,11 @@ def control_from_field(
                     name=cname,
                     label=port.label,
                 )
+    return Control(
+        type=ControlType.object,
+        name=cname,
+        label=port.label,
+    )
 
 
 def ports_from_nodes(nodes: List[Node]) -> List[Port]:
