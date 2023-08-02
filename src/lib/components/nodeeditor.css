@@ -79,6 +79,9 @@ input[type="range"][data-flume-component="text-input-slider"]::-moz-range-thumb 
    border-radius: 1.5rem;
 }
 [data-flume-component='control-label-slider'] {
+    display: block;
+    width: 100%;
+    text-align: center;
     color: #bbbbbb;
     font-size: 13px;
     position: absolute;
