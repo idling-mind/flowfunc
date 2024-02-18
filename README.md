@@ -20,21 +20,21 @@ comments.
 ### Basic installation
 
 ```
-pip install git+https://github.com/idling-mind/flowfunc.git
+pip install flowfunc
 ```
 
 ### Distributed
 If you want to run your nodes using [rq](https://python-rq.org/) in a distributed
 manner.
 ```
-pip install "flowfunc[distributed] @ git+https://github.com/idling-mind/flowfunc.git
+pip install flowfunc[distributed]
 ```
 
 ### Full installation
 
 In addition to the packages required for distributed run, this will install dash as well.
 ```
-pip install "flowfunc[full] @ git+https://github.com/idling-mind/flowfunc.git
+pip install flowfunc[full]
 ```
 ## Basic Usage
 
