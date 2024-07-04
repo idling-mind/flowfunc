@@ -16,8 +16,7 @@
   "author": "Najeem Muhammed <najeem@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@fortawesome/free-solid-svg-icons": "^5.15.4",
-    "flume": "^0.8.0",
+    "flume": "^1.0.0",
     "ramda": "^0.28.0"
   },
   "devDependencies": {
@@ -36,9 +35,9 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-react": "^7.31.1",
     "prop-types": "^15.7.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.2.0",
     "react-docgen": "^4.1.1",
+    "react-dom": "^18.2.0",
     "style-loader": "^0.23.1",
     "styled-jsx": "^3.2.1",
     "terser-webpack-plugin": "^2.3.0",
