@@ -18,6 +18,7 @@ flist = [
 app = dash.Dash(__name__)
 fconfig = config.Config.from_function_list(flist)
 runner = jobrunner.JobRunner(fconfig)
+print(fconfig)
 
 app.layout = html.Div(
     [
@@ -25,7 +26,7 @@ app.layout = html.Div(
         html.Div(
             Flowfunc(
                 id="nodeeditor",
-                config=fconfig.dict(),
+                config=fconfig.json(),
                 disable_zoom=True,
                 type_safety=False,
             ),

@@ -18,7 +18,7 @@ app.layout = html.Div(
         html.Div(
             Flowfunc(
                 id="someid",
-                config=fconfig.dict(),
+                config=fconfig.json(),
                 disable_zoom=True,
                 type_safety=False,
             ),

@@ -32,7 +32,7 @@ node_editor = html.Div(
                 "position": "absolute",
                 "top": "15px",
                 "left": "15px",
-                "z-index": "15",
+                "zIndex": "15",
             },
         ),
         html.Div(
@@ -40,7 +40,7 @@ node_editor = html.Div(
             children=flowfunc.Flowfunc(
                 id="input",
                 # config=inconfig,
-                config=fconfig.dict(),
+                config=fconfig.json(),
                 context={"context": "initial"},
             ),
             style={

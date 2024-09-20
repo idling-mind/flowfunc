@@ -253,7 +253,7 @@ def process_node_inspect(func: Callable) -> Node:
 
 
 def control_from_field(
-    cname: str, cobj: Any, port: Optional[Port] = None
+    arg_name: str, arg_type: Any, port: Optional[Port] = None
 ) -> Control:
     """Create a control from a give type object and it's properties
 
@@ -265,38 +265,38 @@ def control_from_field(
         Control: A flowfunc Control object corresponding to the type annotation
     """
     control_types = [x.name for x in ControlType]
-    if inspect.isclass(cobj) and issubclass(cobj, Enum):
+    if inspect.isclass(arg_type) and issubclass(arg_type, Enum):
         # Enum
-        clabel = f"{cname} (enum)"
-        options = [{"label": x.name, "value": x.value} for x in cobj]
+        clabel = f"{arg_name} (enum)"
+        options = [{"label": x.name, "value": x.value} for x in arg_type]
         return Control(
-            type=ControlType.select, name=cname, label=clabel, options=options
+            type=ControlType.select, name=arg_name, label=clabel, options=options
         )
     if (
-        get_origin(cobj) == list
-        and inspect.isclass(get_args(cobj)[0])
-        and issubclass(get_args(cobj)[0], Enum)
+        get_origin(arg_type) == list
+        and inspect.isclass(get_args(arg_type)[0])
+        and issubclass(get_args(arg_type)[0], Enum)
     ):
         # List of enums
-        clabel = f"{cname} (list)"
-        options = [{"label": x.name, "value": x.value} for x in get_args(cobj)[0]]
+        clabel = f"{arg_name} (list)"
+        options = [{"label": x.name, "value": x.value} for x in get_args(arg_type)[0]]
         print("listenum", options)
         return Control(
-            type=ControlType.multiselect, name=cname, label=clabel, options=options
+            type=ControlType.multiselect, name=arg_name, label=clabel, options=options
         )
-    if isinstance(cobj, str) and cobj in control_types:
+    if isinstance(arg_type, str) and arg_type in control_types:
         # When type annotation is a string or the control is parsed from docstring
-        clabel = f"{cname} ({cobj})"
+        clabel = f"{arg_name} ({arg_type})"
         return Control(
-            type=cobj,
-            name=cname,
+            type=arg_type,
+            name=arg_name,
             label=clabel,
         )
-    if hasattr(cobj, "__name__") and cobj.__name__ in control_types:
-        clabel = f"{cname} ({cobj.__name__})"
+    if hasattr(arg_type, "__name__") and arg_type.__name__ in control_types:
+        clabel = f"{arg_name} ({arg_type.__name__})"
         return Control(
-            type=cobj.__name__,
-            name=cname,
+            type=arg_type.__name__,
+            name=arg_name,
             label=clabel,
         )
     if port and port.acceptTypes and any([x in control_types for x in port.acceptTypes]):
@@ -305,7 +305,7 @@ def control_from_field(
             if t in control_types:
                 return Control(
                     type=t,
-                    name=cname,
+                    name=arg_name,
                     label=port.label,
                 )
 
@@ -324,11 +324,11 @@ def ports_from_nodes(nodes: List[Node]) -> List[Port]:
         if inspect.isclass(port.py_type) and issubclass(port.py_type, BaseModel):
             # Use a pydantic model
             port.controls = []
-            for arg_name, field in port.py_type.__fields__.items():
+            for arg_name, field in port.py_type.model_fields.items():
                 port.controls.append(
                     control_from_field(
-                        field.name,
-                        field.outer_type_,
+                        arg_name,
+                        field.annotation,
                     )
                 )
         elif inspect.isclass(port.py_type) and is_dataclass(port.py_type):
@@ -422,7 +422,7 @@ class Config:
                 return node
         raise ValueError(f"Node type {node_type} not found in config.")
 
-    def dict(self) -> dict:
+    def json(self) -> dict:
         """Function to generate the config dict
 
         This dictionary will be sent to the react backend
@@ -437,6 +437,8 @@ class Config:
             color=Color.red,
             acceptTypes=[p.type for p in self.ports] + ["object"],
         )
-        return ConfigModel(
+        config_model = ConfigModel(
             portTypes=self.ports + [port_object], nodeTypes=self.nodes
-        ).dict(exclude_none=True)
+        )
+
+        return config_model.model_dump(exclude_none=True)
