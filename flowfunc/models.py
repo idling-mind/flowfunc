@@ -138,10 +138,10 @@ class OutNode(BaseModel):
     """
 
     id: str
-    x: int
-    y: int
+    x: float
+    y: float
     type: str
-    width: int
+    width: float
     connections: OutConnections
     inputData: dict[str, dict[str, Any]]
 
@@ -159,9 +159,9 @@ class OutNode(BaseModel):
     # asyncio event object.
     # Event object is used so that mutiple await calls can be made to this
     # object without causing a runtime error.
-    run_event: Any | None = None
+    run_event: Any | None = Field(default=None, exclude=True)
 
-    job: Any | None = None
+    job: Any | None = Field(default=None, exclude=True)
     job_id: str | None = None
 
     # rq related settings which will be passed to enqueue function

@@ -45,6 +45,7 @@ app.layout = html.Div(
 def run(nclicks, nodes):
     if not nodes:
         return [], {}
+    print(nodes)
     output = runner.run(nodes)
     output_html = []
     nodes_status = {}
