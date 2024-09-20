@@ -18,7 +18,6 @@ flist = [
 app = dash.Dash(__name__)
 fconfig = config.Config.from_function_list(flist)
 runner = jobrunner.JobRunner(fconfig)
-print(fconfig)
 
 app.layout = html.Div(
     [
@@ -45,7 +44,6 @@ app.layout = html.Div(
 def run(nclicks, nodes):
     if not nodes:
         return [], {}
-    print(nodes)
     output = runner.run(nodes)
     output_html = []
     nodes_status = {}
