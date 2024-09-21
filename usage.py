@@ -25,7 +25,7 @@ app.layout = html.Div(
         html.Div(
             Flowfunc(
                 id="nodeeditor",
-                config=fconfig.json(),
+                config=fconfig.dict(),
                 disable_zoom=True,
                 type_safety=False,
             ),

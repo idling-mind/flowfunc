@@ -422,7 +422,7 @@ class Config:
                 return node
         raise ValueError(f"Node type {node_type} not found in config.")
 
-    def json(self) -> dict:
+    def dict(self) -> dict:
         """Function to generate the config dict
 
         This dictionary will be sent to the react backend

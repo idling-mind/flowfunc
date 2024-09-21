@@ -83,7 +83,7 @@ node_editor = html.Div(
             children=flowfunc.Flowfunc(
                 id="input",
                 # config=inconfig,
-                config=fconfig.json(),
+                config=fconfig.dict(),
                 context={"context": "initial"},
             ),
             style={

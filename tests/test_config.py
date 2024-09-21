@@ -30,7 +30,7 @@ def test_get_node():
 
 def test_convert_to_dict():
     config = Config.from_function_list(all_methods[:10])
-    config_dict = config.json()
+    config_dict = config.dict()
     assert isinstance(config_dict, dict)
     assert all(x in config_dict.keys() for x in ["nodeTypes", "portTypes"])
     assert isinstance(config_dict["nodeTypes"], list)

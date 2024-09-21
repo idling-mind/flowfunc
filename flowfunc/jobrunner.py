@@ -389,5 +389,5 @@ class JobRunner:
     def dict(self, mapped_dict: Dict[str, OutNode], *args, **kwargs) -> dict:
         ret_dict = {}
         for nodeid, node in mapped_dict.items():
-            ret_dict[nodeid] = node.dict(*args, **kwargs)
+            ret_dict[nodeid] = node.model_dump(*args, **kwargs)
         return ret_dict
