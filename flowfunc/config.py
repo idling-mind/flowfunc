@@ -57,7 +57,7 @@ def process_port(pname, pobj) -> Port:
         ptypes = get_args(pobj)
         # Checking for Optional
         # Represented as typing.Union[type, NoneType]
-        if len(ptypes) == 2 and ptypes[1] == type(None):
+        if len(ptypes) == 2 and ptypes[1] is type(None):
             return process_port(pname, ptypes[0])
         pptypes = []
         for ptype in ptypes:
@@ -109,7 +109,7 @@ def process_output(pobj):
         ]
     return_types = []
     origin = get_origin(pobj)
-    if origin == tuple:
+    if origin is tuple:
         for t in get_args(pobj):
             tt = get_origin(t)
             if tt:
@@ -148,7 +148,8 @@ def process_node(func: Callable) -> Node:
     node_dict["label"] = func.__name__.replace("_", " ").strip().title()
     node_dict["module"] = func.__module__
     try:
-        node_dict["description"] = func.__doc__.strip().split("\n")[0]
+        if func.__doc__:
+            node_dict["description"] = func.__doc__.strip().split("\n")[0]
     except AttributeError:
         node_dict["description"] = "No Description"
 
@@ -189,7 +190,7 @@ def control_from_field(
             type=ControlType.select, name=arg_name, label=clabel, options=options
         )
     if (
-        get_origin(arg_type) == list
+        get_origin(arg_type) is list
         and inspect.isclass(get_args(arg_type)[0])
         and issubclass(get_args(arg_type)[0], Enum)
     ):
@@ -204,14 +205,18 @@ def control_from_field(
         # When type annotation is a string or the control is parsed from docstring
         clabel = f"{arg_name} ({arg_type})"
         return Control(
-            type=arg_type,
+            type=ControlType[arg_type],
             name=arg_name,
             label=clabel,
         )
-    if hasattr(arg_type, "__name__") and arg_type.__name__ in control_types:
+    if (
+        not isinstance(arg_type, str)
+        and hasattr(arg_type, "__name__")
+        and arg_type.__name__ in control_types
+    ):
         clabel = f"{arg_name} ({arg_type.__name__})"
         return Control(
-            type=arg_type.__name__,
+            type=ControlType[arg_type.__name__],
             name=arg_name,
             label=clabel,
         )
@@ -220,7 +225,7 @@ def control_from_field(
         for t in port.acceptTypes:
             if t in control_types:
                 return Control(
-                    type=t,
+                    type=ControlType[t],
                     name=arg_name,
                     label=port.label,
                 )
@@ -230,8 +235,10 @@ def ports_from_nodes(nodes: List[Node]) -> List[Port]:
     """Function to find unique port types that are used in all nodes"""
     ports_: List[Port] = []
     for node in nodes:
-        ports_ += node.inputs + node.outputs
-    colors = [x.name for x in Color]
+        if node.inputs:
+            ports_ += [p for p in node.inputs if isinstance(p, Port)]
+        if node.outputs:
+            ports_ += [p for p in node.outputs if isinstance(p, Port)]
     ports = []
     for port_ in ports_:
         port = deepcopy(port_)
@@ -241,21 +248,21 @@ def ports_from_nodes(nodes: List[Node]) -> List[Port]:
             # Use a pydantic model
             port.controls = []
             for arg_name, field in port.py_type.model_fields.items():
-                port.controls.append(
-                    control_from_field(
-                        arg_name,
-                        field.annotation,
-                    )
+                control_ = control_from_field(
+                    arg_name,
+                    field.annotation,
                 )
+                if control_:
+                    port.controls.append(control_)
         elif inspect.isclass(port.py_type) and is_dataclass(port.py_type):
             port.controls = []
             for field in fields(port.py_type):
-                port.controls.append(
-                    control_from_field(
-                        field.name,
-                        field.type,
-                    )
+                control_ = control_from_field(
+                    field.name,
+                    field.type,
                 )
+                if control_:
+                    port.controls.append(control_)
 
         else:
             control = control_from_field(port.name, port.py_type, port)
@@ -343,7 +350,7 @@ class Config:
 
         This dictionary will be sent to the react backend
         """
-        self.ports = list(filter(lambda p: p.type != "object", self.ports))
+        self.ports = list(filter(lambda p: p.type != "object", self.ports or []))
         # To create an object port, all available types have to be determined so that it
         # can connect to all port types.
         port_object = Port(
