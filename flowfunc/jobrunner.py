@@ -3,7 +3,7 @@ import inspect
 from copy import copy, deepcopy
 from typing import Any, Callable, Dict, List, Optional
 
-from pydantic import validate_arguments
+from pydantic import validate_call
 
 from .config import Config
 from .exceptions import ErrorInDependentNode, QueueError
@@ -136,7 +136,7 @@ class JobRunner:
             )
         self.same_worker = same_worker
 
-    @validate_arguments
+    @validate_call
     def run(
         self,
         out_dict: Dict[str, OutNode],
