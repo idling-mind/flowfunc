@@ -295,7 +295,7 @@ class JobRunner:
         if not isinstance(method_output, tuple):
             method_output = (method_output,)
         output_args = [
-            x.name for x in self.flume_config.get_node(out_node.type).outputs
+            x.name for x in (self.flume_config.get_node(out_node.type).outputs or [])
         ]
         out_node.result_mapped = {x: y for x, y in zip(output_args, method_output)}
         out_node.status = "finished"
@@ -316,6 +316,15 @@ class JobRunner:
 
     async def run_distributed_same_worker(self, out_dict: dict) -> Dict[str, OutNode]:
         """Run the whole flow in the same worker using python-rq"""
+        if (
+            not hasattr(self, "queue")
+            or not self.queue
+            or not isinstance(self.queue, NodeQueue)
+        ):
+            raise QueueError(
+                "If the method is distributed, the `default_queue` argument cannot be empty."
+                " It should be an instance of NodeQueue."
+            )
         return self.queue.enqueue(
             run_in_same_worker,
             kwargs={
