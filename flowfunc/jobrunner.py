@@ -3,7 +3,7 @@ import inspect
 from copy import copy, deepcopy
 from typing import Any, Callable, Dict, List, Optional
 
-from pydantic import validate_call
+from pydantic import validate_call, ConfigDict
 
 from .config import Config
 from .exceptions import ErrorInDependentNode, QueueError
@@ -266,17 +266,17 @@ class JobRunner:
             input_args[key] = dependent_node.result_mapped[connections[0].portName]
         if inspect.iscoroutinefunction(method):
             try:
-                method_output = await validate_arguments(
-                    method, config=dict(arbitrary_types_allowed=True)
-                )(**input_args)
+                method_output = await validate_call(
+                    config=ConfigDict(arbitrary_types_allowed=True)
+                )(method)(**input_args)
             except Exception as e:
                 out_node.error = e
                 out_node.status = "failed"
         else:
             try:
-                method_output = validate_arguments(
-                    method, config=dict(arbitrary_types_allowed=True)
-                )(**input_args)
+                method_output = validate_call(
+                    config=ConfigDict(arbitrary_types_allowed=True)
+                )(method)(**input_args)
             except Exception as e:
                 logger.error(f"Execution of Node {nodeid} has failed.")
                 out_node.error = e
@@ -289,7 +289,7 @@ class JobRunner:
 
         # Converting the method output to a tuple so that it can be mapped
         # to the outputs dict
-        if type(method_output) != tuple:
+        if not isinstance(method_output, tuple):
             method_output = (method_output,)
         output_args = [
             x.name for x in self.flume_config.get_node(out_node.type).outputs
@@ -327,7 +327,7 @@ class JobRunner:
         if hasattr(node, "job_id") and node.job_id:
             try:
                 node.run_event.set()
-            except:
+            except Exception:
                 pass
             return
         method = self.flume_config.get_node(node.type).method
