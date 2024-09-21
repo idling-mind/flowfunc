@@ -1,5 +1,5 @@
 import pytest
-from flowfunc.config import process_node_docstring, process_node
+from flowfunc.config import process_node
 from flowfunc.models import Node, Port
 from .methods import (
     add_with_docstring,

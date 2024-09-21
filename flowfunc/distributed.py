@@ -3,6 +3,7 @@ RQ Utils
 --------
 This module defines redis-queue related classess and functions.
 """
+from __future__ import annotations
 from rq.job import Job
 from rq.queue import Queue
 from .models import OutConnections
