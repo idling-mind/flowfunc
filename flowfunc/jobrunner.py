@@ -70,8 +70,11 @@ def run_in_same_worker(flume_config, out_dict):
     """Run the whole flow in the same worker"""
     runner = JobRunner(flume_config=flume_config)
     result = {}
-    for nodeid, node in runner.run(out_dict).items():
-        result[nodeid] = node.dict(exclude={"job", "run_event", "settings"})
+    run_output = runner.run(out_dict)
+    if not run_output or not isinstance(run_output, dict):
+        return result
+    for nodeid, node in run_output.items():
+        result[nodeid] = node.model_dump(exclude={"job", "run_event", "settings"})
         # Converting results to hashable type
         node_error = result[nodeid]["error"]
         if node_error:

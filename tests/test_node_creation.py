@@ -1,5 +1,5 @@
 import pytest
-from flowfunc.config import process_node_docstring, process_node_inspect
+from flowfunc.config import process_node_docstring, process_node
 from flowfunc.models import Node, Port
 from .methods import (
     add_with_docstring,
@@ -89,7 +89,7 @@ def test_process_node_int_float_docstring():
 
 def test_process_node_int_float_inspect():
     """Testing add with multiple types"""
-    add_node = process_node_inspect(add_int_float_inspect)
+    add_node = process_node(add_int_float_inspect)
     assert isinstance(add_node, Node)
     assert add_node.method == add_int_float_inspect
     assert "add_int_float_inspect" in add_node.type
@@ -112,7 +112,7 @@ def test_process_node_int_float_inspect():
 
 def test_process_node_int_and_float_inspect():
     """Testing add with multiple types"""
-    add_node = process_node_inspect(add_diff_int_and_float_inspect)
+    add_node = process_node(add_diff_int_and_float_inspect)
     assert isinstance(add_node, Node)
     assert add_node.method == add_diff_int_and_float_inspect
     assert "add_diff_int_and_float_inspect" in add_node.type
@@ -141,7 +141,7 @@ def test_raise_exception():
 
 
 def test_process_node_inspect_add():
-    add_node = process_node_inspect(add_nothing)
+    add_node = process_node(add_nothing)
     assert isinstance(add_node, Node)
     assert add_node.method == add_nothing
     assert "add_nothing" in add_node.type
@@ -164,7 +164,7 @@ def test_process_node_inspect_add():
 
 
 def test_process_node_inspect_add_with_type_anno():
-    add_node = process_node_inspect(add_with_type_anno)
+    add_node = process_node(add_with_type_anno)
     assert isinstance(add_node, Node)
     assert add_node.method == add_with_type_anno
     assert "add_with_type_anno" in add_node.type
@@ -188,11 +188,11 @@ def test_process_node_inspect_add_with_type_anno():
 def test_position_only_warning():
     """This should raise a warning"""
     with pytest.warns(UserWarning):
-        _ = process_node_inspect(add_position_only)
+        _ = process_node(add_position_only)
 
 def test_str_type():
     """Node with str type"""
-    add_node = process_node_inspect(add_str_type)
+    add_node = process_node(add_str_type)
     assert isinstance(add_node, Node)
     assert add_node.method == add_str_type
     assert add_node.inputs[0].type == "int"
@@ -201,7 +201,7 @@ def test_str_type():
 
 def test_add_tuple_inspect():
     """Inspect node with tuples"""
-    add_node = process_node_inspect(add_tuples_inspect)
+    add_node = process_node(add_tuples_inspect)
     assert isinstance(add_node, Node)
     assert add_node.method == add_tuples_inspect
     assert len(add_node.inputs) == 2
