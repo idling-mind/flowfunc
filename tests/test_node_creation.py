@@ -55,7 +55,7 @@ def test_process_node_inspect_add():
     assert isinstance(add_node, Node)
     assert add_node.method == add_nothing
     assert "add_nothing" in add_node.type
-    assert add_node.description == "No Description"
+    assert add_node.description is None
     assert add_node.label == "Add Nothing"
     assert isinstance(add_node.inputs, list)
     assert len(add_node.inputs) == 2
