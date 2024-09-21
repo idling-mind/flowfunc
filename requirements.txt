@@ -1,5 +1,5 @@
 # dash is required to call `build:py`
 dash[dev]>=1.15.0
 rq==1.13.0
-pydantic>=2.9,<3
+pydantic>=2,<3
 docstring-parser

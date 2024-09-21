@@ -22,7 +22,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=[
-        "pydantic>=2.9,<3",
+        "pydantic>=2,<3",
         "typing-extensions >= 4.5.0; python_version <= '3.7'",
     ],
     extras_require={"distributed": ["rq>=1.11"], "full": ["dash>=2.6", "rq>=1.11"]},
