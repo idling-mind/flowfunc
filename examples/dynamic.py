@@ -16,9 +16,9 @@ from nodes import all_functions
 app = dash.Dash(external_stylesheets=[dbc.themes.SLATE])
 
 
-def convert_template(**kwargs):
+def convert_template(template: str, **kwargs):
     """Testing dynamic ports"""
-    return str(kwargs)
+    return template.format(**kwargs)
 
 
 def convert_to_list(**kwargs):

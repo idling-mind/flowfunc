@@ -1,3 +1,4 @@
+from __future__ import annotations
 from copy import deepcopy
 from dataclasses import fields, is_dataclass
 from enum import Enum
@@ -10,89 +11,7 @@ except ImportError:
 from warnings import warn
 from pydantic import BaseModel
 
-try:
-    from docstring_parser import parse
-except ImportError:
-    # Dont use docstring based parsing
-    pass
-
 from .models import Color, ConfigModel, ControlType, Node, Port, Control
-
-
-def process_port_docstring(param, ptype) -> Port:
-    """Process an input or an output of a function and convert it to flume
-    config data
-
-    Parameters
-    ----------
-    param:
-        Parameter object from the docstring_parser module
-    ptype:
-        Parameter type
-
-    Returns
-    -------
-    output_dict: dict
-        Port data as dictionary
-    """
-    d = {}
-    # Find out the different type options
-    port_types = param.type_name.replace(" or ", ",").split(",")
-    port_types = sorted(set([p.strip() for p in port_types]))
-    # The type of the port should be unique depending on the different
-    # datatypes it accepts
-    d["type"] = "|".join(port_types)
-    d["acceptTypes"] = port_types
-    if ptype == "input":
-        d["name"] = param.arg_name
-        d["label"] = f"{param.arg_name} ({','.join(d['acceptTypes'])})"
-    if ptype == "output":
-        if param.return_name:
-            d["name"] = param.return_name
-            d["label"] = f"{param.return_name} ({param.type_name})"
-        else:
-            d["name"] = d["label"] = d["type"]
-    d["py_type"] = d["type"]
-    return Port(**d)
-
-
-def process_node_docstring(func: Callable) -> Node:
-    """Generate a node dict from a function object using it's docstring.
-
-    This function creates a dictionary with information on how to create a
-    flume node from the function by using the doc string of the function.
-    It will raise an exception if there is no docstring.
-
-    It expects the docstring format to be compatible with the docstring_parser
-    module.
-
-    Parameters
-    ----------
-    func: function
-        The function whose docstring should be parsed and extracted.
-
-    Returns
-    -------
-    node_dict: dict
-    """
-    node_dict = {}
-    if not func.__doc__:
-        raise Exception("Empty doc string!")
-    parsed = parse(func.__doc__)
-    node_dict["method"] = func
-    node_dict["type"] = ".".join([func.__module__, func.__name__])
-    node_dict["label"] = func.__name__.replace("_", " ").title()
-    node_dict["module"] = func.__module__
-    node_dict["description"] = parsed.short_description
-
-    node_dict["inputs"] = [
-        process_port_docstring(param, "input") for param in parsed.params
-    ]
-    node_dict["outputs"] = [
-        process_port_docstring(param, "output") for param in parsed.many_returns
-    ]
-
-    return Node(**node_dict)
 
 
 def arg_or_kwarg(par: inspect.Parameter):
@@ -106,7 +25,7 @@ def arg_or_kwarg(par: inspect.Parameter):
     return arg_kwarg_mapper.get(par.kind, "kwarg")
 
 
-def process_port_inspect(pname, pobj) -> Port:
+def process_port(pname, pobj) -> Port:
     """Convert input arg of a function and convert it to flume config data
     based on it's signature
 
@@ -139,8 +58,8 @@ def process_port_inspect(pname, pobj) -> Port:
         ptypes = get_args(pobj)
         # Checking for Optional
         # Represented as typing.Union[type, NoneType]
-        if len(ptypes) == 2 and ptypes[1] == type(None):
-            return process_port_inspect(pname, ptypes[0])
+        if len(ptypes) == 2 and ptypes[1] is type(None):
+            return process_port(pname, ptypes[0])
         pptypes = []
         for ptype in ptypes:
             if get_origin(ptype):
@@ -168,7 +87,7 @@ def process_port_inspect(pname, pobj) -> Port:
     return Port(**d)
 
 
-def process_output_inspect(pobj):
+def process_output(pobj):
     """Process the return object based on signature
 
     Parameters
@@ -191,13 +110,11 @@ def process_output_inspect(pobj):
         ]
     return_types = []
     origin = get_origin(pobj)
-    if origin == tuple:
+    if origin is tuple:
         for t in get_args(pobj):
             tt = get_origin(t)
             if tt:
-                return_types.append(
-                    process_port_inspect(str(tt).replace("typing.", ""), t)
-                )
+                return_types.append(process_port(str(tt).replace("typing.", ""), t))
             else:
                 return_types.append(
                     Port(
@@ -207,10 +124,10 @@ def process_output_inspect(pobj):
                     )
                 )
         return return_types
-    return [process_port_inspect("result", pobj)]
+    return [process_port("result", pobj)]
 
 
-def process_node_inspect(func: Callable) -> Node:
+def process_node(func: Callable) -> Node:
     """Generate a node dict from a function object using it's signature.
 
     This function creates a dictionary with information on how to create a
@@ -232,13 +149,14 @@ def process_node_inspect(func: Callable) -> Node:
     node_dict["label"] = func.__name__.replace("_", " ").strip().title()
     node_dict["module"] = func.__module__
     try:
-        node_dict["description"] = func.__doc__.strip().split("\n")[0]
+        if func.__doc__:
+            node_dict["description"] = func.__doc__.strip().split("\n")[0]
     except AttributeError:
         node_dict["description"] = "No Description"
 
     node_dict["inputs"] = []
     for pname, pobj in sign.parameters.items():
-        input_dict = process_port_inspect(pname, pobj.annotation)
+        input_dict = process_port(pname, pobj.annotation)
         # input_dict["arg_or_kwarg"] = arg_or_kwarg(pobj)
         if arg_or_kwarg(pobj) == "arg":
             # TODO: Handling args is not supported now
@@ -247,14 +165,14 @@ def process_node_inspect(func: Callable) -> Node:
                 f" Node for {node_dict['type']} will not work as expected."
             )
         node_dict["inputs"].append(input_dict)
-    node_dict["outputs"] = process_output_inspect(sign.return_annotation)
+    node_dict["outputs"] = process_output(sign.return_annotation)
 
     return Node(**node_dict)
 
 
 def control_from_field(
-    cname: str, cobj: Any, port: Optional[Port] = None
-) -> Control:
+    arg_name: str, arg_type: Any, port: Optional[Port] = None
+) -> Control | None:
     """Create a control from a give type object and it's properties
 
     Paramters:
@@ -265,38 +183,42 @@ def control_from_field(
         Control: A flowfunc Control object corresponding to the type annotation
     """
     control_types = [x.name for x in ControlType]
-    if inspect.isclass(cobj) and issubclass(cobj, Enum):
+    if inspect.isclass(arg_type) and issubclass(arg_type, Enum):
         # Enum
-        clabel = f"{cname} (enum)"
-        options = [{"label": x.name, "value": x.value} for x in cobj]
+        clabel = f"{arg_name} (enum)"
+        options = [{"label": x.name, "value": x.value} for x in arg_type]
         return Control(
-            type=ControlType.select, name=cname, label=clabel, options=options
+            type=ControlType.select, name=arg_name, label=clabel, options=options
         )
     if (
-        get_origin(cobj) == list
-        and inspect.isclass(get_args(cobj)[0])
-        and issubclass(get_args(cobj)[0], Enum)
+        get_origin(arg_type) is list
+        and inspect.isclass(get_args(arg_type)[0])
+        and issubclass(get_args(arg_type)[0], Enum)
     ):
         # List of enums
-        clabel = f"{cname} (list)"
-        options = [{"label": x.name, "value": x.value} for x in get_args(cobj)[0]]
+        clabel = f"{arg_name} (list)"
+        options = [{"label": x.name, "value": x.value} for x in get_args(arg_type)[0]]
         print("listenum", options)
         return Control(
-            type=ControlType.multiselect, name=cname, label=clabel, options=options
+            type=ControlType.multiselect, name=arg_name, label=clabel, options=options
         )
-    if isinstance(cobj, str) and cobj in control_types:
+    if isinstance(arg_type, str) and arg_type in control_types:
         # When type annotation is a string or the control is parsed from docstring
-        clabel = f"{cname} ({cobj})"
+        clabel = f"{arg_name} ({arg_type})"
         return Control(
-            type=cobj,
-            name=cname,
+            type=ControlType[arg_type],
+            name=arg_name,
             label=clabel,
         )
-    if hasattr(cobj, "__name__") and cobj.__name__ in control_types:
-        clabel = f"{cname} ({cobj.__name__})"
+    if (
+        not isinstance(arg_type, str)
+        and hasattr(arg_type, "__name__")
+        and arg_type.__name__ in control_types
+    ):
+        clabel = f"{arg_name} ({arg_type.__name__})"
         return Control(
-            type=cobj.__name__,
-            name=cname,
+            type=ControlType[arg_type.__name__],
+            name=arg_name,
             label=clabel,
         )
     if port and port.acceptTypes and any([x in control_types for x in port.acceptTypes]):
@@ -304,8 +226,8 @@ def control_from_field(
         for t in port.acceptTypes:
             if t in control_types:
                 return Control(
-                    type=t,
-                    name=cname,
+                    type=ControlType[t],
+                    name=arg_name,
                     label=port.label,
                 )
 
@@ -314,8 +236,10 @@ def ports_from_nodes(nodes: List[Node]) -> List[Port]:
     """Function to find unique port types that are used in all nodes"""
     ports_: List[Port] = []
     for node in nodes:
-        ports_ += node.inputs + node.outputs
-    colors = [x.name for x in Color]
+        if node.inputs:
+            ports_ += [p for p in node.inputs if isinstance(p, Port)]
+        if node.outputs:
+            ports_ += [p for p in node.outputs if isinstance(p, Port)]
     ports = []
     for port_ in ports_:
         port = deepcopy(port_)
@@ -324,22 +248,22 @@ def ports_from_nodes(nodes: List[Node]) -> List[Port]:
         if inspect.isclass(port.py_type) and issubclass(port.py_type, BaseModel):
             # Use a pydantic model
             port.controls = []
-            for arg_name, field in port.py_type.__fields__.items():
-                port.controls.append(
-                    control_from_field(
-                        field.name,
-                        field.outer_type_,
-                    )
+            for arg_name, field in port.py_type.model_fields.items():
+                control_ = control_from_field(
+                    arg_name,
+                    field.annotation,
                 )
+                if control_:
+                    port.controls.append(control_)
         elif inspect.isclass(port.py_type) and is_dataclass(port.py_type):
             port.controls = []
             for field in fields(port.py_type):
-                port.controls.append(
-                    control_from_field(
-                        field.name,
-                        field.type,
-                    )
+                control_ = control_from_field(
+                    field.name,
+                    field.type,
                 )
+                if control_:
+                    port.controls.append(control_)
 
         else:
             control = control_from_field(port.name, port.py_type, port)
@@ -387,7 +311,7 @@ class Config:
         nodes = []
         for func in function_list:
             # Not using docstring based parsing
-            node = process_node_inspect(func)
+            node = process_node(func)
             nodes.append(node)
 
         if extra_nodes is None:
@@ -427,7 +351,7 @@ class Config:
 
         This dictionary will be sent to the react backend
         """
-        self.ports = list(filter(lambda p: p.type != "object", self.ports))
+        self.ports = list(filter(lambda p: p.type != "object", self.ports or []))
         # To create an object port, all available types have to be determined so that it
         # can connect to all port types.
         port_object = Port(
@@ -437,6 +361,8 @@ class Config:
             color=Color.red,
             acceptTypes=[p.type for p in self.ports] + ["object"],
         )
-        return ConfigModel(
+        config_model = ConfigModel(
             portTypes=self.ports + [port_object], nodeTypes=self.nodes
-        ).dict(exclude_none=True)
+        )
+
+        return config_model.model_dump(exclude_none=True)

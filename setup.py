@@ -21,9 +21,9 @@ setup(
     description=package.get("description", package_name),
     long_description=long_description,
     long_description_content_type="text/markdown",
+    python_requires=">=3.10",
     install_requires=[
-        "pydantic>=1.9,<2",
-        "typing-extensions >= 4.5.0; python_version <= '3.7'",
+        "pydantic>=2,<3",
     ],
     extras_require={"distributed": ["rq>=1.11"], "full": ["dash>=2.6", "rq>=1.11"]},
     classifiers=[

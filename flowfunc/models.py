@@ -1,8 +1,8 @@
 # Pydantic models corresponding to flume's object structure
 
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable
 from enum import Enum
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ControlType(str, Enum):
@@ -42,17 +42,16 @@ class Color(str, Enum):
 class Control(BaseModel):
     """Control pydantic model. Not used to create any new ones at python end"""
 
+    model_config = {"use_enum_values": True}
+
     type: ControlType
     name: str
     label: str
-    placeHolder: Optional[str]
-    step: Optional[int]
-    defaultValue: Optional[Any]
-    options: Optional[List[dict]]
-    render: Optional[str]  # Not implemented yet
-
-    class Config:
-        use_enum_values = True
+    placeHolder: str | None = None
+    step: int | None = None
+    defaultValue: Any | None = None
+    options: list[dict] | None = None
+    render: str | None = None  # Not implemented yet
 
 
 class Port(BaseModel):
@@ -60,15 +59,17 @@ class Port(BaseModel):
     Some of the standard ports are avaiable at the React side.
     """
 
+    model_config = {"use_enum_values": True}
+
     type: str
     name: str
     label: str
-    py_type: Optional[Any]  # Associated python type
-    arg_or_kwarg: Optional[str]
-    color: Optional[Color]
-    acceptTypes: Optional[List[str]]
-    hidePort: Optional[bool]
-    controls: Optional[List[Control]]
+    py_type: Any | None = Field(default=None, exclude=True)  # Associated python type
+    arg_or_kwarg: str | None = Field(default=None, exclude=True)  # arg or kwarg
+    color: Color | None = None
+    acceptTypes: list[str] | None = None
+    hidePort: bool | None = None
+    controls: list[Control] | None = None
 
     def __eq__(self, other):
         return self.type == other.type
@@ -76,18 +77,12 @@ class Port(BaseModel):
     def __hash__(self):
         return hash(self.type)
 
-    class Config:
-        use_enum_values = True
-        fields = {
-            "arg_or_kwarg": {"exclude": True},
-            "py_type": {"exclude": True},
-        }
-
 
 class PortFunction(BaseModel):
     """Use clientside javascript functions instead of ports"""
-    source: Optional[str]
-    path: Optional[str]
+
+    source: str | None = None
+    path: str | None = None
 
 
 class Node(BaseModel):
@@ -97,21 +92,18 @@ class Node(BaseModel):
 
     type: str
     label: str
-    method: Callable
-    module: Optional[str]
-    category: Optional[str]
-    description: Optional[str]
-    initialWidth: Optional[Union[int, float]]
-    addable: Optional[bool]
-    deletable: Optional[bool]
-    inputs: Optional[Union[List[Port], PortFunction]]
-    outputs: Optional[Union[List[Port], PortFunction]]
+    method: Callable = Field(exclude=True)
+    module: str | None = None
+    category: str | None = None
+    description: str | None = None
+    initialWidth: int | float | None = None
+    addable: bool | None = None
+    deletable: bool | None = None
+    inputs: list[Port] | PortFunction | None = None
+    outputs: list[Port] | PortFunction | None = None
 
     def __hash__(self):
         return hash(self.type)
-
-    class Config:
-        fields = {"method": {"exclude": True}}
 
 
 class ConfigModel(BaseModel):
@@ -119,8 +111,8 @@ class ConfigModel(BaseModel):
     actual FlumeConfig object at the React end.
     """
 
-    portTypes: List[Port]
-    nodeTypes: List[Node]
+    portTypes: list[Port]
+    nodeTypes: list[Node]
 
 
 # All Out* models are related to the data that's recieved from the editor
@@ -130,14 +122,14 @@ class OutConnection(BaseModel):
 
     nodeId: str
     portName: str
-    job_id: Optional[str]
+    job_id: str | None = None
 
 
 class OutConnections(BaseModel):
     """Collection of connections represeting all inputs and outputs of a node"""
 
-    inputs: Dict[str, List[OutConnection]]
-    outputs: Dict[str, List[OutConnection]]
+    inputs: dict[str, list[OutConnection]]
+    outputs: dict[str, list[OutConnection]]
 
 
 class OutNode(BaseModel):
@@ -146,47 +138,35 @@ class OutNode(BaseModel):
     """
 
     id: str
-    x: int
-    y: int
+    x: float
+    y: float
     type: str
-    width: int
+    width: float
     connections: OutConnections
-    inputData: Dict[str, Dict[str, Any]]
+    inputData: dict[str, dict[str, Any]]
 
     # Below two items are created at the python end when the `run` event is
     # called on the MappedNode object.
     status: str = "idle"
 
     # The value of the node once it completes execution.
-    result: Optional[Any]
-    result_mapped: Optional[Dict[str, Any]]
+    result: Any | None = None
+    result_mapped: dict[str, Any] | None = None
 
     # Error traceback for node
-    error: Optional[str]
+    error: str | None = None
 
     # asyncio event object.
     # Event object is used so that mutiple await calls can be made to this
     # object without causing a runtime error.
-    run_event: Optional[Any]
+    run_event: Any | None = Field(default=None, exclude=True)
 
-    job: Optional[Any]
-    job_id: Optional[str]
+    job: Any | None = Field(default=None, exclude=True)
+    job_id: str | None = None
 
     # rq related settings which will be passed to enqueue function
-    settings: Optional[Dict[str, Any]]
+    settings: dict[str, Any] | None = None
 
-    class Config:
-        fields = {
-            "run_event": {"exclude": True},
-            "job": {"exclude": True},
-        }
-
-
-class OutNodes(BaseModel):
-    __root__: Dict[str, OutNode]
-
-    def __getitem__(self, item):
-        return self.__root__[item]
-
-    def items(self):
-        return self.__dict__.items()
+    def model_dump_json(self, *args, **kwargs) -> str:
+        kwargs["exclude"] = {"run_event", "job"}
+        return super().model_dump_json(*args, **kwargs)

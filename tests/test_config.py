@@ -13,14 +13,14 @@ from .methods import (
 
 
 def test_creation_from_function_list():
-    config = Config.from_function_list(all_methods[:10])
+    config = Config.from_function_list(all_methods)
     assert isinstance(config, Config)
-    assert len(config.nodes) == 10  # above methods
-    assert len(config.ports) == 5  # int, float, float|int, object
+    assert len(config.nodes) == len(all_methods)  # above methods
+    assert len(config.ports) == 6  # int, float, float|int, object
 
 
 def test_get_node():
-    config = Config.from_function_list(all_methods[:10])
+    config = Config.from_function_list(all_methods)
     found_node = config.get_node("tests.methods.add_nothing")
     assert isinstance(found_node, Node)
     assert found_node.type == "tests.methods.add_nothing"
@@ -29,14 +29,14 @@ def test_get_node():
 
 
 def test_convert_to_dict():
-    config = Config.from_function_list(all_methods[:10])
+    config = Config.from_function_list(all_methods)
     config_dict = config.dict()
     assert isinstance(config_dict, dict)
     assert all(x in config_dict.keys() for x in ["nodeTypes", "portTypes"])
     assert isinstance(config_dict["nodeTypes"], list)
     assert isinstance(config_dict["portTypes"], list)
-    assert len(config_dict["nodeTypes"]) == 10
-    assert len(config_dict["portTypes"]) == 5
+    assert len(config_dict["nodeTypes"]) == len(all_methods)
+    assert len(config_dict["portTypes"]) == 6
     assert isinstance(config_dict["nodeTypes"][0], dict)
 
 

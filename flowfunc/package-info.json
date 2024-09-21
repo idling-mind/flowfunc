@@ -1,6 +1,6 @@
 {
   "name": "flowfunc",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Dash wrapper for flume node editor",
   "main": "build/index.js",
   "scripts": {

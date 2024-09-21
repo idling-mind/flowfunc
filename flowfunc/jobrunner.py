@@ -1,9 +1,10 @@
+from __future__ import annotations
 import asyncio
 import inspect
 from copy import copy, deepcopy
 from typing import Any, Callable, Dict, List, Optional
 
-from pydantic import validate_arguments
+from pydantic import validate_call, ConfigDict
 
 from .config import Config
 from .exceptions import ErrorInDependentNode, QueueError
@@ -70,8 +71,11 @@ def run_in_same_worker(flume_config, out_dict):
     """Run the whole flow in the same worker"""
     runner = JobRunner(flume_config=flume_config)
     result = {}
-    for nodeid, node in runner.run(out_dict).items():
-        result[nodeid] = node.dict(exclude={"job", "run_event", "settings"})
+    run_output = runner.run(out_dict)
+    if not run_output or not isinstance(run_output, dict):
+        return result
+    for nodeid, node in run_output.items():
+        result[nodeid] = node.model_dump(exclude={"job", "run_event", "settings"})
         # Converting results to hashable type
         node_error = result[nodeid]["error"]
         if node_error:
@@ -136,7 +140,7 @@ class JobRunner:
             )
         self.same_worker = same_worker
 
-    @validate_arguments
+    @validate_call
     def run(
         self,
         out_dict: Dict[str, OutNode],
@@ -266,17 +270,17 @@ class JobRunner:
             input_args[key] = dependent_node.result_mapped[connections[0].portName]
         if inspect.iscoroutinefunction(method):
             try:
-                method_output = await validate_arguments(
-                    method, config=dict(arbitrary_types_allowed=True)
-                )(**input_args)
+                method_output = await validate_call(
+                    config=ConfigDict(arbitrary_types_allowed=True)
+                )(method)(**input_args)
             except Exception as e:
                 out_node.error = e
                 out_node.status = "failed"
         else:
             try:
-                method_output = validate_arguments(
-                    method, config=dict(arbitrary_types_allowed=True)
-                )(**input_args)
+                method_output = validate_call(
+                    config=ConfigDict(arbitrary_types_allowed=True)
+                )(method)(**input_args)
             except Exception as e:
                 logger.error(f"Execution of Node {nodeid} has failed.")
                 out_node.error = e
@@ -289,10 +293,10 @@ class JobRunner:
 
         # Converting the method output to a tuple so that it can be mapped
         # to the outputs dict
-        if type(method_output) != tuple:
+        if not isinstance(method_output, tuple):
             method_output = (method_output,)
         output_args = [
-            x.name for x in self.flume_config.get_node(out_node.type).outputs
+            x.name for x in (self.flume_config.get_node(out_node.type).outputs or [])
         ]
         out_node.result_mapped = {x: y for x, y in zip(output_args, method_output)}
         out_node.status = "finished"
@@ -313,6 +317,15 @@ class JobRunner:
 
     async def run_distributed_same_worker(self, out_dict: dict) -> Dict[str, OutNode]:
         """Run the whole flow in the same worker using python-rq"""
+        if (
+            not hasattr(self, "queue")
+            or not self.queue
+            or not isinstance(self.queue, NodeQueue)
+        ):
+            raise QueueError(
+                "If the method is distributed, the `default_queue` argument cannot be empty."
+                " It should be an instance of NodeQueue."
+            )
         return self.queue.enqueue(
             run_in_same_worker,
             kwargs={
@@ -327,7 +340,7 @@ class JobRunner:
         if hasattr(node, "job_id") and node.job_id:
             try:
                 node.run_event.set()
-            except:
+            except Exception:
                 pass
             return
         method = self.flume_config.get_node(node.type).method
@@ -389,5 +402,5 @@ class JobRunner:
     def dict(self, mapped_dict: Dict[str, OutNode], *args, **kwargs) -> dict:
         ret_dict = {}
         for nodeid, node in mapped_dict.items():
-            ret_dict[nodeid] = node.dict(*args, **kwargs)
+            ret_dict[nodeid] = node.model_dump(*args, **kwargs)
         return ret_dict
