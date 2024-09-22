@@ -198,7 +198,6 @@ def control_from_field(
         # List of enums
         clabel = f"{arg_name} (list)"
         options = [{"label": x.name, "value": x.value} for x in get_args(arg_type)[0]]
-        print("listenum", options)
         return Control(
             type=ControlType.multiselect, name=arg_name, label=clabel, options=options
         )
