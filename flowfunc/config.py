@@ -12,6 +12,7 @@ from warnings import warn
 from pydantic import BaseModel
 
 from .models import Color, ConfigModel, ControlType, Node, Port, Control
+from .utils import issubclass_safe
 
 
 def arg_or_kwarg(par: inspect.Parameter):
@@ -183,7 +184,7 @@ def control_from_field(
         Control: A flowfunc Control object corresponding to the type annotation
     """
     control_types = [x.name for x in ControlType]
-    if inspect.isclass(arg_type) and issubclass(arg_type, Enum):
+    if inspect.isclass(arg_type) and issubclass_safe(arg_type, Enum):
         # Enum
         clabel = f"{arg_name} (enum)"
         options = [{"label": x.name, "value": x.value} for x in arg_type]
@@ -193,12 +194,11 @@ def control_from_field(
     if (
         get_origin(arg_type) is list
         and inspect.isclass(get_args(arg_type)[0])
-        and issubclass(get_args(arg_type)[0], Enum)
+        and issubclass_safe(get_args(arg_type)[0], Enum)
     ):
         # List of enums
         clabel = f"{arg_name} (list)"
         options = [{"label": x.name, "value": x.value} for x in get_args(arg_type)[0]]
-        print("listenum", options)
         return Control(
             type=ControlType.multiselect, name=arg_name, label=clabel, options=options
         )
@@ -245,7 +245,7 @@ def ports_from_nodes(nodes: List[Node]) -> List[Port]:
         port = deepcopy(port_)
         ports.append(port)
         # Copy is made so that the port instance in Node object is unaffected
-        if inspect.isclass(port.py_type) and issubclass(port.py_type, BaseModel):
+        if inspect.isclass(port.py_type) and issubclass_safe(port.py_type, BaseModel):
             # Use a pydantic model
             port.controls = []
             for arg_name, field in port.py_type.model_fields.items():
