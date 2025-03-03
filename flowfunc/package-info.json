@@ -1,6 +1,6 @@
 {
   "name": "flowfunc",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Dash wrapper for flume node editor",
   "main": "build/index.js",
   "scripts": {
@@ -29,7 +29,7 @@
     "babel-eslint": "^10.0.2",
     "babel-loader": "^8.2.5",
     "copyfiles": "^2.1.1",
-    "css-loader": "^3.0.0",
+    "css-loader": "^7.1.2",
     "eslint": "^6.0.1",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-import": "^2.26.0",
@@ -39,11 +39,11 @@
     "react-docgen": "^4.1.1",
     "react-dom": "^18.2.0",
     "style-loader": "^0.23.1",
-    "styled-jsx": "^3.2.1",
-    "terser-webpack-plugin": "^2.3.0",
-    "webpack": "4.36.1",
-    "webpack-cli": "3.3.6",
-    "webpack-serve": "3.1.0"
+    "styled-jsx": "^5.1.6",
+    "terser-webpack-plugin": "^5.3.12",
+    "webpack": "^5.98.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-serve": "^4.0.0"
   },
   "engines": {
     "node": ">=8.11.0",

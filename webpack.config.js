@@ -7,7 +7,6 @@ const packagejson = require('./package.json');
 const dashLibraryName = packagejson.name.replace(/-/g, '_');
 
 module.exports = (env, argv) => {
-
     let mode;
 
     const overrides = module.exports || {};
@@ -84,17 +83,16 @@ module.exports = (env, argv) => {
         optimization: {
             minimizer: [
                 new TerserPlugin({
-                    sourceMap: true,
                     parallel: true,
-                    cache: './.build_cache/terser',
                     terserOptions: {
                         warnings: false,
                         ie8: false
-                    }
+                    },
+                    extractComments: false
                 })
             ],
             splitChunks: {
-                name: true,
+                name: 'flowfunc-shared', // Set a valid value for name
                 cacheGroups: {
                     async: {
                         chunks: 'async',
