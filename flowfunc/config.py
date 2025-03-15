@@ -134,6 +134,8 @@ def process_output(pobj):
                         label=t.__name__,
                     )
                 )
+        for i, return_type in enumerate(return_types):
+            return_type.name = f"result_{i}"
         return return_types
     return [process_port("result", pobj)]
 
