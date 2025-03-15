@@ -3,7 +3,7 @@ import * as R from 'ramda'
 import { NodeEditor } from 'flume';
 import { FlumeConfig, Colors, Controls } from 'flume'
 import PropTypes, { string } from 'prop-types';
-import { standardControls } from './Controls';
+import { standardControls } from '../utils/Controls';
 import "./nodeeditor.css"
 
 /**

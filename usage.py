@@ -1,3 +1,4 @@
+from typing import Annotated
 import dash
 from dash import Input, Output, State, html
 from flowfunc import Flowfunc, config, jobrunner
@@ -6,7 +7,11 @@ def add(a: int, b: int):
     """Add two numbers"""
     return a + b
 
-def subtract(a: int, b: int):
+
+def subtract(
+    a: Annotated[int, {"label": "First number", "hidePort": True}],
+    b: Annotated[int, {"label": "Second number"}],
+):
     """Subtract one number from another"""
     return a - b
 

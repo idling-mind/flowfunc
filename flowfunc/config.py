@@ -4,8 +4,9 @@ from dataclasses import fields, is_dataclass
 from enum import Enum
 import inspect
 from typing import Any, Callable, List, Optional, Union
+from types import UnionType
 try:
-    from typing import get_args, get_origin
+    from typing import get_args, get_origin, Annotated
 except ImportError:
     from typing_extensions import get_args, get_origin
 from warnings import warn
@@ -55,7 +56,15 @@ def process_port(pname, pobj) -> Port:
         return Port(type=ptype, name=pname, label=f"{pname} ({ptype})", py_type=ptype)
     d = {}
     origin = get_origin(pobj)
-    if origin == Union:
+    annotated_data = {}
+    if origin == Annotated:
+        ptypes = get_args(pobj)
+        if len(ptypes) > 1 and isinstance(ptypes[1], dict):
+            annotated_data = ptypes[1]
+        if len(ptypes) > 0:
+            pobj = ptypes[0]
+            origin = get_origin(pobj)
+    if origin == Union or origin == UnionType:
         ptypes = get_args(pobj)
         # Checking for Optional
         # Represented as typing.Union[type, NoneType]
@@ -85,6 +94,7 @@ def process_port(pname, pobj) -> Port:
         d["acceptTypes"] = [pobj.__name__]
     d["name"] = pname
     d["label"] = f"{pname} ({','.join(d['acceptTypes'])})"
+    d.update(annotated_data)
     return Port(**d)
 
 
@@ -124,6 +134,8 @@ def process_output(pobj):
                         label=t.__name__,
                     )
                 )
+        for i, return_type in enumerate(return_types):
+            return_type.name = f"result_{i}"
         return return_types
     return [process_port("result", pobj)]
 
