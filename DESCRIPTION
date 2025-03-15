@@ -1,13 +1,13 @@
 Package: flowfunc
 Title: Dash wrapper for flume node editor
-Version: 0.1.2
+Version: 0.1.3
 Description: Dash wrapper for flume node editor
 Depends: R (>= 3.0.2)
 Imports: 
 Suggests: 
 License: MIT + file LICENSE
-URL: 
-BugReports: 
+URL: https://github.com/idling-mind/flowfunc
+BugReports: https://github.com/idling-mind/flowfunc/issues
 Encoding: UTF-8
 LazyData: true
 KeepSource: true
