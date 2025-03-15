@@ -1,12 +1,20 @@
+from typing import Annotated
 import dash
 from dash import Input, Output, State, html
 from flowfunc import Flowfunc, config, jobrunner
+from flowfunc.models import Port
+from pprint import pprint as print
+
 
 def add(a: int, b: int):
     """Add two numbers"""
     return a + b
 
-def subtract(a: int, b: int):
+
+def subtract(
+    a: Annotated[int, {"label": "First number", "hidePort": True}],
+    b: Annotated[int, {"label": "Second number"}],
+):
     """Subtract one number from another"""
     return a - b
 
@@ -17,6 +25,7 @@ flist = [
 ]
 app = dash.Dash(__name__)
 fconfig = config.Config.from_function_list(flist)
+print(fconfig.dict())
 runner = jobrunner.JobRunner(fconfig)
 
 app.layout = html.Div(
