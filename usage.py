@@ -11,8 +11,8 @@ def add(a: int, b: int):
 
 
 def subtract(
-    a: Annotated[int, {"label": "First number"}],
-    b: Annotated[int, {"label": "Second number"}],
+    a: Annotated[int | float, {"label": "First number"}],
+    b: Annotated[int | float, {"label": "Second number"}],
 ):
     """Subtract one number from another"""
     return a - b
