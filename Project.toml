@@ -2,7 +2,7 @@
 name = "Flowfunc"
 uuid = "1b08a953-4be3-4667-9a23-dd0b9fbbbeab"
 authors = ["Najeem Muhammed <najeem@gmail.com>"]
-version = "0.1.3"
+version = "0.1.5"
 
 [deps]
 Dash = "1b08a953-4be3-4667-9a23-3db579824955"

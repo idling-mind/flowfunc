@@ -1,7 +1,9 @@
-from typing import Annotated
+import math
+from typing import Annotated, Literal
 import dash
 from dash import Input, Output, State, html
 from flowfunc import Flowfunc, config, jobrunner
+from enum import Enum
 
 def add(a: int, b: int):
     """Add two numbers"""
@@ -9,16 +11,32 @@ def add(a: int, b: int):
 
 
 def subtract(
-    a: Annotated[int, {"label": "First number", "hidePort": True}],
+    a: Annotated[int, {"label": "First number"}],
     b: Annotated[int, {"label": "Second number"}],
 ):
     """Subtract one number from another"""
     return a - b
 
+class MathFunction(str, Enum):
+    sin = "sin"
+    cos = "cos"
+    tan = "tan"
+    asin = "asin"
+    acos = "acos"
+    atan = "atan"
+
+
+def trig_function(
+    x: float, func: Annotated[MathFunction, {"label": "Function", "hidePort": True}]
+):
+    """Trigonometric function"""
+    return getattr(math, func)(x)
+
 
 flist = [
     add,
     subtract,
+    trig_function,
 ]
 app = dash.Dash(__name__)
 fconfig = config.Config.from_function_list(flist)
